@@ -1,4 +1,5 @@
----1202v0335e
+--NOT A MIB TO BE COMPILED. THIS FILE IS ONLY USED TO COMPARE SMIv1 and SMIv2 Object Definition
+--changes from NTCIP 1202 v03 to v04
 --*********************************************************************
 -- Filename:	1202v0335eCombined.MIB
 -- Description:	This MIB defines the Actuated Signal Controller (ASC) Objects
@@ -96,13 +97,13 @@ phase OBJECT IDENTIFIER
 
 --5.2.1	Maximum Phases
 maxPhases   OBJECT-TYPE
-SYNTAX INTEGER (2..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (2..64)
+UNITS "phases"
+MAX-ACCESS  read-only
+STATUS      current
 DESCRIPTION  "<Definition> The Maximum Number of Phases this Controller Unit supports. This object indicates the maximum rows which shall appear in the phaseTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.1
 <Object Type> S
-<Unit> phase"
 ::= { phase 1 }
 
 --5.2.2	Phase Table
@@ -421,29 +422,37 @@ redClear: this phase initializes at the beginning of the Red Clearance interval.
 REFERENCE "NEMA TS 2 Clause 3.5.5.1 and 3.5.5.12"
 ::= { phaseEntry 20 }
 
---5.2.2.21	Phase Options
+--5.2.2.21	Phase Options 1202 v04
 phaseOptions   OBJECT-TYPE
-SYNTAX INTEGER (0..65535)
-ACCESS read-write
-STATUS mandatory
-DESCRIPTION "<Definition>Optional phase functions ( 0 = False/
+SYNTAX BITS {enablePhase (0)
+             flashEntryPhase(1)
+             flashExitPhase(2)
+             nonActuated1(3)
+             nonActuated2(4)
+             nonLockDetectorMemory(5)
+             pedRecall(6)
+             dualEntryPhase(7)
+             disableSimultaneousGap(8)
+             guaranteePassage(9)
+             actuatedRestInWalk(10)
+             conditionalServiceEnable(11)
+             addedInitialCalculation(12)}
+MAX-ACCESS  read-write
+STATUS      current
+DESCRIPTION 
+"<Definition> Optional phase functions ( 0 = False/
  Disabled, 1 = True/Enabled)
-Bit 15: AddedInitialCalculation - If set (1) the CU shall compare counts from all associated AddedInitial detectors and use the largest count value for the calculations. If clear (0) the CU shall sum all associated AddedInitial detector counts and use this sum for the calculations. The ability to modify the setting of this bit is optional.
-Bit 14: Conditional Service Enable - in multi-ring configurations when set to 1 causes a gapped/maxed phase to conditionally service a preceding actuated vehicle phase when sufficient time remains before max time out of the phase(s) not prepared to terminate. Support is optional.
+Bit 12: AddedInitialCalculation - If set (1) the CU shall compare counts from all associated AddedInitial detectors and use the largest count value for the calculations. If clear (0) the CU shall sum all associated AddedInitial detector counts and use this sum for the calculations. The ability to modify the setting of this bit is optional.
+Bit 11: Conditional Service Enable - in multi-ring configurations when set to 1 causes a gapped/maxed phase to conditionally service a preceding actuated vehicle phase when sufficient time remains before max time out of the phase(s) not prepared to terminate. Support is optional.
  	REFERENCE  NEMA TS 2 Clause 3.5.3.9
-Bit 13: Actuated Rest In Walk - when set to 1 causes an actuated phase to rest in Walk when there is no serviceable conflicting call at the end of Walk Timing. 
-Bit 12: Guaranteed Passage - when set to 1 enables an actuated phase operating in volume density mode (using gap reduction) to retain the right of way for the unexpired portion of the Passage time following the decision to terminate the green due to a reduced gap. Support is optional
-Bit 11: Simultaneous Gap Disable - in multi-ring configurations when set to 1 disables a gapped out phase from reverting to the extensible portion. Support is optional
+Bit 10: Actuated Rest In Walk - when set to 1 causes an actuated phase to rest in Walk when there is no serviceable conflicting call at the end of Walk Timing. 
+Bit 9: Guaranteed Passage - when set to 1 enables an actuated phase operating in volume density mode (using gap reduction) to retain the right of way for the unexpired portion of the Passage time following the decision to terminate the green due to a reduced gap. Support is optional
+Bit 8: Simultaneous Gap Disable - in multi-ring configurations when set to 1 disables a gapped out phase from reverting to the extensible portion. Support is optional
  	REFERENCE NEMA TS 2 Clause 3.5.5.3
-Bit 10: Dual Entry Phase - in multi-ring configurations when set to 1 causes the phase to become active upon entry into a concurrency group (crossing a barrier) when no calls exist in its ring within its concurrency group.
+Bit 7: Dual Entry Phase - in multi-ring configurations when set to 1 causes the phase to become active upon entry into a concurrency group (crossing a barrier) when no calls exist in its ring within its concurrency group.
  	REFERENCE NEMA TS 2 Clause 3.5.5.3
-Bit 9: Soft Vehicle Recall - when set to 1 causes a call on a phase when all conflicting phases are in green dwell or red dwell and there are no serviceable conflicting calls. Support is optional.
-Bit 8: Ped. Recall - when set to 1 causes a recurring pedestrian demand which shall function in the same manner as an external pedestrian call except that it shall not recycle the pedestrian service until a conflicting phase is serviced.
+Bit 6: Ped. Recall - when set to 1 causes a recurring pedestrian demand which shall function in the same manner as an external pedestrian call except that it shall not recycle the pedestrian service until a conflicting phase is serviced.
  	REFERENCE NEMA TS 2 Clause 3.5.3.7
-Bit 7: Max Vehicle Recall - when set to 1 causes a call on a phase such that the timing of the Green interval for that phase shall be extended to Maximum Green time.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.5
-Bit 6: Min. Vehicle Recall - when set to 1 causes recurring demand for vehicle service on the phase when that phase is not in its Green interval.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.6
 Bit 5: Non Lock Detector Memory - when set to 0 will cause the call to be locked at the beginning of the yellow interval. When set to 1 call locking will depend on the detectorOptions object.
  	REFERENCE NEMA TS 2 Clause 3.5.3.4
 Bit 4: Non-Actuated 2 - when set to 1 causes a phase to respond to the Call To Non-Actuated 2 input (if present) or other method. Support is optional
@@ -458,6 +467,27 @@ Bit 0: Enabled Phase - provide a means to define whether this phase is used in t
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.21
 <Object Type> P2"
 ::= { phaseEntry 21 }
+
+phaseVehicleRecall   OBJECT-TYPE --How recalls should be done in 1202 v04
+SYNTAX INTEGER {
+        none(1)
+        minRecall(2)
+        maxRecall(3)
+        softRecall(4)}
+MAX-ACCESS  read-write
+STATUS      current
+DESCRIPTION 
+"<Definition> Controls vehicle recall
+1: None - The phase can only be called by a vehicle detector or by a remote command. 
+2: Min. Vehicle Recall - causes recurring demand for vehicle service on the phase when that phase is not in its Green interval.
+ 	REFERENCE NEMA TS 2 Clause 3.5.3.6
+3: Max Vehicle Recall - causes a call on a phase such that the timing of the Green interval for that phase shall be extended to Maximum Green time.
+ 	REFERENCE NEMA TS 2 Clause 3.5.3.5
+4: Soft Vehicle Recall - causes a call on a phase when all conflicting phases are in green dwell or red dwell and there are no serviceable conflicting calls. Support is optional.
+<Object Identifier> TBD
+<Object Type> P"
+DEFVAL  {none}
+::= { phaseEntry x }
 
 --5.2.2.22	Phase Ring Parameter
 phaseRing   OBJECT-TYPE
@@ -608,16 +638,6 @@ DESCRIPTION "<Definition> This object indicates the alternate minimum green time
 DEFVAL { 0 }
 ::= { phaseEntry 34 }
 
---5.2.3	Maximum Phase Groups
-maxPhaseGroups   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> The Maximum Number of Phase Groups (8 Phases per group) this Controller Unit supports. This value is equal to TRUNCATE [(maxPhases + 7) / 8]. This object indicates the maximum rows which shall appear in the phaseStatusGroupTable and phaseControlGroupTable.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.3
-<Object Type> S
-<Unit> group"
-::= { phase 3 }
 
 --5.2.4	Phase Status Group Table
 phaseStatusGroupTable   OBJECT-TYPE
@@ -662,59 +682,43 @@ DESCRIPTION "<Definition> The Phase Status Group number for objects in this row.
 	<Unit> group"
 ::= { phaseStatusGroupEntry 1 }
 
---5.2.4.2	Phase Status Group Reds
-phaseStatusGroupReds   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Red Output Status Mask, when a bit = 1, the Phase Red is currently active. When a bit = 0, the Phase Red is NOT currently active.
-Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.2
+--5.2.4.2	phase status using BITS
+phaseStatusRed   OBJECT-TYPE
+SYNTAX BITS {phase1(0), phase2(1), phase3(2), phase4(3), phase5(4), phase6(5), phase7(6), phase8(7), 
+	 phase9(8), phase10(9), phase11(10), phase12(11), phase13(12), phase14(13), phase15(14), phase16(15), 
+	 phase17(16), phase18(17), phase19(18), phase20(19), phase21(20), phase22(21), phase23(22), phase24(23), 
+	 phase25(24), phase26(25), phase27(26), phase28(27), phase29(28), phase30(29), phase31(30), phase32(31), 
+	 phase33(32), phase34(33), phase35(34), phase36(35), phase37(36), phase38(37), phase39(38), phase40(39)
+	 phase41(40), phase42(41), phase43(42), phase44(43), phase45(44), phase46(45), phase47(46), phase48(47),
+	 phase49(48), phase50(49), phase51(50), phase52(51), phase53(52), phase54(53), phase55(54), phase56(55)
+	 phase57(56), phase58(57), phase59(58), phase60(59), phase61(60), phase62(61), phase63(62), phase64(63)}
+MAX-ACCESS read-write
+STATUS current
+DESCRIPTION
+ "<Definition> A bit map the defines what phases are currently Red. When a bit = 0, the Phase Red is NOT currently active.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 2 }
+::= { TBD }
 
---5.2.4.3	Phase Status Group Yellows
-phaseStatusGroupYellows   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Yellow Output Status Mask, when a bit = 1, the Phase Yellow is currently active. When a  bit = 0, the Phase Yellow is NOT currently active.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.3
+--5.2.4.3	phase status using OCTET STRING
+phaseStatusYellow    OBJECT-TYPE
+SYNTAX OCTET STRING (SIZE (1..32))
+MAX-ACCESS read-only
+STATUS current
+DESCRIPTION  "<Definition> A bit map the defines what phases are currently yellow. When a bit = 1, the Phase Yellow is currently active. When a bit = 0, the Phase Yellow is NOT currently active. The octet string is treated as a binary bit string. 
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 3 }
+::= { TBD }
 
---5.2.4.4	Phase Status Group Greens
-phaseStatusGroupGreens   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Green Output Status Mask, when a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Green is NOT currently active.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.4
+--5.2.4.4	phase status using Integer Bitmap
+phaseStatusGreen    OBJECT-TYPE
+SYNTAX NtcipIntegerBitmap64
+MAX-ACCESS read-only
+STATUS current
+DESCRIPTION  "<Definition> A bit map the defines what phases are currently gellow. When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Green is NOT currently active. 
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 4 }
+::= { TBD }
  
 --5.2.4.5	Phase Status Group Dont Walks
 phaseStatusGroupDontWalks   OBJECT-TYPE
@@ -3283,85 +3287,84 @@ REFERENCE "NEMA TS 2 Clause 3.6.2.1 and 3.6.2.2"
 --5.5.7	Pattern Table
 patternTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF PatternEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Actuated Controller Unit coordination Pattern parameters. The number of rows in this table is equal to the maxPatterns object.
-<TableType> static
+<TableType> dynamic
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7"
 ::= { coord 7 }
 
 patternEntry   OBJECT-TYPE
 SYNTAX PatternEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Parameters for a specific Actuated Controller Unit pattern.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1"
 INDEX   { patternNumber }
 ::= { patternTable 1 }
 
 PatternEntry ::= SEQUENCE {
-patternNumber	INTEGER,
-patternCycleTime	INTEGER,
-patternOffsetTime	INTEGER,
-patternSplitNumber	INTEGER,
-patternSequenceNumber	INTEGER,
-patternCoordSyncPoint	INTEGER,
-patternOptions		INTEGER,
-patternSpatEnabledLanes	OCTET STRING } --deprecrated
+patternNumber		Integer32,
+patternCycleTime	Integer32,
+patternOffsetTime	Integer32,
+patternSplitNumber	Integer32,
+patternSequenceNumber	Integer32,
+patternCoordSyncPoint	Integer32,
+patternOptions		Integer32,
+patternSpatEnabledLanes	OCTET STRING, --deprecrated
+patternRowStatus	RowStatus} 
 
 --5.5.7.1	Pattern Number Entry
 patternNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..253)
-ACCESS read-only
-STATUS mandatory
+SYNTAX 		Integer32 (1..253)
+MAX-ACCESS 	not-accessible
+STATUS 		current
 DESCRIPTION "<Definition> The pattern number for objects in this row. This value shall not exceed the maxPatterns object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.1
 <Object Type> S
-<Unit> pattern"
 ::= { patternEntry 1 }
 
 --5.5.7.2	Pattern Cycle Time
 patternCycleTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX 		 Integer32 (0..510)
+UNITS 		"seconds"
+MAX-Access 	read-create
+STATUS 		current
 DESCRIPTION "<Definition> The patternCycleTime object specifies the length of the pattern cycle in seconds (NEMA TS 2 range: 30-255). A pattern cycle time less than adequate to service the minimum requirements of all phases shall result in Free mode. While this condition exists, the Local Free bit of unitAlarmStatus1 and the Local Override bit of shortAlarmStatus shall be set to one (1). 
 
 The minimum requirements of a phase with a not-actuated ped include Minimum Green, Walk, Pedestrian Clear, Yellow Clearance, and Red Clearance; the minimum requirements of a phase with an actuated pedestrian include Minimum Green, Yellow Clearance, and Red Clearance. If the pattern cycle time is zero and the associated split table (if any) contains values greater than zero, then the CU shall utilize the split time values as maximum values for each phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.2
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.6.2.1.1"
 ::= { patternEntry 2 }
  
 --5.5.7.3	Pattern Offset Time Parameter
 patternOffsetTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS 		"seconds"
+MAX-ACCESS 	read-create
+STATUS 		current
 DESCRIPTION "<Definition> The patternOffsetTime defines by how many seconds (NEMA TS 2 range: 0-254) the local time zero shall lag the system time zero (synchronization pulse) for this pattern. An offset value equal to or greater than the patternCycleTime shall result in Free being the operational mode. While this condition  exists, the Local Free bit of unitAlarmStatus1 and the LocalOverride bit of shortAlarmStatus shall be set to one (1).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.3
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.6.2.2"
 ::= { patternEntry 3 }
 
 --5.5.7.4	Pattern Split Number Parameter
 patternSplitNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+MAX-ACCESS 	read-create
+STATUS 		current
 DESCRIPTION "<Definition> This object is used to locate information in the splitTable to use for this pattern. This value shall not exceed the maxSplits object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.4
-<Object Type> P
-<Unit> split"
+<Object Type> P"
 ::= { patternEntry 4 }
 
 --5.5.7.5	Pattern Sequence Number Parameter
 patternSequenceNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+MAX-ACCESS 	read-create
+STATUS 		current
 DESCRIPTION "<Definition> This object is used to locate information in the sequenceTable to use with this pattern. This value shall not exceed the maxSequences object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.5
 <Object Type> P
@@ -3372,14 +3375,14 @@ DESCRIPTION "<Definition> This object is used to locate information in the seque
 patternCoordSyncPoint OBJECT-TYPE
 SYNTAX INTEGER { other (1),
 	unitCoordSyncPoint (2),
-firstCoordPhsGrnBegin (3),
-lastCoordPhsGrnBegin (4),
-firstCoordPhsGrnEnd (5),
-lastCoordPhsGrnEnd (6),
-firstCoordPhsYelEnd (7),
-lastCoordPhsYelEnd (8) }
-ACCESS read-write
-STATUS mandatory
+	firstCoordPhsGrnBegin (3),
+	lastCoordPhsGrnBegin (4),
+	firstCoordPhsGrnEnd (5),
+	lastCoordPhsGrnEnd (6),
+	firstCoordPhsYelEnd (7),
+	lastCoordPhsYelEnd (8) }
+MAX-ACCESS 	read-create
+STATUS 		current
 DESCRIPTION "<Definition> This object is used to indicate the location of the system reference point for this pattern. The valid coordination sync points are:
 other: the coordination sync point is not described in this standard
 unitCoordSyncPoint: the coordination point is defined by unitCoordSyncPoint.
@@ -3397,13 +3400,13 @@ DEFVAL { firstCoordPhsGrnBegin }
 --5.5.7.7	Pattern Options
 patternOptions   OBJECT-TYPE
 SYNTAX INTEGER { other (1),
-coordMaximumMode (2),
-	maxInhibit (3),
-maximum1 (4),
-maximum2 (5),
-maximum3 (6) }
- ACCESS read-write
-STATUS mandatory
+		coordMaximumMode (2),
+		maxInhibit (3),
+		maximum1 (4),
+		maximum2 (5),
+		maximum3 (6) }
+MAX-ACCESS 	read-create
+STATUS 		current
 DESCRIPTION "<Definition> This object represents the maximum mode to be used for the pattern. The valid maximum modes are:
 other: the maximum mode is determined by some other mechanism not defined in this standard.
 coordMaximumMode: use the maximum mode defined by the coordMaximumMode object.
@@ -3424,6 +3427,15 @@ DESCRIPTION "<Definition> Each octet in this octet string represents the index o
 	Each indexed lane should have its revocable Lane bit set (Bit 0 set to (1) in the mapLaneAttribute object).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.8"
 ::= { patternEntry 8 }
+
+--5.5.7.8	Pattern Status
+patternRowStatus   OBJECT-TYPE
+SYNTAX   	RowStatus
+MAX-ACCESS 	read-create
+STATUS   	current
+DESCRIPTION "<Definition> Dynamic table row status entry: active(1),notInService(2),notReady(3),createAndGo(4),createAndWait(5),destroy(6)
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.9"
+::= { patternEntry 9 }
 
 --5.5.8	Maximum Splits
 maxSplits   OBJECT-TYPE
