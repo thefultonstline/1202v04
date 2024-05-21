@@ -97,13 +97,14 @@ phase OBJECT IDENTIFIER
 
 --5.2.1	Maximum Phases
 maxPhases   OBJECT-TYPE
-SYNTAX Integer32 (2..64)
-UNITS "phases"
-MAX-ACCESS  read-only
-STATUS      current
-DESCRIPTION  "<Definition> The Maximum Number of Phases this Controller Unit supports. This object indicates the maximum rows which shall appear in the phaseTable object.
+SYNTAX 		Integer32 (2..255)
+UNITS 		"phases"
+MAX-ACCESS  	read-only
+STATUS      	current
+DESCRIPTION  
+"<Definition> The Maximum Number of Phases this Controller Unit supports. This object indicates the maximum rows which shall appear in the phaseTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.1
-<Object Type> S
+<Object Type> S"
 ::= { phase 1 }
 
 --5.2.2	Phase Table
@@ -639,212 +640,125 @@ DEFVAL { 0 }
 ::= { phaseEntry 34 }
 
 
---5.2.4	Phase Status Group Table
-phaseStatusGroupTable   OBJECT-TYPE
-SYNTAX SEQUENCE OF PhaseStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
-DESCRIPTION "<Definition> A table containing Controller  Unit Phase Output (Red, Yellow, & Green) and Call (vehicle & pedestrian) status in groups of eight Phases. The number of rows in this table is equal to the maxPhaseGroups object.
-<TableType> static
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4"
-::= { phase 4 }
-
-phaseStatusGroupEntry   OBJECT-TYPE
-SYNTAX PhaseStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
-DESCRIPTION "<Definition> Red, Yellow, & Green Output Status and Vehicle and Pedestrian Call for eight Controller Unit Phases. 
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1"
-INDEX   { phaseStatusGroupNumber }
-::= { phaseStatusGroupTable 1 }
- 
-PhaseStatusGroupEntry ::= SEQUENCE { 
-phaseStatusGroupNumber		INTEGER,
-phaseStatusGroupReds		INTEGER,
-phaseStatusGroupYellows		INTEGER,
-phaseStatusGroupGreens		INTEGER,
-phaseStatusGroupDontWalks	INTEGER,
-phaseStatusGroupPedClears	INTEGER,
-phaseStatusGroupWalks		INTEGER,
-phaseStatusGroupVehCalls	INTEGER,
-phaseStatusGroupPedCalls	INTEGER,
-phaseStatusGroupPhaseOns	INTEGER,
-phaseStatusGroupPhaseNexts	INTEGER }
-
---5.2.4.1	Phase Status Group Number
-phaseStatusGroupNumber   OBJECT-TYPE
-	SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> The Phase Status Group number for objects in this row. This value shall not exceed the maxPhaseGroups object value.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.1
-<Object Type> S
-	<Unit> group"
-::= { phaseStatusGroupEntry 1 }
-
---5.2.4.2	phase status using BITS
-phaseStatusRed   OBJECT-TYPE
-SYNTAX BITS {phase1(0), phase2(1), phase3(2), phase4(3), phase5(4), phase6(5), phase7(6), phase8(7), 
-	 phase9(8), phase10(9), phase11(10), phase12(11), phase13(12), phase14(13), phase15(14), phase16(15), 
-	 phase17(16), phase18(17), phase19(18), phase20(19), phase21(20), phase22(21), phase23(22), phase24(23), 
-	 phase25(24), phase26(25), phase27(26), phase28(27), phase29(28), phase30(29), phase31(30), phase32(31), 
-	 phase33(32), phase34(33), phase35(34), phase36(35), phase37(36), phase38(37), phase39(38), phase40(39)
-	 phase41(40), phase42(41), phase43(42), phase44(43), phase45(44), phase46(45), phase47(46), phase48(47),
-	 phase49(48), phase50(49), phase51(50), phase52(51), phase53(52), phase54(53), phase55(54), phase56(55)
-	 phase57(56), phase58(57), phase59(58), phase60(59), phase61(60), phase62(61), phase63(62), phase64(63)}
-MAX-ACCESS read-write
-STATUS current
-DESCRIPTION
- "<Definition> A bit map the defines what phases are currently Red. When a bit = 0, the Phase Red is NOT currently active.
+--Phase Red Status
+phaseStatusRed    OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are currently red. When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Red is NOT currently active. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
 <Object Identifier> TBD
 <Object Type> S"
 ::= { TBD }
 
---5.2.4.3	phase status using OCTET STRING
+--Phase Yellow Status
 phaseStatusYellow    OBJECT-TYPE
-SYNTAX OCTET STRING (SIZE (1..32))
-MAX-ACCESS read-only
-STATUS current
-DESCRIPTION  "<Definition> A bit map the defines what phases are currently yellow. When a bit = 1, the Phase Yellow is currently active. When a bit = 0, the Phase Yellow is NOT currently active. The octet string is treated as a binary bit string. 
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are currently yellow When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Yellow is NOT currently active. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
 <Object Identifier> TBD
 <Object Type> S"
 ::= { TBD }
 
---5.2.4.4	phase status using Integer Bitmap
+--Phase Green Status
 phaseStatusGreen    OBJECT-TYPE
-SYNTAX NtcipIntegerBitmap64
-MAX-ACCESS read-only
-STATUS current
-DESCRIPTION  "<Definition> A bit map the defines what phases are currently gellow. When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Green is NOT currently active. 
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are currently green. When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Green is NOT currently active. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
 <Object Identifier> TBD
 <Object Type> S"
 ::= { TBD }
  
---5.2.4.5	Phase Status Group Dont Walks
-phaseStatusGroupDontWalks   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Dont Walk Output Status Mask, when a bit = 1, the Phase Dont Walk is currently active. When a bit = 0, the Phase Dont Walk is NOT currently active.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.5
+--Phase Dont Walk Status
+phaseStatusDontWalk    OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are currently displaying Don't Walk. When a bit = 1, Don't Walk is shown for the phase. When a bit = 0, the phase is not in Don't Walk. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 5 }
+::= { TBD }
 
---5.2.4.6	Phase Status Group Pedestrian Clears
-phaseStatusGroupPedClears   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Ped Clear Output Status Mask, when a bit = 1, the Phase Ped Clear is currently active. When a bit = 0, the Phase Ped Clear is NOT currently active.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.6
+--Phase Pedestrian Clear Status
+phaseStatusPedClear   OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are currently in the pedestrian clearance interval. When a bit = 1, the phase is in pedestrian clearance. When a bit = 0, the phase is not in pedestrian clearance. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 6 }
+::= { TBD }
  
---5.2.4.7	Phase Status Group Walks
-phaseStatusGroupWalks   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Walk Output Status Mask, when a bit = 1, the Phase Walk is currently active. When a bit = 0, the Phase Walk is NOT currently active.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.7
+--Phase Walk Status
+phaseStatusWalk   OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are currently displaying Walk. When a bit = 1, the phase is showing Walk. When a bit = 0, the phase is not showing Walk. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 7 }
+::= { TBD }
 
---5.2.4.8	Phase Status Group Vehicle Calls
-phaseStatusGroupVehCalls   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Vehicle Call Status Mask, when a bit = 1, the Phase vehicle currently has a call for service. When a bit = 0, the Phase vehicle currently does NOT have a call for service.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.8
+--Phase Vehicle Call Status
+phaseStatusVehCalls   OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases currently have vehicle detector calls on them. When a bit = 1, the phase has a vehicle detector call on it. When a bit = 0, the phase does not have a vehicle detector call on it. This does NOT cover recalls. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 8 }
+::= { TBD }
  
---5.2.4.9	Phase Status Group Pedestrian Calls
-phaseStatusGroupPedCalls   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Pedestrian Call Status Mask, when a bit = 1, the  Phase pedestrian currently has a call for service. When a bit = 0, the Phase pedestrian currently does NOT have a call for service.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.9
+--Phase Pedestrian Call Status
+phaseStatusPedCalls   OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases currently have pedestrian detector calls on them. When a bit = 1, the phase has a pedestrian detector call on it. When a bit = 0, the phase does not have a vehicle detector call on it. This does NOT cover recalls. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 9 }
+::= { TBD }
 
---5.2.4.10	Phase Status Group Phase Ons
-phaseStatusGroupPhaseOns   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase On Status Mask, when a bit = 1, the Phase is currently active. When a bit = 0, the Phase currently is NOT active. The phase is ON during the Green, Yellow, & Red Clearance intervals of that phase. It shall be permissible for this STATUS to be True (bit=1) during the Red Dwell state.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.10
+--Phase On Status
+phaseStatusOn    OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are currently active. When a bit = 1, the Phase is currently active. When a bit = 0, the Phase Green is NOT currently active. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 10 }
+::= { TBD }
  
---5.2.4.11	Phase Status Group Phase Nexts
-phaseStatusGroupPhaseNexts   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> Phase Next Status Mask, when a bit = 1, the Phase currently is committed to be NEXT in sequence & remains present until the phase becomes active (On/Timing). When a bit = 0, the Phase currently is NOT committed to be NEXT in sequence. The phase next to be serviced shall be determined at the end of the green interval of the terminating phase; except that if the decision cannot be made at the end of the Green interval, it shall not be made until after the end of all Vehicle Change & Clearance intervals.
-	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
-	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
-	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
-	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
-	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
-	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
-	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
-	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.11
+--Phase Next Status
+phaseStatusNext    OBJECT-TYPE
+SYNTAX 		ITSBitmap (SIZE (1..32))
+MAX-ACCESS 	read-only
+STATUS 		current
+DESCRIPTION 
+"<Definition> A bit map that defines what phases are set to be next. When a bit = 1, the phase currently is committed to be NEXT in sequence & remains present until the phase becomes active (On/Timing). When a bit = 0, the Phase Green is NOT currently active. Bit # = Phase # - 1
+<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
+<Object Identifier> TBD
 <Object Type> S"
-::= { phaseStatusGroupEntry 11 }
+::= { TBD }
 
 --5.2.5	Phase Control Table
 phaseControlGroupTable   OBJECT-TYPE
@@ -1019,6 +933,8 @@ DESCRIPTION "<Definition> The Maximum Number of Vehicle Detectors this Controlle
 <Object Type> S
 <Unit> detector"
 ::= { detector 1 }
+
+
 
 --5.3.2	Vehicle Detector Parameter Table
 vehicleDetectorTable   OBJECT-TYPE
@@ -3256,6 +3172,18 @@ DESCRIPTION "<Definition> The maximum number of Patterns this Controller Unit su
 <Unit> pattern"
 ::= { coord 5 }
 
+--5.5.5	Maximum Patterns Parameter
+maxPatterns   OBJECT-TYPE
+SYNTAX 		Integer32 (1..253)
+UNITS 		"patterns"
+MAX-ACCESS  	read-only
+STATUS      	current
+DESCRIPTION  
+"<Definition> The maximum number of Patterns this Controller Unit supports. This object indicates the maximum rows which shall appear in the patternTable object.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.5
+<Object Type> S"
+::= { coord 5 }
+
 --5.5.6	Pattern Table Type
 patternTableType   OBJECT-TYPE
 SYNTAX INTEGER { other (1),
@@ -3316,7 +3244,7 @@ DESCRIPTION "<Definition> The pattern number for objects in this row. This value
 
 --5.5.7.2	Pattern Cycle Time
 patternCycleTime   OBJECT-TYPE
-SYNTAX 		 Integer32 (0..510)
+SYNTAX 		 Integer32 (0..999)
 UNITS 		"seconds"
 MAX-Access 	read-create
 STATUS 		current
