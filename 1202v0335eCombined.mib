@@ -3269,7 +3269,7 @@ patterns (2),
 offset3 (3),
 offset5 (4) }
 ACCESS read-only
-STATUS mandatory
+STATUS deprecated
 DESCRIPTION "<Definition> This object provides information about any special organizational structure required for the pattern table. The defined structures are as follows:
 other: The pattern table setup is not described in this standard, refer to device manual.
 patterns: Each row of the pattern table represents a unique pattern and has no dependencies on other rows.
