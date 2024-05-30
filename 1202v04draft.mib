@@ -1,5 +1,7 @@
 --NOT A MIB TO BE COMPILED. THIS FILE IS ONLY USED TO COMPARE SMIv1 and SMIv2 Object Definition
 --changes from NTCIP 1202 v03 to v04
+
+---1202v0335e
 --*********************************************************************
 -- Filename:	1202v0335eCombined.MIB
 -- Description:	This MIB defines the Actuated Signal Controller (ASC) Objects
@@ -423,37 +425,29 @@ redClear: this phase initializes at the beginning of the Red Clearance interval.
 REFERENCE "NEMA TS 2 Clause 3.5.5.1 and 3.5.5.12"
 ::= { phaseEntry 20 }
 
---5.2.2.21	Phase Options 1202 v04
+--5.2.2.21	Phase Options
 phaseOptions   OBJECT-TYPE
-SYNTAX BITS {enablePhase (0)
-             flashEntryPhase(1)
-             flashExitPhase(2)
-             nonActuated1(3)
-             nonActuated2(4)
-             nonLockDetectorMemory(5)
-             pedRecall(6)
-             dualEntryPhase(7)
-             disableSimultaneousGap(8)
-             guaranteePassage(9)
-             actuatedRestInWalk(10)
-             conditionalServiceEnable(11)
-             addedInitialCalculation(12)}
-MAX-ACCESS  read-write
-STATUS      current
-DESCRIPTION 
-"<Definition> Optional phase functions ( 0 = False/
+SYNTAX INTEGER (0..65535)
+ACCESS read-write
+STATUS mandatory
+DESCRIPTION "<Definition>Optional phase functions ( 0 = False/
  Disabled, 1 = True/Enabled)
-Bit 12: AddedInitialCalculation - If set (1) the CU shall compare counts from all associated AddedInitial detectors and use the largest count value for the calculations. If clear (0) the CU shall sum all associated AddedInitial detector counts and use this sum for the calculations. The ability to modify the setting of this bit is optional.
-Bit 11: Conditional Service Enable - in multi-ring configurations when set to 1 causes a gapped/maxed phase to conditionally service a preceding actuated vehicle phase when sufficient time remains before max time out of the phase(s) not prepared to terminate. Support is optional.
+Bit 15: AddedInitialCalculation - If set (1) the CU shall compare counts from all associated AddedInitial detectors and use the largest count value for the calculations. If clear (0) the CU shall sum all associated AddedInitial detector counts and use this sum for the calculations. The ability to modify the setting of this bit is optional.
+Bit 14: Conditional Service Enable - in multi-ring configurations when set to 1 causes a gapped/maxed phase to conditionally service a preceding actuated vehicle phase when sufficient time remains before max time out of the phase(s) not prepared to terminate. Support is optional.
  	REFERENCE  NEMA TS 2 Clause 3.5.3.9
-Bit 10: Actuated Rest In Walk - when set to 1 causes an actuated phase to rest in Walk when there is no serviceable conflicting call at the end of Walk Timing. 
-Bit 9: Guaranteed Passage - when set to 1 enables an actuated phase operating in volume density mode (using gap reduction) to retain the right of way for the unexpired portion of the Passage time following the decision to terminate the green due to a reduced gap. Support is optional
-Bit 8: Simultaneous Gap Disable - in multi-ring configurations when set to 1 disables a gapped out phase from reverting to the extensible portion. Support is optional
+Bit 13: Actuated Rest In Walk - when set to 1 causes an actuated phase to rest in Walk when there is no serviceable conflicting call at the end of Walk Timing. 
+Bit 12: Guaranteed Passage - when set to 1 enables an actuated phase operating in volume density mode (using gap reduction) to retain the right of way for the unexpired portion of the Passage time following the decision to terminate the green due to a reduced gap. Support is optional
+Bit 11: Simultaneous Gap Disable - in multi-ring configurations when set to 1 disables a gapped out phase from reverting to the extensible portion. Support is optional
  	REFERENCE NEMA TS 2 Clause 3.5.5.3
-Bit 7: Dual Entry Phase - in multi-ring configurations when set to 1 causes the phase to become active upon entry into a concurrency group (crossing a barrier) when no calls exist in its ring within its concurrency group.
+Bit 10: Dual Entry Phase - in multi-ring configurations when set to 1 causes the phase to become active upon entry into a concurrency group (crossing a barrier) when no calls exist in its ring within its concurrency group.
  	REFERENCE NEMA TS 2 Clause 3.5.5.3
-Bit 6: Ped. Recall - when set to 1 causes a recurring pedestrian demand which shall function in the same manner as an external pedestrian call except that it shall not recycle the pedestrian service until a conflicting phase is serviced.
+Bit 9: Soft Vehicle Recall - when set to 1 causes a call on a phase when all conflicting phases are in green dwell or red dwell and there are no serviceable conflicting calls. Support is optional.
+Bit 8: Ped. Recall - when set to 1 causes a recurring pedestrian demand which shall function in the same manner as an external pedestrian call except that it shall not recycle the pedestrian service until a conflicting phase is serviced.
  	REFERENCE NEMA TS 2 Clause 3.5.3.7
+Bit 7: Max Vehicle Recall - when set to 1 causes a call on a phase such that the timing of the Green interval for that phase shall be extended to Maximum Green time.
+ 	REFERENCE NEMA TS 2 Clause 3.5.3.5
+Bit 6: Min. Vehicle Recall - when set to 1 causes recurring demand for vehicle service on the phase when that phase is not in its Green interval.
+ 	REFERENCE NEMA TS 2 Clause 3.5.3.6
 Bit 5: Non Lock Detector Memory - when set to 0 will cause the call to be locked at the beginning of the yellow interval. When set to 1 call locking will depend on the detectorOptions object.
  	REFERENCE NEMA TS 2 Clause 3.5.3.4
 Bit 4: Non-Actuated 2 - when set to 1 causes a phase to respond to the Call To Non-Actuated 2 input (if present) or other method. Support is optional
@@ -468,27 +462,6 @@ Bit 0: Enabled Phase - provide a means to define whether this phase is used in t
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.21
 <Object Type> P2"
 ::= { phaseEntry 21 }
-
-phaseVehicleRecall   OBJECT-TYPE --How recalls should be done in 1202 v04
-SYNTAX INTEGER {
-        none(1)
-        minRecall(2)
-        maxRecall(3)
-        softRecall(4)}
-MAX-ACCESS  read-write
-STATUS      current
-DESCRIPTION 
-"<Definition> Controls vehicle recall
-1: None - The phase can only be called by a vehicle detector or by a remote command. 
-2: Min. Vehicle Recall - causes recurring demand for vehicle service on the phase when that phase is not in its Green interval.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.6
-3: Max Vehicle Recall - causes a call on a phase such that the timing of the Green interval for that phase shall be extended to Maximum Green time.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.5
-4: Soft Vehicle Recall - causes a call on a phase when all conflicting phases are in green dwell or red dwell and there are no serviceable conflicting calls. Support is optional.
-<Object Identifier> TBD
-<Object Type> P"
-DEFVAL  {none}
-::= { phaseEntry x }
 
 --5.2.2.22	Phase Ring Parameter
 phaseRing   OBJECT-TYPE
@@ -639,126 +612,239 @@ DESCRIPTION "<Definition> This object indicates the alternate minimum green time
 DEFVAL { 0 }
 ::= { phaseEntry 34 }
 
+--5.2.3	Maximum Phase Groups
+maxPhaseGroups   OBJECT-TYPE
+SYNTAX INTEGER (1..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> The Maximum Number of Phase Groups (8 Phases per group) this Controller Unit supports. This value is equal to TRUNCATE [(maxPhases + 7) / 8]. This object indicates the maximum rows which shall appear in the phaseStatusGroupTable and phaseControlGroupTable.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.3
+<Object Type> S
+<Unit> group"
+::= { phase 3 }
 
---Phase Red Status
-phaseStatusRed    OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are currently red. When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Red is NOT currently active. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
-<Object Type> S"
-::= { TBD }
+--5.2.4	Phase Status Group Table
+phaseStatusGroupTable   OBJECT-TYPE
+SYNTAX SEQUENCE OF PhaseStatusGroupEntry
+ACCESS not-accessible
+STATUS mandatory
+DESCRIPTION "<Definition> A table containing Controller  Unit Phase Output (Red, Yellow, & Green) and Call (vehicle & pedestrian) status in groups of eight Phases. The number of rows in this table is equal to the maxPhaseGroups object.
+<TableType> static
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4"
+::= { phase 4 }
 
---Phase Yellow Status
-phaseStatusYellow    OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are currently yellow When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Yellow is NOT currently active. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
-<Object Type> S"
-::= { TBD }
-
---Phase Green Status
-phaseStatusGreen    OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are currently green. When a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Green is NOT currently active. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
-<Object Type> S"
-::= { TBD }
+phaseStatusGroupEntry   OBJECT-TYPE
+SYNTAX PhaseStatusGroupEntry
+ACCESS not-accessible
+STATUS mandatory
+DESCRIPTION "<Definition> Red, Yellow, & Green Output Status and Vehicle and Pedestrian Call for eight Controller Unit Phases. 
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1"
+INDEX   { phaseStatusGroupNumber }
+::= { phaseStatusGroupTable 1 }
  
---Phase Dont Walk Status
-phaseStatusDontWalk    OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are currently displaying Don't Walk. When a bit = 1, Don't Walk is shown for the phase. When a bit = 0, the phase is not in Don't Walk. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
-<Object Type> S"
-::= { TBD }
+PhaseStatusGroupEntry ::= SEQUENCE { 
+phaseStatusGroupNumber		INTEGER,
+phaseStatusGroupReds		INTEGER,
+phaseStatusGroupYellows		INTEGER,
+phaseStatusGroupGreens		INTEGER,
+phaseStatusGroupDontWalks	INTEGER,
+phaseStatusGroupPedClears	INTEGER,
+phaseStatusGroupWalks		INTEGER,
+phaseStatusGroupVehCalls	INTEGER,
+phaseStatusGroupPedCalls	INTEGER,
+phaseStatusGroupPhaseOns	INTEGER,
+phaseStatusGroupPhaseNexts	INTEGER }
 
---Phase Pedestrian Clear Status
-phaseStatusPedClear   OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are currently in the pedestrian clearance interval. When a bit = 1, the phase is in pedestrian clearance. When a bit = 0, the phase is not in pedestrian clearance. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
-<Object Type> S"
-::= { TBD }
- 
---Phase Walk Status
-phaseStatusWalk   OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are currently displaying Walk. When a bit = 1, the phase is showing Walk. When a bit = 0, the phase is not showing Walk. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
-<Object Type> S"
-::= { TBD }
+--5.2.4.1	Phase Status Group Number
+phaseStatusGroupNumber   OBJECT-TYPE
+	SYNTAX INTEGER (1..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> The Phase Status Group number for objects in this row. This value shall not exceed the maxPhaseGroups object value.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.1
+<Object Type> S
+	<Unit> group"
+::= { phaseStatusGroupEntry 1 }
 
---Phase Vehicle Call Status
-phaseStatusVehCalls   OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases currently have vehicle detector calls on them. When a bit = 1, the phase has a vehicle detector call on it. When a bit = 0, the phase does not have a vehicle detector call on it. This does NOT cover recalls. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
+--5.2.4.2	Phase Status Group Reds
+phaseStatusGroupReds   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Red Output Status Mask, when a bit = 1, the Phase Red is currently active. When a bit = 0, the Phase Red is NOT currently active.
+Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.2
 <Object Type> S"
-::= { TBD }
- 
---Phase Pedestrian Call Status
-phaseStatusPedCalls   OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases currently have pedestrian detector calls on them. When a bit = 1, the phase has a pedestrian detector call on it. When a bit = 0, the phase does not have a vehicle detector call on it. This does NOT cover recalls. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
-<Object Type> S"
-::= { TBD }
+::= { phaseStatusGroupEntry 2 }
 
---Phase On Status
-phaseStatusOn    OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are currently active. When a bit = 1, the Phase is currently active. When a bit = 0, the Phase Green is NOT currently active. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
+--5.2.4.3	Phase Status Group Yellows
+phaseStatusGroupYellows   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Yellow Output Status Mask, when a bit = 1, the Phase Yellow is currently active. When a  bit = 0, the Phase Yellow is NOT currently active.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.3
 <Object Type> S"
-::= { TBD }
+::= { phaseStatusGroupEntry 3 }
+
+--5.2.4.4	Phase Status Group Greens
+phaseStatusGroupGreens   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Green Output Status Mask, when a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Green is NOT currently active.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.4
+<Object Type> S"
+::= { phaseStatusGroupEntry 4 }
  
---Phase Next Status
-phaseStatusNext    OBJECT-TYPE
-SYNTAX 		ITSBitmap (SIZE (1..32))
-MAX-ACCESS 	read-only
-STATUS 		current
-DESCRIPTION 
-"<Definition> A bit map that defines what phases are set to be next. When a bit = 1, the phase currently is committed to be NEXT in sequence & remains present until the phase becomes active (On/Timing). When a bit = 0, the Phase Green is NOT currently active. Bit # = Phase # - 1
-<Informative> A string of octets that represents a string of bits with Bit 0 encoded in the high-order bit of the first octet with other bits appearing sequentially, as defined in ISO 26048-1.
-<Object Identifier> TBD
+--5.2.4.5	Phase Status Group Dont Walks
+phaseStatusGroupDontWalks   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Dont Walk Output Status Mask, when a bit = 1, the Phase Dont Walk is currently active. When a bit = 0, the Phase Dont Walk is NOT currently active.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.5
 <Object Type> S"
-::= { TBD }
+::= { phaseStatusGroupEntry 5 }
+
+--5.2.4.6	Phase Status Group Pedestrian Clears
+phaseStatusGroupPedClears   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Ped Clear Output Status Mask, when a bit = 1, the Phase Ped Clear is currently active. When a bit = 0, the Phase Ped Clear is NOT currently active.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.6
+<Object Type> S"
+::= { phaseStatusGroupEntry 6 }
+ 
+--5.2.4.7	Phase Status Group Walks
+phaseStatusGroupWalks   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Walk Output Status Mask, when a bit = 1, the Phase Walk is currently active. When a bit = 0, the Phase Walk is NOT currently active.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.7
+<Object Type> S"
+::= { phaseStatusGroupEntry 7 }
+
+--5.2.4.8	Phase Status Group Vehicle Calls
+phaseStatusGroupVehCalls   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Vehicle Call Status Mask, when a bit = 1, the Phase vehicle currently has a call for service. When a bit = 0, the Phase vehicle currently does NOT have a call for service.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.8
+<Object Type> S"
+::= { phaseStatusGroupEntry 8 }
+ 
+--5.2.4.9	Phase Status Group Pedestrian Calls
+phaseStatusGroupPedCalls   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Pedestrian Call Status Mask, when a bit = 1, the  Phase pedestrian currently has a call for service. When a bit = 0, the Phase pedestrian currently does NOT have a call for service.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.9
+<Object Type> S"
+::= { phaseStatusGroupEntry 9 }
+
+--5.2.4.10	Phase Status Group Phase Ons
+phaseStatusGroupPhaseOns   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase On Status Mask, when a bit = 1, the Phase is currently active. When a bit = 0, the Phase currently is NOT active. The phase is ON during the Green, Yellow, & Red Clearance intervals of that phase. It shall be permissible for this STATUS to be True (bit=1) during the Red Dwell state.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.10
+<Object Type> S"
+::= { phaseStatusGroupEntry 10 }
+ 
+--5.2.4.11	Phase Status Group Phase Nexts
+phaseStatusGroupPhaseNexts   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Phase Next Status Mask, when a bit = 1, the Phase currently is committed to be NEXT in sequence & remains present until the phase becomes active (On/Timing). When a bit = 0, the Phase currently is NOT committed to be NEXT in sequence. The phase next to be serviced shall be determined at the end of the green interval of the terminating phase; except that if the decision cannot be made at the end of the Green interval, it shall not be made until after the end of all Vehicle Change & Clearance intervals.
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
+	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
+	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
+	Bit 3: Phase # = (phaseStatusGroupNumber * 8) - 4
+	Bit 2: Phase # = (phaseStatusGroupNumber * 8) - 5
+	Bit 1: Phase # = (phaseStatusGroupNumber * 8) - 6
+	Bit 0: Phase # = (phaseStatusGroupNumber * 8) - 7
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.11
+<Object Type> S"
+::= { phaseStatusGroupEntry 11 }
 
 --5.2.5	Phase Control Table
 phaseControlGroupTable   OBJECT-TYPE
@@ -933,8 +1019,6 @@ DESCRIPTION "<Definition> The Maximum Number of Vehicle Detectors this Controlle
 <Object Type> S
 <Unit> detector"
 ::= { detector 1 }
-
-
 
 --5.3.2	Vehicle Detector Parameter Table
 vehicleDetectorTable   OBJECT-TYPE
@@ -2124,60 +2208,30 @@ preempt: the CU is currently timing the preempt Flash.
 <Object Type> S"
 ::= { unit 6 }
 
---5.4.7	Unit Alarm Status
-unitAlarmStatus   OBJECT-TYPE
-SYNTAX 		BITS {cycleFault(0),
-		coordFault(1),
-		coordFail(2),
-		cycleFail(3),
-		MMUFlash(4),
-		localFlash(5)
-		localFree(6)
-		coordActive(7)
-		powerRestart(8)
-		lowBattery(9)
-		responseFault(10)
-		externalStart(11)
-		stopTime(12)
-		offsetTransition(13)
-		stallCondition(14)
-		processFailure(15)
-		commTimeout(16)
-		CMULinkStatus(17)
-		UPSLinkStatus(18)
-		RSULinkStatus(19)
-		powerIssues(20)
-		CVCertificat(21)
-		memoryFault(22)
-		preemptMaxPresence(23)
-		cabinetEnvironmentalSensor(24)
-		clock(25)
-		scheduler(26)
-		USB(27)
-MAX-ACCESS 	read-only
-STATUS 		current
+--5.4.7	Unit Alarm Status 2
+unitAlarmStatus2   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
 DESCRIPTION "<Definition> Device Alarm Mask 2 ( 0 = False, 1 = True) as follows:
-Bit 27: USB = Whenever the CU detects a USB memory device.
-Bit 26: Scheduler = Whenever the CU is not implementing a scheduled pattern or scheduled action.
-Bit 25: Clock = Whenever the CU detects an error with the CU's internal clock.
-Bit 24: Cabinet Environmental Sensors = Whenever the cabinet environmental conditions measured by the CU exceeds the thresholds (e.g., temperature, humidity).
-Bit 23: Preempt Maximum Presence - Preempt maximum presence time exceeded
-Bit 22: Memory Fault = Whenever the CU detects a memory fault within the controller unit, such as in the firmware, a database or RAM.
-Bit 21: CV Certificate = Whenever the CU detects a fault related to invalid connected vehicle certificates.
-Bit 20: Power Issues = Whenever the CU detects power issues such as brown-outs or brief black outs but do not lead to a shutdown of the CU
-Bit 19: RSU Link Status = Whenever the CU is configured to communicate with a RSU but the communications link is failed (e.g., timeouts, errors).
-Bit 18: UPS Link Status = Whenever the CU is configured to communicate with a UPS but the communications link is failed (e.g., timeouts, errors).
-Bit 17: CMU Link Status = Whenever the CU is configured to communicate with CMU but the communication link is failed (e.g., timeouts, errors).
-Bit 16: Communications Timeout = Whenever the CU detects a communications timeout on an enabled communications port on the ASC.
-Once set, a bit shall maintain its state as long as the condition exists.
-Bit 15: Process Failure - Whenever the CU detects a process (task) failure.
-Bit 14: Stall Condition - Whenever the CU detects a watchdog condition on any 'critical' watchdog. A 'critical' watchdog timer is any timer for a process or service that may jeopardize the safe operation of the ASC.
-Bit 13: Offset Transitioning - Whenever the CU is performing an offset transition (correction in process)
-Bit 12: Stop Time - When either CU Stop Time Input becomes active.
-Bit 11: External Start - When the CU External Start becomes active.
-Bit 10: Response Fault - When any NEMA TS2 Port 1 response frame fault occurs.
-Bit 9: Low Battery - When any battery voltage falls below the required level.
-Bit 8: Power Restart - When power returns after a power interruption. Once set, a bit shall maintain its state as long as the condition exists. Bit 0 (Power Restart) status shall be maintained until a READ of this object occurs.
+Bit 7: Process Failure - Whenever the CU detects a process (task) failure.
+Bit 6: Stall Condition - Whenever the CU detects a watchdog condition on any 'critical' watchdog. A 'critical' watchdog timer is any timer for a process or service that may jeopardize the safe operation of the ASC.
+Bit 5: Offset Transitioning - Whenever the CU is performing an offset transition (correction in process)
+Bit 4: Stop Time - When either CU Stop Time Input becomes active.
+Bit 3: External Start - When the CU External Start becomes active.
+Bit 2: Response Fault - When any NEMA TS2 Port 1 response frame fault occurs.
+Bit 1: Low Battery - When any battery voltage falls below the required level.
+Bit 0: Power Restart - When power returns after a power interruption. Once set, a bit shall maintain its state as long as the condition exists. Bit 0 (Power Restart) status shall be maintained until a READ of this object occurs.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.7
+<Object Type> S"
+::= { unit 7 }
+
+--5.4.8	Unit Alarm Status 1
+unitAlarmStatus1   OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION "<Definition> Device Alarm Mask 1 ( 0 = False, 1 = True) as follows:
 Bit 7: CoordActive - When coordination is active and not preempted or overridden.
 Bit 6: Local Free - When any of the CU inputs and/or programming cause it not to run coordination.
 Bit 5: Local Flash - When the Controller Unit Local Flash input becomes active, MMU Flash input is not active, and Flash is not commanded by the system.
@@ -2185,10 +2239,11 @@ Bit 4: MMU Flash - When the Controller Unit MMU Flash input remains active for a
 Bit 3: Cycle Fail - When a local Controller Unit is operating in the non-coordinated mode, whether the result of a Cycle Fault or Free being the current normal mode, and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
 Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs again within two cycles of the coordination retry.
 Bit 1: Coord Fault - When a Cycle Fault is in effect and the serviceable call has been serviced within two cycles after the Cycle Fault.
-Bit 0: Cycle Fault - When the Controller Unit is operating in the coordinated mode and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.object occurs.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.7
+Bit 0: Cycle Fault - When the Controller Unit is operating in the coordinated mode and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
+Once set, a bit shall maintain its state as long as the condition exists.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.8
 <Object Type> S"
-::= { unit 7 }
+::= { unit 8 }
 
 --5.4.9	Short Alarm Status
 shortAlarmStatus OBJECT-TYPE
@@ -3084,6 +3139,45 @@ DESCRIPTION "<Definition> This object contains one of the object identifiers tha
 <Object Type> P"
 ::= { globalSetIdEntry 2 }
 
+--5.4.26	Unit Alarm Status 3
+unitAlarmStatus3 OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION
+"<Definition> Device Alarm Mask 3 ( 0 = False, 1 = True) as follows:
+Bit 7: Reserved
+Bit 6: Reserved
+Bit 5: CV Certificate = Whenever the CU detects a fault related to invalid connected vehicle certificates.
+Bit 4: Power Issues = Whenever the CU detects power issues such as brown-outs or brief black outs but do not lead to a shutdown of the CU
+Bit 3: RSU Link Status = Whenever the CU is configured to communicate with a RSU but the communications link is failed (e.g., timeouts, errors).
+Bit 2: UPS Link Status = Whenever the CU is configured to communicate with a UPS but the communications link is failed (e.g., timeouts, errors).
+Bit 1: CMU Link Status = Whenever the CU is configured to communicate with CMU but the communication link is failed (e.g., timeouts, errors).
+Bit 0: Communications Timeout = Whenever the CU detects a communications timeout on an enabled communications port on the ASC.
+Once set, a bit shall maintain its state as long as the condition exists.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.26
+<Object Type> S"
+::= { unit 26 }
+
+--5.4.27	Unit Alarm Status 4
+unitAlarmStatus4 OBJECT-TYPE
+SYNTAX INTEGER (0..255)
+ACCESS read-only
+STATUS mandatory
+DESCRIPTION
+"<Definition> Device Alarm Mask 4 ( 0 = False, 1 = True) as follows:
+Bit 7: Reserved
+Bit 6: Reserved
+Bit 5: USB = Whenever the CU detects a USB memory device.
+Bit 4: Scheduler = Whenever the CU is not implementing a scheduled pattern or scheduled action.
+Bit 3: Clock = Whenever the CU detects an error with the CU's internal clock.
+Bit 2: Cabinet Environmental Sensors = Whenever the cabinet environmental conditions measured by the CU exceeds the thresholds (e.g., temperature, humidity).
+Bit 1: Preempt Maximum Presence - Preempt maximum presence time exceeded
+Bit 0: Memory Fault = Whenever the CU detects a memory fault within the controller unit, such as in the firmware, a database or RAM.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.27
+<Object Type> S"
+::= { unit 27 }
+
 --5.5	Coordination Parameters
 coord OBJECT IDENTIFIER
 ::= { asc 4 }
@@ -3172,18 +3266,6 @@ DESCRIPTION "<Definition> The maximum number of Patterns this Controller Unit su
 <Unit> pattern"
 ::= { coord 5 }
 
---5.5.5	Maximum Patterns Parameter
-maxPatterns   OBJECT-TYPE
-SYNTAX 		Integer32 (1..253)
-UNITS 		"patterns"
-MAX-ACCESS  	read-only
-STATUS      	current
-DESCRIPTION  
-"<Definition> The maximum number of Patterns this Controller Unit supports. This object indicates the maximum rows which shall appear in the patternTable object.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.5
-<Object Type> S"
-::= { coord 5 }
-
 --5.5.6	Pattern Table Type
 patternTableType   OBJECT-TYPE
 SYNTAX INTEGER { other (1),
@@ -3205,84 +3287,85 @@ REFERENCE "NEMA TS 2 Clause 3.6.2.1 and 3.6.2.2"
 --5.5.7	Pattern Table
 patternTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF PatternEntry
-MAX-ACCESS not-accessible
-STATUS current
+ACCESS not-accessible
+STATUS mandatory
 DESCRIPTION "<Definition> A table containing Actuated Controller Unit coordination Pattern parameters. The number of rows in this table is equal to the maxPatterns object.
-<TableType> dynamic
+<TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7"
 ::= { coord 7 }
 
 patternEntry   OBJECT-TYPE
 SYNTAX PatternEntry
-MAX-ACCESS not-accessible
-STATUS current
+ACCESS not-accessible
+STATUS mandatory
 DESCRIPTION "<Definition> Parameters for a specific Actuated Controller Unit pattern.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1"
 INDEX   { patternNumber }
 ::= { patternTable 1 }
 
 PatternEntry ::= SEQUENCE {
-patternNumber		Integer32,
-patternCycleTime	Integer32,
-patternOffsetTime	Integer32,
-patternSplitNumber	Integer32,
-patternSequenceNumber	Integer32,
-patternCoordSyncPoint	Integer32,
-patternOptions		Integer32,
-patternSpatEnabledLanes	OCTET STRING, --deprecrated
-patternRowStatus	RowStatus} 
+patternNumber	INTEGER,
+patternCycleTime	INTEGER,
+patternOffsetTime	INTEGER,
+patternSplitNumber	INTEGER,
+patternSequenceNumber	INTEGER,
+patternCoordSyncPoint	INTEGER,
+patternOptions		INTEGER,
+patternSpatEnabledLanes	OCTET STRING } --deprecrated
 
 --5.5.7.1	Pattern Number Entry
 patternNumber   OBJECT-TYPE
-SYNTAX 		Integer32 (1..253)
-MAX-ACCESS 	not-accessible
-STATUS 		current
+SYNTAX INTEGER (1..253)
+ACCESS read-only
+STATUS mandatory
 DESCRIPTION "<Definition> The pattern number for objects in this row. This value shall not exceed the maxPatterns object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.1
 <Object Type> S
+<Unit> pattern"
 ::= { patternEntry 1 }
 
 --5.5.7.2	Pattern Cycle Time
 patternCycleTime   OBJECT-TYPE
-SYNTAX 		 Integer32 (0..999)
-UNITS 		"seconds"
-MAX-Access 	read-create
-STATUS 		current
+SYNTAX INTEGER (0..255)
+ACCESS read-write
+STATUS mandatory
 DESCRIPTION "<Definition> The patternCycleTime object specifies the length of the pattern cycle in seconds (NEMA TS 2 range: 30-255). A pattern cycle time less than adequate to service the minimum requirements of all phases shall result in Free mode. While this condition exists, the Local Free bit of unitAlarmStatus1 and the Local Override bit of shortAlarmStatus shall be set to one (1). 
 
 The minimum requirements of a phase with a not-actuated ped include Minimum Green, Walk, Pedestrian Clear, Yellow Clearance, and Red Clearance; the minimum requirements of a phase with an actuated pedestrian include Minimum Green, Yellow Clearance, and Red Clearance. If the pattern cycle time is zero and the associated split table (if any) contains values greater than zero, then the CU shall utilize the split time values as maximum values for each phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.2
-<Object Type> P"
+<Object Type> P
+<Unit> second"
 REFERENCE "NEMA TS 2 Clause 3.6.2.1.1"
 ::= { patternEntry 2 }
  
 --5.5.7.3	Pattern Offset Time Parameter
 patternOffsetTime   OBJECT-TYPE
-SYNTAX Integer32 (0..255)
-UNITS 		"seconds"
-MAX-ACCESS 	read-create
-STATUS 		current
+SYNTAX INTEGER (0..255)
+ACCESS read-write
+STATUS mandatory
 DESCRIPTION "<Definition> The patternOffsetTime defines by how many seconds (NEMA TS 2 range: 0-254) the local time zero shall lag the system time zero (synchronization pulse) for this pattern. An offset value equal to or greater than the patternCycleTime shall result in Free being the operational mode. While this condition  exists, the Local Free bit of unitAlarmStatus1 and the LocalOverride bit of shortAlarmStatus shall be set to one (1).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.3
-<Object Type> P"
+<Object Type> P
+<Unit> second"
 REFERENCE "NEMA TS 2 Clause 3.6.2.2"
 ::= { patternEntry 3 }
 
 --5.5.7.4	Pattern Split Number Parameter
 patternSplitNumber   OBJECT-TYPE
-SYNTAX Integer32 (1..255)
-MAX-ACCESS 	read-create
-STATUS 		current
+SYNTAX INTEGER (1..255)
+ACCESS read-write
+STATUS mandatory
 DESCRIPTION "<Definition> This object is used to locate information in the splitTable to use for this pattern. This value shall not exceed the maxSplits object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.4
-<Object Type> P"
+<Object Type> P
+<Unit> split"
 ::= { patternEntry 4 }
 
 --5.5.7.5	Pattern Sequence Number Parameter
 patternSequenceNumber   OBJECT-TYPE
-SYNTAX Integer32 (1..255)
-MAX-ACCESS 	read-create
-STATUS 		current
+SYNTAX INTEGER (1..255)
+ACCESS read-write
+STATUS mandatory
 DESCRIPTION "<Definition> This object is used to locate information in the sequenceTable to use with this pattern. This value shall not exceed the maxSequences object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.5
 <Object Type> P
@@ -3293,14 +3376,14 @@ DESCRIPTION "<Definition> This object is used to locate information in the seque
 patternCoordSyncPoint OBJECT-TYPE
 SYNTAX INTEGER { other (1),
 	unitCoordSyncPoint (2),
-	firstCoordPhsGrnBegin (3),
-	lastCoordPhsGrnBegin (4),
-	firstCoordPhsGrnEnd (5),
-	lastCoordPhsGrnEnd (6),
-	firstCoordPhsYelEnd (7),
-	lastCoordPhsYelEnd (8) }
-MAX-ACCESS 	read-create
-STATUS 		current
+firstCoordPhsGrnBegin (3),
+lastCoordPhsGrnBegin (4),
+firstCoordPhsGrnEnd (5),
+lastCoordPhsGrnEnd (6),
+firstCoordPhsYelEnd (7),
+lastCoordPhsYelEnd (8) }
+ACCESS read-write
+STATUS mandatory
 DESCRIPTION "<Definition> This object is used to indicate the location of the system reference point for this pattern. The valid coordination sync points are:
 other: the coordination sync point is not described in this standard
 unitCoordSyncPoint: the coordination point is defined by unitCoordSyncPoint.
@@ -3318,13 +3401,13 @@ DEFVAL { firstCoordPhsGrnBegin }
 --5.5.7.7	Pattern Options
 patternOptions   OBJECT-TYPE
 SYNTAX INTEGER { other (1),
-		coordMaximumMode (2),
-		maxInhibit (3),
-		maximum1 (4),
-		maximum2 (5),
-		maximum3 (6) }
-MAX-ACCESS 	read-create
-STATUS 		current
+coordMaximumMode (2),
+	maxInhibit (3),
+maximum1 (4),
+maximum2 (5),
+maximum3 (6) }
+ ACCESS read-write
+STATUS mandatory
 DESCRIPTION "<Definition> This object represents the maximum mode to be used for the pattern. The valid maximum modes are:
 other: the maximum mode is determined by some other mechanism not defined in this standard.
 coordMaximumMode: use the maximum mode defined by the coordMaximumMode object.
@@ -3345,15 +3428,6 @@ DESCRIPTION "<Definition> Each octet in this octet string represents the index o
 	Each indexed lane should have its revocable Lane bit set (Bit 0 set to (1) in the mapLaneAttribute object).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.8"
 ::= { patternEntry 8 }
-
---5.5.7.8	Pattern Status
-patternRowStatus   OBJECT-TYPE
-SYNTAX   	RowStatus
-MAX-ACCESS 	read-create
-STATUS   	current
-DESCRIPTION "<Definition> Dynamic table row status entry: active(1),notInService(2),notReady(3),createAndGo(4),createAndWait(5),destroy(6)
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.9"
-::= { patternEntry 9 }
 
 --5.5.8	Maximum Splits
 maxSplits   OBJECT-TYPE
