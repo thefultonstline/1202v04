@@ -391,15 +391,7 @@ phaseDynamicMaxStep   OBJECT-TYPE
 SYNTAX INTEGER (0..255)
 ACCESS read-write
 STATUS mandatory
-DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth seconds (0-25.5)
-
- 	When a phase maxes out twice in a row, and on each successive max out thereafter, one dynamic max step value shall be added to the running max until such addition would mean the running max was greater than the larger of normal max or dynamic max limit.
-
-When a phase gaps out twice in a row, and on each successive gap out thereafter, one dynamic max step value shall be subtracted from the running max until such subtraction would mean the running max was less than the smaller of the normal max or the dynamic max limit.
-
- 	If a phase gaps out in one cycle and maxes out in the next cycle, or vice versa, the running max will not change.
-
-	When an ASC decides to adjust the runnning max for the phase, one dynamic max value shall be added or subtracted to the running max per cycle. 
+DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth seconds (0-25.5). When an ASC decides to adjust the runnning max for the phase, one dynamic max value shall be added or subtracted to the running max per cycle. 
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.19
 <Object Type> P
 <Unit> tenth second"
