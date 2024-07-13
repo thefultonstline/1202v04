@@ -225,7 +225,7 @@ REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.a.(2)"
 
 --5.2.2.6	Phase Maximum Green 1 Parameter
 phaseMaximum1   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
+SYNTAX INTEGER (0..255)--RAISE TO 999 IN NEW TABLE
 ACCESS read-write
 STATUS mandatory
 DESCRIPTION "<Definition> Phase Maximum 1 Parameter in seconds (NEMA TS 2 range: 1-255 sec). This time setting shall determine the maximum length of time this phase may be held in Green in the presence of a serviceable conflicting call. In the absence of a  serviceable conflicting call the Maximum Green timer shall be held reset unless Max Vehicle Recall is enabled for this phase. This is the default maximum value to use. It may be overridden via an external input, coordMaximumMode or other method.
@@ -237,7 +237,7 @@ REFERENCE "NEMA TS 2 Clause 3.5.3.1, 3.5.3.2.1.a.(3) and 3.5.3.5"
 
 --5.2.2.7	Phase Maximum Green 2 Parameter
 phaseMaximum2   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
+SYNTAX INTEGER (0..255)--RAISE TO 999 IN NEW TABLE
 ACCESS read-write
 STATUS mandatory
 DESCRIPTION "<Definition> Phase Maximum 2 Parameter in seconds (NEMA TS 2 range: 1-255 sec). This time setting shall determine the maximum length of time this phase may be held in Green in the presence of a serviceable conflicting call. In the absence of a serviceable conflicting call the Maximum Green timer shall be  held reset unless Max Vehicle Recall is enabled for this phase. This may be implemented as the max green timer via an external input, coordMaximumMode or other method.
@@ -389,7 +389,9 @@ phaseDynamicMaxStep   OBJECT-TYPE
 SYNTAX INTEGER (0..255)
 ACCESS read-write
 STATUS mandatory
-DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth seconds (0-25.5)
+DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth seconds (0-25.5).
+
+--REPLACE THE FOLLOWING WITH THIS IN NEW TABLE: This object shall determine the automatic adjustment to the running max in tenth seconds (0-25.5). When an ASC decides to adjust the runnning max for the phase, one dynamic max value shall be added or subtracted to the running max per cycle.
 
  	When a phase maxes out twice in a row, and on each successive max out thereafter, one dynamic max step value shall be added to the running max until such addition would mean the running max was greater than the larger of normal max or dynamic max limit.
 
@@ -484,7 +486,7 @@ DESCRIPTION "<Definition>Each octet contains a phase number (binary value) that 
 
 --5.2.2.24	Phase Maximum Green 3 Parameter
 phaseMaximum3  OBJECT-TYPE
-SYNTAX INTEGER (0..6000)
+SYNTAX INTEGER (0..6000)--CHANGE TO 999 IN NEW TABLE
 ACCESS read-write
 STATUS mandatory
 DESCRIPTION "<Definition> Phase Maximum 3 Parameter in seconds. This time setting shall determine the maximum length of time this phase may be held in Green in the presence of a serviceable conflicting call. In the absence of a serviceable conflicting call the Maximum Green timer shall be held reset unless Max Vehicle Recall is enabled for this phase. This may be implemented as the max green timer via an external input, coordMaximumMode or other method.
@@ -3271,7 +3273,7 @@ patterns (2),
 offset3 (3),
 offset5 (4) }
 ACCESS read-only
-STATUS mandatory
+STATUS deprecated
 DESCRIPTION "<Definition> This object provides information about any special organizational structure required for the pattern table. The defined structures are as follows:
 other: The pattern table setup is not described in this standard, refer to device manual.
 patterns: Each row of the pattern table represents a unique pattern and has no dependencies on other rows.
