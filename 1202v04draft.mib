@@ -3257,13 +3257,13 @@ fixed: each non-coord phase will be forced at a fixed position in the cycle. Thi
 
 --5.5.5	Maximum Patterns Parameter
 maxPatterns   OBJECT-TYPE
-SYNTAX INTEGER (1..253)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..253)
+UNITS	"patterns"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The maximum number of Patterns this Controller Unit supports. This object indicates how many rows are in the patternTable object (254 and 255 are defined as non-pattern Status for Free and Flash).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.5
-<Object Type> S
-<Unit> pattern"
+<Object Type> S"
 ::= { coord 5 }
 
 --5.5.6	Pattern Table Type
@@ -3286,9 +3286,9 @@ REFERENCE "NEMA TS 2 Clause 3.6.2.1 and 3.6.2.2"
 
 --5.5.7	Pattern Table
 patternTable   OBJECT-TYPE
-SYNTAX SEQUENCE OF PatternEntry
-ACCESS not-accessible
-STATUS mandatory
+SYNTAX 	SEQUENCE OF PatternEntry
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Actuated Controller Unit coordination Pattern parameters. The number of rows in this table is equal to the maxPatterns object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7"
@@ -3296,94 +3296,95 @@ DESCRIPTION "<Definition> A table containing Actuated Controller Unit coordinati
 
 patternEntry   OBJECT-TYPE
 SYNTAX PatternEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Parameters for a specific Actuated Controller Unit pattern.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1"
 INDEX   { patternNumber }
 ::= { patternTable 1 }
 
 PatternEntry ::= SEQUENCE {
-patternNumber	INTEGER,
-patternCycleTime	INTEGER,
-patternOffsetTime	INTEGER,
-patternSplitNumber	INTEGER,
-patternSequenceNumber	INTEGER,
-patternCoordSyncPoint	INTEGER,
-patternOptions		INTEGER,
-patternSpatEnabledLanes	OCTET STRING } --deprecrated
+patternNumber		Integer32,
+patternCycleTime	Integer32,
+patternOffsetTime	Integer32,
+patternSplitNumber	Integer32,
+patternSequenceNumber	Integer32,
+patternCoordSyncPoint	Integer32,
+patternOptions		Integer32,
+patternSpatEnabledLanes	OCTET STRING --deprecrated
+} 
 
 --5.5.7.1	Pattern Number Entry
 patternNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..253)
-ACCESS read-only
-STATUS mandatory
+SYNTAX 	Integer32 (1..253)
+UNITS	"pattern"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The pattern number for objects in this row. This value shall not exceed the maxPatterns object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.1
-<Object Type> S
-<Unit> pattern"
+<Object Type> S"
 ::= { patternEntry 1 }
 
 --5.5.7.2	Pattern Cycle Time
 patternCycleTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..999)
+UNITS "second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The patternCycleTime object specifies the length of the pattern cycle in seconds (NEMA TS 2 range: 30-255). A pattern cycle time less than adequate to service the minimum requirements of all phases shall result in Free mode. While this condition exists, the Local Free bit of unitAlarmStatus1 and the Local Override bit of shortAlarmStatus shall be set to one (1). 
 
 The minimum requirements of a phase with a not-actuated ped include Minimum Green, Walk, Pedestrian Clear, Yellow Clearance, and Red Clearance; the minimum requirements of a phase with an actuated pedestrian include Minimum Green, Yellow Clearance, and Red Clearance. If the pattern cycle time is zero and the associated split table (if any) contains values greater than zero, then the CU shall utilize the split time values as maximum values for each phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.2
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.6.2.1.1"
 ::= { patternEntry 2 }
  
 --5.5.7.3	Pattern Offset Time Parameter
 patternOffsetTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..999)
+UNITS "second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The patternOffsetTime defines by how many seconds (NEMA TS 2 range: 0-254) the local time zero shall lag the system time zero (synchronization pulse) for this pattern. An offset value equal to or greater than the patternCycleTime shall result in Free being the operational mode. While this condition  exists, the Local Free bit of unitAlarmStatus1 and the LocalOverride bit of shortAlarmStatus shall be set to one (1).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.3
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.6.2.2"
 ::= { patternEntry 3 }
 
 --5.5.7.4	Pattern Split Number Parameter
 patternSplitNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS	"split"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object is used to locate information in the splitTable to use for this pattern. This value shall not exceed the maxSplits object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.4
-<Object Type> P
-<Unit> split"
+<Object Type> P"
 ::= { patternEntry 4 }
 
 --5.5.7.5	Pattern Sequence Number Parameter
 patternSequenceNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS "sequence"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object is used to locate information in the sequenceTable to use with this pattern. This value shall not exceed the maxSequences object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.5
-<Object Type> P
-<Unit> sequence"
+<Object Type> P"
 ::= { patternEntry 5 }
 
 --5.5.7.6	Pattern Coordination Sync Point
-patternCoordSyncPoint OBJECT-TYPE
+patternCoordSyncPoint OBJECT-TYPE --add language clarifying these terms
 SYNTAX INTEGER { other (1),
 	unitCoordSyncPoint (2),
-firstCoordPhsGrnBegin (3),
-lastCoordPhsGrnBegin (4),
-firstCoordPhsGrnEnd (5),
-lastCoordPhsGrnEnd (6),
-firstCoordPhsYelEnd (7),
-lastCoordPhsYelEnd (8) }
-ACCESS read-write
-STATUS mandatory
+	firstCoordPhsGrnBegin (3),
+	lastCoordPhsGrnBegin (4),
+	firstCoordPhsGrnEnd (5),
+	lastCoordPhsGrnEnd (6),
+	firstCoordPhsYelEnd (7),
+	lastCoordPhsYelEnd (8) }
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object is used to indicate the location of the system reference point for this pattern. The valid coordination sync points are:
 other: the coordination sync point is not described in this standard
 unitCoordSyncPoint: the coordination point is defined by unitCoordSyncPoint.
@@ -3401,13 +3402,13 @@ DEFVAL { firstCoordPhsGrnBegin }
 --5.5.7.7	Pattern Options
 patternOptions   OBJECT-TYPE
 SYNTAX INTEGER { other (1),
-coordMaximumMode (2),
-	maxInhibit (3),
-maximum1 (4),
-maximum2 (5),
-maximum3 (6) }
- ACCESS read-write
-STATUS mandatory
+		coordMaximumMode (2),
+		maxInhibit (3),
+		maximum1 (4),
+		maximum2 (5),
+		maximum3 (6) }
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object represents the maximum mode to be used for the pattern. The valid maximum modes are:
 other: the maximum mode is determined by some other mechanism not defined in this standard.
 coordMaximumMode: use the maximum mode defined by the coordMaximumMode object.
@@ -3431,20 +3432,20 @@ DESCRIPTION "<Definition> Each octet in this octet string represents the index o
 
 --5.5.8	Maximum Splits
 maxSplits   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
+SYNTAX Integer32 (1..255)
+UNITS	"split"
 ACCESS read-only
-STATUS mandatory
+STATUS current
 DESCRIPTION "<Definition> The maximum number of Split Plans this Actuated Controller Unit supports. This object indicates how many Split plans are in the splitTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.8
-<Object Type> S
-<Unit> split"
+<Object Type> S"
 ::= { coord 8 }
 
 --5.5.9	Split Table
 splitTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF SplitEntry
 ACCESS not-accessible
-STATUS mandatory
+STATUS current
 DESCRIPTION "<Definition> A table containing Actuated Controller Unit coordination split parameters. The number of rows in this table is equal to maxSplits.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.9"
@@ -3460,45 +3461,46 @@ INDEX   { splitNumber, splitPhase }
 ::= { splitTable 1 }
 
 SplitEntry ::= SEQUENCE {
-splitNumber	INTEGER,
-splitPhase	INTEGER,
-splitTime	INTEGER,
+splitNumber	Integer32,
+splitPhase	Integer32,
+splitTime	Integer32,
 splitMode	INTEGER,
 splitCoordPhase	INTEGER,
-splitOptions	INTEGER }
+splitOptions	Integer32 }
 
 --5.5.9.1	Split Number
 splitNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS	"split"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The object defines which rows of the split table comprise a split group. All rows that have the same splitNumber are in the same split group. The value of this object shall not exceed the maxSplits object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.9.1.1
-<Object Type> S
-<Unit> split"
+<Object Type> S"
 ::= { splitEntry 1 }
 
 --5.5.9.2	Split Phase Number
 splitPhase   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS "phase"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The phase number for objects in this row. The value of this object shall not exceed the maxPhases object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.9.1.2
-<Object Type> S
-<Unit> phase"
+<Object Type> S"
 ::= { splitEntry 2 }
 
 --5.5.9.3	Split Time Parameter
 splitTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..999)
+UNITS "second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The time in seconds the splitPhase is allowed to receive (i.e. before a Force Off is applied) when constant demands exist on all phases. In floating coordForceMode, this is always the maximum time a non-coordinated phase is allowed to receive. In fixed coordForceMode, the actual allowed time may be longer if a previous phase gapped out.
 
 The splitTime includes all phase clearance times for the associated phase. The split time shall be longer than the sum of the phase minimum service requirements for the phase. When the time is NOT adequate to service the minimum service requirements of the phase, Free Mode shall be the result. The minimum requirements of a phase with a not-actuated ped include Minimum Green, Walk, Pedestrian Clear, Yellow Clearance, and Red Clearance; the minimum requirements of a phase with an actuated pedestrian include Minimum Green, Yellow Clearance, and Red Clearance.
 
- 	If the cycleTime entry of the associated patternTable entry is zero (i.e. the device is in Free Mode), then the value of this object shall be applied, if non-zero, as a maximum time for the associated phase.
+ If the cycleTime entry of the associated patternTable entry is zero (i.e. the device is in Free Mode), then the value of this object shall be applied, if non-zero, as a maximum time for the associated phase.
 
 If the critical path through the phase diagram is less than the cycleTime entry of the associated patternTable entry, all extra time is allotted to the coordination phase in each ring.
 
@@ -3506,23 +3508,22 @@ If the critical path through the phase diagram is greater than the cycleTime ent
 
 While the Free Mode condition exists, the Local Override bit of shortAlarm shall be set to one (1).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.9.1.3 
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.6.2.1.2"
 ::= { splitEntry 3 }
 
 --5.5.9.4	Split Mode Parameter
 splitMode   OBJECT-TYPE
 SYNTAX INTEGER { other(1),
-none (2),
-minimumVehicleRecall (3),
-maximumVehicleRecall (4),
-pedestrianRecall (5),
-maximumVehicleAndPedestrianRecall (6),
-phaseOmitted (7),
-nonActuated (8) }
-ACCESS read-write
-STATUS mandatory
+		none (2),
+		minimumVehicleRecall (3),
+		maximumVehicleRecall (4),
+		pedestrianRecall (5),
+		maximumVehicleAndPedestrianRecall (6),
+		phaseOmitted (7),
+		nonActuated (8) }
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object defines operational characteristics of the phase. The following options are available:
 other: the operation is not specified in this standard
 none: no split mode control.
@@ -3537,7 +3538,7 @@ nonActuated: this phase operates with a fixed split time.
 ::= { splitEntry 4 }
 
 --5.5.9.5	Split Coordinated Phase
-splitCoordPhase  OBJECT-TYPE
+splitCoordPhase  OBJECT-TYPE --make this an enumeration?
 SYNTAX INTEGER (0..1)
 ACCESS read-write
 STATUS mandatory
@@ -3547,11 +3548,11 @@ DESCRIPTION "<Definition> To select the associated phase as a coordinated phase 
 
 --5.5.9.6	Split Options
 splitOptions OBJECT-TYPE
-SYNTAX INTEGER (0..255)
+SYNTAX Integer32 (0..255)
 ACCESS read-write
-STATUS mandatory
+STATUS current
 DESCRIPTION "<Definition> Optional split functions (0 = False/Disabled, 1 = True/Enabled).
-	Bit 7: Reserved
+Bit 7: Reserved
 Bit 6: Reserved
 Bit 5: Reserved
 Bit 4: Reserved
@@ -4851,20 +4852,20 @@ channel OBJECT IDENTIFIER
 
 --5.9.1	Maximum Channels
 maxChannels   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS	"channel"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The Maximum Number of Channels this Actuated Controller Unit supports. This object indicates the maximum rows which shall appear in the channelTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.1
-<Object Type> S
-<Unit> channel"
+<Object Type> S"
 ::= { channel 1 }
 
 --5.9.2	Channel Table
 channelTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF ChannelEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Actuated Controller Unit channel parameters. The number of rows in this table is equal to the maxChannels object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.2"
@@ -4872,39 +4873,40 @@ DESCRIPTION "<Definition> A table containing Actuated Controller Unit channel pa
 
 channelEntry   OBJECT-TYPE
 SYNTAX ChannelEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Parameters for a specific Actuated Controller Unit channel.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.2.1"
 INDEX   { channelNumber }
 ::= { channelTable 1 }
 
 ChannelEntry ::= SEQUENCE { 
-channelNumber	INTEGER,
-channelControlSource	INTEGER,
+channelNumber		Integer32,
+channelControlSource	Integer32,
 channelControlType	INTEGER,
-channelFlash	INTEGER,
-channelDim		INTEGER,
-channelGreenType	INTEGER,
-channelGreenIncluded	OCTET STRING,
-channelIntersectionId	INTEGER }
+channelFlash		Integer32,
+channelDim		INTEGER, --deprecated
+channelGreenType	INTEGER, --deprecated
+channelGreenIncluded	OCTET STRING, --deprecated
+channelIntersectionId	INTEGER --deprecated
+}
 
 --5.9.2.1	Channel Number
 channelNumber   OBJECT-TYPE
 SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+UNITS	"channel"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The channel number for objects in this row. This value shall not exceed the maxChannels object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.2.1.1
-<Object Type> S
-<Unit> channel"
+<Object Type> S"
 ::= { channelEntry 1 }
 
 --5.9.2.2	Channel Control Source Parameter
 channelControlSource   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object defines the channel control source (which Phase or Overlap). The value shall not exceed maxPhases or maxOverlaps as determined by channelControlType object:
 Value 00 = No Control (Not In Use)
 Value 01 = Phase 01 or Overlap A
@@ -4920,29 +4922,29 @@ etc.
 --5.9.2.3	Channel Control Type Parameter
 channelControlType   OBJECT-TYPE
 SYNTAX INTEGER { other (1),
-phaseVehicle (2),
-phasePedestrian (3),
-overlap (4),
-pedOverlap (5),
-queueJump (6) }
-ACCESS read-write
-STATUS mandatory
+		phaseVehicle (2),
+		phasePedestrian (3),
+		overlap (4),
+		pedOverlap (5),
+		queueJump (6) }
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object defines the channel control type (Vehicle Phase, Pedestrian Phase, or Overlap):
 other: The channel controls an other type of display.
 phaseVehicle: The channel controls a vehicle phase display. Also valid for bicycle phases and transit phases.
 phasePedestrian: The channel controls a pedestrian phase display.
 overlap: The channel controls an overlap display, which might include flashing yellow arrows, flashing red arrows, vehicle overlaps, bicycle overlaps and transit overlaps.
 pedOverlap: The channel controls an overlap for pedestrian display.
-queueJump: The channel controls a queue jump display typically used for transit priority
+queueJump: The channel controls a queue jump display typically used for transit priority.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.2.1.3
 <Object Type> P"
 ::= { channelEntry 3 }
 
 --5.9.2.4	Channel Flash Parameter
 channelFlash   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-write
+STATUS	currrent
 DESCRIPTION "<Definition> This object defines the channel state during Automatic Flash. 
 Bit 7: Reserved
 Bit 6: Reserved
@@ -4964,7 +4966,7 @@ A SET of both bits 1 & 2 shall result in bit 1=0 and bit 2=1. A SET of a 'reserv
 channelDim   OBJECT-TYPE
 SYNTAX INTEGER (0..255)
 ACCESS read-write
-STATUS mandatory
+STATUS deprecated
 DESCRIPTION "<Definition> This object defines the channel state during Dimming. Dimming shall be accomplished by the elimination of alternate one-half segments from the AC sinusoid applied to the field terminals. 
 Bit 7: Reserved
 Bit 6: Reserved
