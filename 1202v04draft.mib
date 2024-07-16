@@ -3304,14 +3304,17 @@ INDEX   { patternNumber }
 ::= { patternTable 1 }
 
 PatternEntry ::= SEQUENCE {
-patternNumber		Integer32,
-patternCycleTime	Integer32,
-patternOffsetTime	Integer32,
-patternSplitNumber	Integer32,
-patternSequenceNumber	Integer32,
-patternCoordSyncPoint	Integer32,
-patternOptions		Integer32,
-patternSpatEnabledLanes	OCTET STRING --deprecrated
+patternNumber			Integer32,
+patternCycleTime		Integer32,
+patternOffsetTime		Integer32,
+patternSplitNumber		Integer32,
+patternSequenceNumber		Integer32,
+patternCoordSyncPoint		Integer32,
+patternOptions			Integer32,
+patternSpatEnabledLanes		OCTET STRING --deprecrated
+patternPhaseSet			Integer32,
+patternOverlapSet		Integer32,
+patternVehicleDetectorSet	Integer32
 } 
 
 --5.5.7.1	Pattern Number Entry
@@ -3429,6 +3432,39 @@ DESCRIPTION "<Definition> Each octet in this octet string represents the index o
 	Each indexed lane should have its revocable Lane bit set (Bit 0 set to (1) in the mapLaneAttribute object).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.8"
 ::= { patternEntry 8 }
+
+--5.5.7.9	Pattern Phase Set Number Parameter
+patternPhaseSet  OBJECT-TYPE
+SYNTAX Integer32 (1..255)
+UNITS "phase"
+MAX-ACCESS read-write
+STATUS current
+DESCRIPTION "<Definition> This object is used to identify the phase set to be used with this pattern. This value shall not exceed the maxPhases object value.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.9
+<Object Type> P"
+::= { patternEntry 9 }
+
+--5.5.7.10	Pattern Overlap Set Number Parameter
+patternOverlapSet   OBJECT-TYPE
+SYNTAX Integer32 (1..255)
+UNITS "overlap"
+MAX-ACCESS read-write
+STATUS current
+DESCRIPTION "<Definition> This object is used to identify the overlap set to be used with this pattern. This value shall not exceed the maxOverlaps object value.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.10
+<Object Type> P"
+::= { patternEntry 10 }
+
+--5.5.7.11	Pattern Vehicle Detector Set Number Parameter
+patternVehicleDetectorSet   OBJECT-TYPE
+SYNTAX Integer32 (1..255)
+UNITS "detector"
+MAX-ACCESS read-write
+STATUS current
+DESCRIPTION "<Definition> This object is used to identify the vehicle detector set to be used with this pattern. This value shall not exceed the maxVehicleDetectors object value.
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.11
+<Object Type> P"
+::= { patternEntry 11 }
 
 --5.5.8	Maximum Splits
 maxSplits   OBJECT-TYPE
