@@ -620,7 +620,7 @@ MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> The Maximum Number of Phase Groups (8 Phases per group) this Controller Unit supports. This value is equal to TRUNCATE [(maxPhases + 7) / 8]. This object indicates the maximum rows which shall appear in the phaseStatusGroupTable and phaseControlGroupTable.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.3
-<Object Type> S
+<Object Type> S"
 ::= { phase 3 }
 
 --5.2.4	Phase Status Group Table
@@ -663,7 +663,7 @@ MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> The Phase Status Group number for objects in this row. This value shall not exceed the maxPhaseGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.1
-<Object Type> S
+<Object Type> S"
 ::= { phaseStatusGroupEntry 1 }
 
 --5.2.4.2	Phase Status Group Reds
@@ -849,8 +849,8 @@ DESCRIPTION "<Definition> Phase Next Status Mask, when a bit = 1, the Phase curr
 --5.2.5	Phase Control Table
 phaseControlGroupTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF PhaseControlGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Controller Unit Phase Control in groups of eight phases. The number of rows in this table is equal to the maxPhaseGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.5
@@ -859,38 +859,38 @@ DESCRIPTION "<Definition> A table containing Controller Unit Phase Control in gr
 
 phaseControlGroupEntry   OBJECT-TYPE
 SYNTAX PhaseControlGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Phase Control for eight Controller Unit phases.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.5.1"
 INDEX   { phaseControlGroupNumber }
 ::= { phaseControlGroupTable 1 }
 
 PhaseControlGroupEntry ::= SEQUENCE { 
-phaseControlGroupNumber		INTEGER,
-phaseControlGroupPhaseOmit	INTEGER,
-phaseControlGroupPedOmit	INTEGER,
-phaseControlGroupHold		INTEGER,
-phaseControlGroupForceOff	INTEGER,
-phaseControlGroupVehCall	INTEGER,
-phaseControlGroupPedCall	INTEGER }
+phaseControlGroupNumber		Integer32,
+phaseControlGroupPhaseOmit	Integer32,
+phaseControlGroupPedOmit	Integer32,
+phaseControlGroupHold		Integer32,
+phaseControlGroupForceOff	Integer32,
+phaseControlGroupVehCall	Integer32,
+phaseControlGroupPedCall	Integer32 }
 
 --5.2.5.1	Phase Control Group Number
 phaseControlGroupNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX INTEGER (1..32)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The Phase Control Group number for objects in this row. This value shall not exceed the maxPhaseGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.5.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { phaseControlGroupEntry 1 }
 
 --5.2.5.2	Phase Omit Control
 phaseControlGroupPhaseOmit   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to allow a remote entity to omit phases from being serviced in the device. When a bit = 1, the device shall activate the System Phase Omit control for that phase. When a bit = 0, the device shall not activate the System  Phase Omit control for that phase.
 	Bit 7: Phase # = (phaseControlGroupNumber * 8)
 	Bit 6: Phase # = (phaseControlGroupNumber * 8) - 1
@@ -908,9 +908,9 @@ REFERENCE "NEMA TS 2 Clause 3.5.3.11.2"
 
 --5.2.5.3	Pedestrian Omit Control
 phaseControlGroupPedOmit   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to allow a remote entity to omit peds from being serviced in the device. When a bit = 1, the device shall activate the System Ped Omit control for that phase. When a bit = 0, the device shall not activate the System  Ped Omit control for that phase.
 	Bit 7: Phase # = (phaseControlGroupNumber * 8)
 	Bit 6: Phase # = (phaseControlGroupNumber * 8) - 1
@@ -928,9 +928,9 @@ REFERENCE "NEMA TS 2 Clause 3.5.3.11.3"
 
 --5.2.5.4	Phase Hold Control
 phaseControlGroupHold   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to allow a remote entity to hold phases in the device. When a bit = 1, the device shall activate the System Phase Hold control for that phase. When a bit = 0, the device shall not activate the System Phase Hold control for that phase.
 	Bit 7: Phase # = (phaseControlGroupNumber * 8)
 	Bit 6: Phase # = (phaseControlGroupNumber * 8) - 1
@@ -948,9 +948,9 @@ REFERENCE "NEMA TS 2 Clause 3.5.3.11.1"
 
 --5.2.5.5	Phase Force Off Control
 phaseControlGroupForceOff   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to apply force offs on a per phase basis. When a bit = 1, the device shall activate the System Phase Force Off control for that phase. When a bit = 0, the device shall not activate the System Phase Force Off control for that phase. When the phase green terminates, the associated bit shall be reset to 0.
 	Bit 7: Phase # = (phaseControlGroupNumber * 8)
 	Bit 6: Phase # = (phaseControlGroupNumber * 8) - 1
@@ -967,9 +967,9 @@ The device shall reset this object to ZERO when in BACKUP Mode. A write to this 
 
 --5.2.5.6	Vehicle Call Control
 phaseControlGroupVehCall   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to allow a remote entity to place calls for vehicle service in the device. When a bit = 1, the device shall place a call for vehicle service on that phase. When a bit = 0, the device shall not place a call for vehicle service on that phase.
 	Bit 7: Phase # = (phaseControlGroupNumber * 8)
 	Bit 6: Phase # = (phaseControlGroupNumber * 8) - 1
@@ -986,9 +986,9 @@ The device shall reset this object to ZERO when in BACKUP Mode. A write to this 
 
 --5.2.5.7	Pedestrian Call Control
 phaseControlGroupPedCall   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to allow a remote entity to place calls for ped service in the device. When a bit = 1, the device shall place a call for ped service on that phase. When a bit = 0, the device shall not place a call for ped service on that phase.
 	Bit 7: Phase # = (phaseControlGroupNumber * 8)
 	Bit 6: Phase # = (phaseControlGroupNumber * 8) - 1
@@ -1332,13 +1332,13 @@ DEFVAL { vehicle }
 
 --5.3.3	Maximum Vehicle Detector Status Groups
 maxVehicleDetectorStatusGroups   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The maximum number of detector status groups (8 detectors per group) this device supports. This value is equal to TRUNCATE [(maxVehicleDetectors + 7 ) / 8]. This object indicates the maximum number of rows which shall appear in the vehicleDetectorStatusGroupTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.3
 <Object Type> S
-<Unit> group"
 ::= { detector 3 }
 
 --5.3.4	Vehicle Detector Status Group Table
