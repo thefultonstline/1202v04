@@ -4931,7 +4931,7 @@ channelIntersectionId	INTEGER --deprecated
 
 --5.9.2.1	Channel Number
 channelNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
+SYNTAX Integer32 (1..255)
 UNITS	"channel"
 MAX-ACCESS not-accessible
 STATUS current
