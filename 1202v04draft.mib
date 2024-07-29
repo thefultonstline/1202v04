@@ -1331,57 +1331,57 @@ DEFVAL { vehicle }
 ::= { vehicleDetectorEntry 21 }
 
 --5.3.3	Maximum Vehicle Detector Status Groups
-maxVehicleDetectorStatusGroups   OBJECT-TYPE
+maxVehicleDetectorStatusGroups   OBJECT-TYPE --change this to maxVehicleDetectorGroups? to use for the control table
 SYNTAX Integer32 (1..32)
 UNITS	"groups"
 MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> The maximum number of detector status groups (8 detectors per group) this device supports. This value is equal to TRUNCATE [(maxVehicleDetectors + 7 ) / 8]. This object indicates the maximum number of rows which shall appear in the vehicleDetectorStatusGroupTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.3
-<Object Type> S
+<Object Type> S"
 ::= { detector 3 }
 
 --5.3.4	Vehicle Detector Status Group Table
 vehicleDetectorStatusGroupTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF VehicleDetectorStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
-DESCRIPTION "<Definition> A table containing detector status in groups of eight detectors. The number of rows in this table is equal to the maxVehicleDetectorStatusGroups object.
+MAX-ACCESS not-accessible
+STATUS current
+DESCRIPTION "<Definition> A table containing detector status in groups of vehicle eight detectors. The number of rows in this table is equal to the maxVehicleDetectorStatusGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.4"
 ::= { detector 4 }
 
 vehicleDetectorStatusGroupEntry   OBJECT-TYPE
 SYNTAX VehicleDetectorStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
-DESCRIPTION "<Definition> A group (row) of detector status.
+MAX-ACCESS not-accessible
+STATUS current
+DESCRIPTION "<Definition> A group (row) of vehicle detector status.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.4.1"
 INDEX  { vehicleDetectorStatusGroupNumber }
 ::= { vehicleDetectorStatusGroupTable  1 }
 
 VehicleDetectorStatusGroupEntry ::= SEQUENCE {
-vehicleDetectorStatusGroupNumber	INTEGER,
-vehicleDetectorStatusGroupActive	INTEGER,
-vehicleDetectorStatusGroupAlarms	INTEGER }
+vehicleDetectorStatusGroupNumber	Integer32,
+vehicleDetectorStatusGroupActive	Integer32,
+vehicleDetectorStatusGroupAlarms	Integer32 }
  
 --5.3.4.1	Detector Status Group Number
 vehicleDetectorStatusGroupNumber   OBJECT-TYPE
 SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The detector status group number for objects in this row. This value shall not exceed the maxVehicleDetectorStatusGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.4.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { vehicleDetectorStatusGroupEntry 1 }
 
 --5.3.4.2	Detector Status Group Active
 vehicleDetectorStatusGroupActive   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> This object shall return the detection STATUS of each detector associated with the group. Each detector shall be represented as ON (detect) or OFF (no-detect) by individual bits in this object. If a detector is ON then the associated bit shall be set (1). If a detector is OFF then the associated bit shall be clear (0).
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
+DESCRIPTION "<Definition> This object shall return the detection STATUS of each vehicle detector associated with the group. Each detector shall be represented as ON (detect) or OFF (no-detect) by individual bits in this object. If a detector is ON then the associated bit shall be set (1). If a detector is OFF then the associated bit shall be clear (0).
 Bit 7: Det # = ( vehicleDetectorStatusGroupNumber * 8)
 Bit 6: Det # = ( vehicleDetectorStatusGroupNumber * 8) - 1
 Bit 5: Det # = ( vehicleDetectorStatusGroupNumber * 8) - 2
@@ -1396,10 +1396,10 @@ Bit 0: Det # = ( vehicleDetectorStatusGroupNumber * 8) - 7
 
 --5.3.4.3	Detector Alarm Status
 vehicleDetectorStatusGroupAlarms   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION "<Definition> This object shall return the alarm status of the detectors associated with the group. Each detector alarm status shall be represented as ON or OFF by individual bits in this object. If any detector alarm (defined in the vehicleDetectorAlarm object) is active the associated bit shall be set (1). If a detector alarm is not active the associated bit shall be clear (0).
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
+DESCRIPTION "<Definition> This object shall return the alarm status of the vehicle detectors associated with the group. Each detector alarm status shall be represented as ON or OFF by individual bits in this object. If any detector alarm (defined in the vehicleDetectorAlarm object) is active the associated bit shall be set (1). If a detector alarm is not active the associated bit shall be clear (0).
 Bit 7: Det # = ( vehicleDetectorStatusGroupNumber * 8)
 Bit 6: Det # = ( vehicleDetectorStatusGroupNumber * 8) - 1
 Bit 5: Det # = ( vehicleDetectorStatusGroupNumber * 8) - 2
@@ -1732,55 +1732,55 @@ DEFVAL { 0 }
 
 --5.3.8	Maximum Pedestrian Detector Groups
 maxPedestrianDetectorGroups OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition>The maximum number of pedestrian detector status groups (8 detectors per group) this device supports. This value is equal to TRUNCATE [(maxPedestrianDetectors + 7 ) / 8]. This object indicates the maximum number of rows which shall appear in the pedestrianDetectorStatusGroupTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.8
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { detector 8 }
 
 --5.3.9	Pedestrian Detector Status Group Table
 pedestrianDetectorStatusGroupTable OBJECT-TYPE
 SYNTAX SEQUENCE OF PedestrianDetectorStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
-DESCRIPTION "<Definition> A table containing pedestrian detector status in groups of eight detectors. The number of rows in this table is equal to the maxPedestrianDetectorGroups object.
+MAX-ACCESS not-accessible
+STATUS current
+DESCRIPTION "<Definition> A table containing detector status in groups of eight pedestrian detectors. The number of rows in this table is equal to the maxPedestrianDetectorGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.9"
 ::= { detector 9 }
 
 pedestrianDetectorStatusGroupEntry OBJECT-TYPE
 SYNTAX PedestrianDetectorStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A group (row) of pedestrian detector status.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.9.1"
 INDEX { pedestrianDetectorStatusGroupNumber }
 ::= { pedestrianDetectorStatusGroupTable 1 }
 
 PedestrianDetectorStatusGroupEntry ::= SEQUENCE {
-pedestrianDetectorStatusGroupNumber INTEGER,
-pedestrianDetectorStatusGroupActive INTEGER,
-pedestrianDetectorStatusGroupAlarms INTEGER }
+pedestrianDetectorStatusGroupNumber Integer32,
+pedestrianDetectorStatusGroupActive Integer32,
+pedestrianDetectorStatusGroupAlarms Integer32 }
 
 --5.3.9.1	Pedestrian Detector Status Group Number
 pedestrianDetectorStatusGroupNumber OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The pedestrian detector status group number for objects in this row. This value shall not exceed the maxPedestrianDetectorGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.9.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { pedestrianDetectorStatusGroupEntry 1 }
 
 --5.3.9.2	Pedestrian Detector Status Group Active
 pedestrianDetectorStatusGroupActive OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition>This object shall return the detection status of each pedestrian detector associated with the group. Each detector shall be represented as ON (detect) or OFF (no-detect) by individual bits in this object. If a detector is ON then the associated bit shall be set (1). If a detector is OFF then the associated bit shall be clear (0).
 Bit 7: Det # = ( pedestrianDetectorStatusGroupNumber * 8)
 Bit 6: Det # = ( pedestrianDetectorStatusGroupNumber * 8) - 1
@@ -1796,9 +1796,9 @@ Bit 0: Det # = ( pedestrianDetectorStatusGroupNumber * 8) - 7
 
 --5.3.9.3	Pedestrian Detector Alarm Status
 pedestrianDetectorStatusGroupAlarms   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object shall return the alarm status of the pedestrian detectors associated with the group. Each pedestrian detector alarm status shall be represented as ON or OFF by individual bits in this object. If any pedestrian detector alarm (defined in the pedestrianDetectorAlarms object) is active the associated bit shall be set (1). If a pedestrian detector alarm is not active the associated bit shall be clear (0).
 Bit 7: Det # = ( pedestrianDetectorStatusGroupNumber * 8)
 Bit 6: Det # = ( pedestrianDetectorStatusGroupNumber * 8) - 1
@@ -1960,8 +1960,8 @@ DESCRIPTION "<Definition> This object indicates the number of seconds (1-3600 se
 <Unit> second"
 ::= { pedestrianDetectorReport 6 }
 
---5.3.11	Maximum Vehicle Detector Control Groups
-maxVehicleDetectorControlGroups   OBJECT-TYPE
+--5.3.11	Maximum Vehicle Detector Control Groups 
+maxVehicleDetectorControlGroups   OBJECT-TYPE --merge this with the other one?
 SYNTAX INTEGER (1..255)
 ACCESS read-only
 STATUS mandatory
@@ -1987,29 +1987,30 @@ ACCESS not-accessible
 STATUS mandatory
 DESCRIPTION "<Definition> A group (row) of vehicle detector controls.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.12.1"
-INDEX  { vehicleDetectorControlGroupNumber }
+INDEX  { vehicleDetectorControlGroupNumber } 
 ::= { vehicleDetectorControlGroupTable  1 }
 
 VehicleDetectorControlGroupEntry ::= SEQUENCE {
-vehicleDetectorControlGroupNumber	INTEGER,
-vehicleDetectorControlGroupActuation	INTEGER }
+vehicleDetectorControlGroupNumber	Integer32,
+vehicleDetectorControlGroupActuation	Integer32
+}
  
 --5.3.11.2	Vehicle Detector Control Group Number
 vehicleDetectorControlGroupNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX INTEGER (1..32)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The vehicle detector control group number for objects in this row. This value shall not exceed the maxVehicleDetectorControlGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.12.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { vehicleDetectorControlGroupEntry 1 }
 
 --5.3.11.3	Vehicle Detector Control Group Actuation
 vehicleDetectorControlGroupActuation   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to allow a remote entity to place an actuation on a vehicle detector. When a bit = 1, an actuation is placed on the vehicle detector. When a bit = 0, no actuation is placed on the vehicle detector. An NTCIP actuation is placed using this object and is treated the same as an external actuation, so all detector functions are still applicable, including delay, extension, diagnostics, and report objects, such as vehicleDetectorStatusGroupActive and volumeOccupancyReport.
 Bit 7: Det # = ( vehicleDetectorControlGroupNumber * 8)
 Bit 6: Det # = ( vehicleDetectorControlGroupNumber * 8) - 1
@@ -2027,8 +2028,8 @@ The device shall reset this object to ZERO when in BACKUP Mode. A write to this 
 --5.3.12	Pedestrian Detector Control Group Table
 pedestrianDetectorControlGroupTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF PedestrianDetectorControlGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> A table containing pedestrian detector control in groups of eight detectors. The number of rows in this table is equal to the maxPedestrianDetectorGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.13"
@@ -2036,33 +2037,33 @@ DESCRIPTION "<Definition> A table containing pedestrian detector control in grou
 
 pedestrianDetectorControlGroupEntry   OBJECT-TYPE
 SYNTAX PedestrianDetectorControlGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> A group (row) of pedestrian detector controls.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.13.1"
 INDEX  { pedestrianDetectorControlGroupNumber }
 ::= { pedestrianDetectorControlGroupTable  1 }
 
 PedestrianDetectorControlGroupEntry ::= SEQUENCE {
-pedestrianDetectorControlGroupNumber	INTEGER,
-pedestrianDetectorControlGroupActuation	INTEGER }
+pedestrianDetectorControlGroupNumber	Integer32,
+pedestrianDetectorControlGroupActuation	Integer32 }
  
 --5.3.12.1	Pedestrian Detector Control Group Number
 pedestrianDetectorControlGroupNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The pedestrian detector control group number for objects in this row. This value shall not exceed the maxPedestrianDetectorGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.13.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { pedestrianDetectorControlGroupEntry 1 }
 
 --5.3.12.2	Pedestrian Detector Control Group Actuation
 pedestrianDetectorControlGroupActuation   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object is used to allow a remote entity to place an actuation on a pedestrian detector. When a bit = 1, an actuation is placed on the pedestrian detector. When a bit = 0, no actuation is placed on the pedestrian detector. An NTCIP actuation is placed using this object and is treated the same as an external actuation, so all detector functions are still applicable, including delay, extension, diagnostics, and report objects, such as pedestrianDetectorStatusGroupActive and pedestrianDetectorReport.
 Bit 7: Det # = ( pedestrianDetectorControlGroupNumber * 8)
 Bit 6: Det # = ( pedestrianDetectorControlGroupNumber * 8) - 1
@@ -2294,9 +2295,10 @@ The device shall reset this object to ZERO when in BACKUP Mode. A write to this 
 
 --5.4.11	Maximum Alarm Groups
 maxAlarmGroups   OBJECT-TYPE
-SYNTAX INTEGER(1..255) 
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> This object contains the maximum number of alarm groups (8 alarm inputs per group) this device supports. This object indicates the maximum rows which shall appear in the alarmGroupTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.11
 <Object Type> S
@@ -2306,8 +2308,8 @@ DESCRIPTION "<Definition> This object contains the maximum number of alarm group
 --5.4.12	Alarm Group Table
 alarmGroupTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF AlarmGroupEntry 
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> This table contains alarm input status in groups of eight inputs. The number of rows in this table is equal to the maxAlarmGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.12"
@@ -2315,33 +2317,33 @@ DESCRIPTION "<Definition> This table contains alarm input status in groups of ei
 
 alarmGroupEntry   OBJECT-TYPE
 SYNTAX AlarmGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Status for eight alarm inputs.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.12.1"
 INDEX  { alarmGroupNumber }
 ::= { alarmGroupTable 1 }
 
 AlarmGroupEntry::= SEQUENCE {
-alarmGroupNumber	INTEGER,
-alarmGroupState	INTEGER}
+alarmGroupNumber	Integer32,
+alarmGroupState		Integer32}
 
 --5.4.12.1	Alarm Group Number
 alarmGroupNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The alarm group number for objects in this row. This value shall not exceed the maxAlarmGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.12.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { alarmGroupEntry 1 }
 
 --5.4.12.2	Alarm Group State
 alarmGroupState   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Alarm input state bit field. When a bit = 1, the associated physical alarm input is  active. When a bit = 0, the associated alarm input is NOT active.
 Bit 7: Alarm Input # = ( alarmGroupNumber * 8)
 Bit 6: Alarm Input # = ( alarmGroupNumber * 8) -1
@@ -4346,20 +4348,20 @@ DESCRIPTION "<Definition> This object defines the preempt number that is current
 
 --5.7.5	Maximum Preempt Groups
 maxPreemptGroups OBJECT-TYPE
-SYNTAX INTEGER (0..2)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The Maximum Number of Preempt Groups (8 Preempt per group) this CU supports. This value is equal to TRUNCATE [(maxPreempts + 7) / 8]. This object indicates the maximum rows which shall appear in the preemptStatusGroupTable.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.5
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { preempt 5 }
 
 --5.7.6	Preempt Status Table
 preemptStatusGroupTable OBJECT-TYPE
 SYNTAX SEQUENCE OF PreemptStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing the CU preempt input signal status in groups of eight Preempts. The number of rows in this table is equal to the maxPreemptGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.6"
@@ -4367,33 +4369,33 @@ DESCRIPTION "<Definition> A table containing the CU preempt input signal status 
 
 preemptStatusGroupEntry OBJECT-TYPE
 SYNTAX PreemptStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Preempt input signal status for eight preempt inputs.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.6.1"
 INDEX { preemptStatusGroupNumber }
 ::= { preemptStatusGroupTable 1 }
 
 PreemptStatusGroupEntry ::= SEQUENCE {
-preemptStatusGroupNumber INTEGER,
-preemptStatusGroup	INTEGER  }
+preemptStatusGroupNumber 	Integer32,
+preemptStatusGroup		Integer32  }
 
 --5.7.6.1	Preempt Status Group Number
 preemptStatusGroupNumber OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX INTEGER (1..32)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The Preempt StatusGroup number for objects in this row. This value shall not exceed the maxPreemptGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.6.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { preemptStatusGroupEntry 1 }
 
 --5.7.6.2	Preempt Status Group
 preemptStatusGroup OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Preempt Input Signal Status Mask. When a bit = 1, a preempt input signal is detected or the preemptControlState is ON for that input, and when a bit = 0, no preempt input signal is detected and the preemptControlState is OFF for that input.
 Bit 7: Preempt # = (preemptStatusGroupNumber * 8)
 Bit 6: Preempt # = (preemptStatusGroupNumber * 8) - 1
@@ -5070,20 +5072,20 @@ REFERENCE "SAE J2735 DE_IntersectionID"
 
 --5.9.3	Maximum Channel Status Groups
 maxChannelStatusGroups   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The maximum number of Channel Status Groups (8 channels per group) this Actuated Controller Unit supports. This value is equal to TRUNCATE [(maxChannels + 7) / 8]. This object indicates the maximum rows which shall appear in the channelStatusGroupTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.3
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { channel 3 }
 
 --5.9.4	Channel Status Group Table
 channelStatusGroupTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF ChannelStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Actuated Controller Unit channel output (Red, Yellow, & Green) status in groups of eight channels. The number of rows in this table is equal to the maxChannelStatusGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.4"
@@ -5091,35 +5093,35 @@ DESCRIPTION "<Definition> A table containing Actuated Controller Unit channel ou
 
 channelStatusGroupEntry   OBJECT-TYPE
 SYNTAX ChannelStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Red, Yellow, & Green Output Status for eight Actuated Controller Unit channels.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.4.1"
 INDEX   { channelStatusGroupNumber }
 ::= { channelStatusGroupTable 1 }
 
 ChannelStatusGroupEntry ::= SEQUENCE { 
-channelStatusGroupNumber	INTEGER,
-channelStatusGroupReds		INTEGER,
-channelStatusGroupYellows	INTEGER,
-channelStatusGroupGreens	INTEGER }
+channelStatusGroupNumber	Integer32,
+channelStatusGroupReds		Integer32,
+channelStatusGroupYellows	Integer32,
+channelStatusGroupGreens	Integer32 }
 
 --5.9.4.1	Channel Status Group Number
 channelStatusGroupNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX INTEGER (1..32)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The channelStatusGroup number for objects in this row. This value shall not exceed the maxChannelStatusGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.8.4.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { channelStatusGroupEntry 1 }
 
 --5.9.4.2	Channel Status Group Reds
 channelStatusGroupReds   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Channel Red Output Status Mask, when a bit=1, the Channel Red is currently active. When a bit=0, the Channel Red is NOT currently active.
 Bit 7: Channel # = (channelStatusGroupNumber * 8)
 Bit 6: Channel # = (channelStatusGroupNumber * 8) - 1
@@ -5135,9 +5137,9 @@ Bit 0: Channel # = (channelStatusGroupNumber * 8) - 7
 
 --5.9.4.3	Channel Status Group Yellows
 channelStatusGroupYellows   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Channel Yellow Output Status Mask, when a bit=1, the Channel Yellow is currently active. When a bit=0, the Channel Yellow is NOT currently active.
 Bit 7: Channel # = (channelStatusGroupNumber * 8)
 Bit 6: Channel # = (channelStatusGroupNumber * 8) - 1
@@ -5153,9 +5155,9 @@ Bit 0: Channel # = (channelStatusGroupNumber * 8) - 7
 
 --5.9.4.4	Channel Status Group Greens
 channelStatusGroupGreens   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Channel Green Output Status Mask, when a bit=1, the Channel Green is currently active. When a bit=0, the Channel Green is NOT currently active.
 Bit 7: Channel # = (channelStatusGroupNumber * 8)
 Bit 6: Channel # = (channelStatusGroupNumber * 8) - 1
@@ -5418,20 +5420,20 @@ If the overlap type is fYAThreeSection or fYAFourSection, a non-null value would
 
 --5.10.3	Maximum Overlap Status Groups
 maxOverlapStatusGroups   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The Maximum Number of Overlap Status Groups (8 overlaps per group) this Actuated Controller Unit supports. This value is equal to TRUNCATE [(maxOverlaps + 7) / 8]. This object indicates the maximum rows which shall appear in the overlapStatusGroupTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.9.3
-<Object Type> S
-<Unit> group "
+<Object Type> S"
 ::= { overlap 3 }
  
 --5.10.4	Overlap Status Group Table
-overlapStatusGroupTable   OBJECT-TYPE
+overlapStatusGroupTable   OBJECT-TYPE --how to handle flash
 SYNTAX SEQUENCE OF OverlapStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Actuated Controller Unit overlap output (Red, Yellow, & Green) status in groups of eight overlaps. The number of rows in this table is equal to the maxOverlapStatusGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.9.4"
@@ -5439,35 +5441,35 @@ DESCRIPTION "<Definition> A table containing Actuated Controller Unit overlap ou
 
 overlapStatusGroupEntry   OBJECT-TYPE
 SYNTAX OverlapStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Red, Yellow, & Green Output Status for eight Actuated Controller Unit overlaps.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.9.4.1"
 INDEX   { overlapStatusGroupNumber }
 ::= { overlapStatusGroupTable 1 }
 
 OverlapStatusGroupEntry ::= SEQUENCE { 
-overlapStatusGroupNumber	INTEGER,
-overlapStatusGroupReds		INTEGER,
-overlapStatusGroupYellows	INTEGER,
-overlapStatusGroupGreens	INTEGER }
+overlapStatusGroupNumber	Integer32,
+overlapStatusGroupReds		Integer32,
+overlapStatusGroupYellows	Integer32,
+overlapStatusGroupGreens	Integer32 }
 
 --5.10.4.1	Overlap Status Group Number
 overlapStatusGroupNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX INTEGER (1..32)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The overlap StatusGroup number for objects in this row. This value shall not exceed the maxOverlapStatusGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.9.4.1.1
-<Object Type> S
-<Unit> group"
+<Object Type> S"
 ::= { overlapStatusGroupEntry 1 }
  
 --5.10.4.2	Overlap Status Group Reds
 overlapStatusGroupReds   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Overlap Red Output Status Mask, when a bit=1, the Overlap Red is currently active. When a bit=0, the Overlap Red is NOT currently active.
 Bit 7: Overlap # = (overlapStatusGroupNumber * 8)
 Bit 6: Overlap # = (overlapStatusGroupNumber * 8) - 1
@@ -5483,9 +5485,9 @@ Bit 0: Overlap # = (overlapStatusGroupNumber * 8) - 7
 
 --5.10.4.3	Overlap Status Group Yellows
 overlapStatusGroupYellows   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Overlap Yellow Output Status Mask, when a bit=1, the Overlap Yellow is currently active. When a bit=0, the Overlap Yellow is NOT currently active.
 Bit 7: Overlap # = (overlapStatusGroupNumber * 8)
 Bit 6: Overlap # = (overlapStatusGroupNumber * 8) - 1
@@ -5502,9 +5504,9 @@ For pedestrianNormal overlap type, this object is used to represent the pedestri
 
 --5.10.4.4	Overlap Status Group Greens
 overlapStatusGroupGreens   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Overlap Green Output Status Mask, when a bit=1, the Overlap Green is currently active. When a bit=0, the Overlap Green is NOT currently active.
 Bit 7: Overlap # = (overlapStatusGroupNumber * 8)
 Bit 6: Overlap # = (overlapStatusGroupNumber * 8) - 1
