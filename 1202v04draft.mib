@@ -614,20 +614,20 @@ DEFVAL { 0 }
 
 --5.2.3	Maximum Phase Groups
 maxPhaseGroups   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..32)
+UNITS	"groups"
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> The Maximum Number of Phase Groups (8 Phases per group) this Controller Unit supports. This value is equal to TRUNCATE [(maxPhases + 7) / 8]. This object indicates the maximum rows which shall appear in the phaseStatusGroupTable and phaseControlGroupTable.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.3
 <Object Type> S
-<Unit> group"
 ::= { phase 3 }
 
 --5.2.4	Phase Status Group Table
 phaseStatusGroupTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF PhaseStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Controller  Unit Phase Output (Red, Yellow, & Green) and Call (vehicle & pedestrian) status in groups of eight Phases. The number of rows in this table is equal to the maxPhaseGroups object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4"
@@ -635,44 +635,44 @@ DESCRIPTION "<Definition> A table containing Controller  Unit Phase Output (Red,
 
 phaseStatusGroupEntry   OBJECT-TYPE
 SYNTAX PhaseStatusGroupEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Red, Yellow, & Green Output Status and Vehicle and Pedestrian Call for eight Controller Unit Phases. 
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1"
 INDEX   { phaseStatusGroupNumber }
 ::= { phaseStatusGroupTable 1 }
  
 PhaseStatusGroupEntry ::= SEQUENCE { 
-phaseStatusGroupNumber		INTEGER,
-phaseStatusGroupReds		INTEGER,
-phaseStatusGroupYellows		INTEGER,
-phaseStatusGroupGreens		INTEGER,
-phaseStatusGroupDontWalks	INTEGER,
-phaseStatusGroupPedClears	INTEGER,
-phaseStatusGroupWalks		INTEGER,
-phaseStatusGroupVehCalls	INTEGER,
-phaseStatusGroupPedCalls	INTEGER,
-phaseStatusGroupPhaseOns	INTEGER,
-phaseStatusGroupPhaseNexts	INTEGER }
+phaseStatusGroupNumber		Integer32,
+phaseStatusGroupReds		Integer32,
+phaseStatusGroupYellows		Integer32,
+phaseStatusGroupGreens		Integer32,
+phaseStatusGroupDontWalks	Integer32,
+phaseStatusGroupPedClears	Integer32,
+phaseStatusGroupWalks		Integer32,
+phaseStatusGroupVehCalls	Integer32,
+phaseStatusGroupPedCalls	Integer32,
+phaseStatusGroupPhaseOns	Integer32,
+phaseStatusGroupPhaseNexts	Integer32 }
 
 --5.2.4.1	Phase Status Group Number
 phaseStatusGroupNumber   OBJECT-TYPE
-	SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX INTEGER (1..32)
+UNITS	"group"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The Phase Status Group number for objects in this row. This value shall not exceed the maxPhaseGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1.1
 <Object Type> S
-	<Unit> group"
 ::= { phaseStatusGroupEntry 1 }
 
 --5.2.4.2	Phase Status Group Reds
 phaseStatusGroupReds   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Red Output Status Mask, when a bit = 1, the Phase Red is currently active. When a bit = 0, the Phase Red is NOT currently active.
-Bit 7: Phase # = (phaseStatusGroupNumber * 8)
+	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
 	Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
 	Bit 4: Phase # = (phaseStatusGroupNumber * 8) - 3
@@ -686,9 +686,9 @@ Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 
 --5.2.4.3	Phase Status Group Yellows
 phaseStatusGroupYellows   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Yellow Output Status Mask, when a bit = 1, the Phase Yellow is currently active. When a  bit = 0, the Phase Yellow is NOT currently active.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -704,9 +704,9 @@ DESCRIPTION "<Definition> Phase Yellow Output Status Mask, when a bit = 1, the P
 
 --5.2.4.4	Phase Status Group Greens
 phaseStatusGroupGreens   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Green Output Status Mask, when a bit = 1, the Phase Green is currently active. When a bit = 0, the Phase Green is NOT currently active.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -722,9 +722,9 @@ DESCRIPTION "<Definition> Phase Green Output Status Mask, when a bit = 1, the Ph
  
 --5.2.4.5	Phase Status Group Dont Walks
 phaseStatusGroupDontWalks   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Dont Walk Output Status Mask, when a bit = 1, the Phase Dont Walk is currently active. When a bit = 0, the Phase Dont Walk is NOT currently active.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -740,9 +740,9 @@ DESCRIPTION "<Definition> Phase Dont Walk Output Status Mask, when a bit = 1, th
 
 --5.2.4.6	Phase Status Group Pedestrian Clears
 phaseStatusGroupPedClears   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Ped Clear Output Status Mask, when a bit = 1, the Phase Ped Clear is currently active. When a bit = 0, the Phase Ped Clear is NOT currently active.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -758,9 +758,9 @@ DESCRIPTION "<Definition> Phase Ped Clear Output Status Mask, when a bit = 1, th
  
 --5.2.4.7	Phase Status Group Walks
 phaseStatusGroupWalks   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Walk Output Status Mask, when a bit = 1, the Phase Walk is currently active. When a bit = 0, the Phase Walk is NOT currently active.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -776,9 +776,9 @@ DESCRIPTION "<Definition> Phase Walk Output Status Mask, when a bit = 1, the Pha
 
 --5.2.4.8	Phase Status Group Vehicle Calls
 phaseStatusGroupVehCalls   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Vehicle Call Status Mask, when a bit = 1, the Phase vehicle currently has a call for service. When a bit = 0, the Phase vehicle currently does NOT have a call for service.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -794,9 +794,9 @@ DESCRIPTION "<Definition> Phase Vehicle Call Status Mask, when a bit = 1, the Ph
  
 --5.2.4.9	Phase Status Group Pedestrian Calls
 phaseStatusGroupPedCalls   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Pedestrian Call Status Mask, when a bit = 1, the  Phase pedestrian currently has a call for service. When a bit = 0, the Phase pedestrian currently does NOT have a call for service.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -812,9 +812,9 @@ DESCRIPTION "<Definition> Phase Pedestrian Call Status Mask, when a bit = 1, the
 
 --5.2.4.10	Phase Status Group Phase Ons
 phaseStatusGroupPhaseOns   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase On Status Mask, when a bit = 1, the Phase is currently active. When a bit = 0, the Phase currently is NOT active. The phase is ON during the Green, Yellow, & Red Clearance intervals of that phase. It shall be permissible for this STATUS to be True (bit=1) during the Red Dwell state.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
@@ -830,9 +830,9 @@ DESCRIPTION "<Definition> Phase On Status Mask, when a bit = 1, the Phase is cur
  
 --5.2.4.11	Phase Status Group Phase Nexts
 phaseStatusGroupPhaseNexts   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
+STATUS current
 DESCRIPTION "<Definition> Phase Next Status Mask, when a bit = 1, the Phase currently is committed to be NEXT in sequence & remains present until the phase becomes active (On/Timing). When a bit = 0, the Phase currently is NOT committed to be NEXT in sequence. The phase next to be serviced shall be determined at the end of the green interval of the terminating phase; except that if the decision cannot be made at the end of the Green interval, it shall not be made until after the end of all Vehicle Change & Clearance intervals.
 	Bit 7: Phase # = (phaseStatusGroupNumber * 8)
 	Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
