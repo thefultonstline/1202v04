@@ -520,9 +520,9 @@ DESCRIPTION "<Definition> Phase Maximum 3 Parameter in seconds. This time settin
 ::= { phaseEntry 24 }
 
 --5.2.2.25  Phase Yellow and Red Change Time Before End of Ped Clearance Parameter
-phaseYellowandRedChangeTimeBeforeEndPedClear   OBJECT-TYPE
+phasePedBuffer   OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS	"second"
+UNITS	"decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> The amount of time that the pedestrian clearance may extend into the vehicle clearance time (yellow and red) for a phase. This parameter is expressed in 0.1 second increments ranging from 0.0 to 25.5 seconds.
@@ -531,11 +531,11 @@ DESCRIPTION "<Definition> The amount of time that the pedestrian clearance may e
 ::= { phaseEntry 25 }
 
 --5.2.2.26  Pedestrian Phase Walk Recycle Parameter
-phasePedWalkService   OBJECT-TYPE
-SYNTAX Integer32 (1..255)
+phasePedServiceLimit   OBJECT-TYPE
+SYNTAX Integer32 (0..255)
 MAX-ACCESS read-write
 STATUS current
-DESCRIPTION "<Definition> This parameter indicates whether and how many times this phase is allowed to recycle the pedestrian movement during a cycle. This parameter is used for ped-only, signalized intersections (mostly mid-block) that are within a coordinated roadway. If set to '1', no recycle is allowed and the pedestrian movement can be shown only up to once. If set to '2', the pedestrian movement can be shown up to twice during a cycle, etc.
+DESCRIPTION "<Definition> This parameter indicates whether and how many times this phase is allowed to recycle the pedestrian movement during a cycle. This parameter is used for ped-only, signalized intersections (mostly mid-block) that are within a coordinated roadway. If set to '1', no recycle is allowed and the pedestrian movement can be shown only up to once. If set to '2', the pedestrian movement can be shown up to twice during a cycle, etc. A value of '0' means that that there is no limit on how many times the pedestrian movement can be shown during a cycle. 
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.26
 <Object Type> P"
 ::= { phaseEntry 26 }
@@ -543,7 +543,7 @@ DESCRIPTION "<Definition> This parameter indicates whether and how many times th
 --5.2.2.27  Pedestrian Phase Dont Walk Revert Parameter
 phaseDontWalkRevert   OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS	"second"
+UNITS	"decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Dont Walk revert time parameter in tenth seconds. A minimum Dont Walk indication to be timed following the pedestrian clearance interval prior to the next Walk indication on the same signal output driver group.
