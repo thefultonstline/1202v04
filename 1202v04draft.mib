@@ -1,14 +1,12 @@
---1202 v04
-
----1202v0335e
+---1202v04
 --*********************************************************************
--- Filename:	1202v0335eCombined.MIB
--- Description:	This MIB defines the Actuated Signal Controller (ASC) Objects
+-- Filename:    1202v04.MIB
+-- Description: This MIB defines the Actuated Signal Controller (ASC) Objects
 --              and includes 1217v0135e.MIB, which is used in conjunction with
 --              SAE data elements.
--- Source:      NTCIP 1202 v03B.35e Recommended Amendment B
+-- Source:      NTCIP 1202 v?????????????
 -- MIB Revision History:
--- Date:		September 18, 2023
+-- Date:        ????????????
 --
 -- Copyright 2023 by the American Association of State Highway and
 -- Transportation Officials (AASHTO), the Institute of Transportation
@@ -30,7 +28,7 @@
 --that:
 -- 
 --a) each copy you make or distribute includes the citation "Derived from
---NTCIP 1202 v03B. Copyright by AASHTO / ITE / NEMA. Used by permission.",
+--NTCIP 1202 v04. Copyright by AASHTO / ITE / NEMA. Used by permission.",
 -- or this header;
 --b) the copies or derivative works are not made part of the standard
 --publications or works offered by other standard developing organizations
@@ -72,46 +70,80 @@
 -- 
 -- NTCIP is a trademark of AASHTO/ITE/NEMA.
 --**************************************************************************
+--**********************************************
 --
--- 5.1	MIB Header
-NTCIP1202-v03 DEFINITIONS ::= BEGIN
+-- 5.1 MIB Header
+NTCIP1202-v04 DEFINITIONS ::= BEGIN
+
+-- think OwnerString is replaced with SnmpAdminString? The 8004 mib replaces it with NtcipOwnerString but
+--    its deprecated.  I'm not sure we need it - we don't have anything in the mib that uses it. 
+--It seems we only use null for Object Identifiers. I think SMI v2 replaces it with zerodotzero from RFC2578?
+--Oerstring we do use. It seems to be replaced by ITSOerString from the FieldDevice-TC mib?
+--ISO26048-1-FieldDevice-TC
 
 -- the following OBJECT IDENTIFIERS are used in the ASC MIB:
 IMPORTS
-    IpAddress, Counter, null
-FROM RFC1155-SMI
-    OBJECT-TYPE
-FROM RFC-1212
-DisplayString, ifIndex
-	FROM RFC1213-MIB
-    OwnerString, OerString, devices
-FROM NTCIP8004v02;
+    IpAddress, Counter                      FROM RFC1155-SMI
+    OBJECT-TYPE                             FROM RFC-1212
+    DisplayString, ifIndex                  FROM RFC1213-MIB
+    --zerodotzero                             FROM SNMPv2-SMI
+    --OerString                               FROM FieldDevice-TC
+    devices                                 FROM NTCIP8004-Transportation
 
-asc OBJECT IDENTIFIER ::= { devices 1 }
+    MODULE-IDENTITY, OBJECT-TYPE, OBJECT-IDENTITY, Integer32, Unsigned32
+                                            FROM SNMPv2-SMI 
+                                            -- RFC 2578
+    RowStatus, StorageType, VariablePointer
+                                            FROM SNMPv2-TC
+                                            -- RFC 2579
+    MODULE-COMPLIANCE, OBJECT-GROUP
+                                            FROM SNMPv2-CONF
+                                            -- RFC 2580
+;
+
+asc MODULE-IDENTITY
+  LAST-UPDATED "202408050000Z"
+  ORGANIZATION "NTCIP ASC WG"
+  CONTACT-INFO
+   "name: NTCIP Coordinator
+    email: ntcip@nema.org
+    postal: National Electrical Manufacturers Association
+            1300 North 17th Street, Suite 1752
+            Rosslyn, Virginia 22209-3801"
+  DESCRIPTION
+  "<Definition> This MIB defines the structure of management information
+    under the asc node, which is used to manage Actuated Signal
+    Controllers (ASC).
+  <Object Identifier> 1.3.6.1.4.1.1206.4.2.3"
+
+  REVISION "202309191001Z"
+  DESCRIPTION
+    "NTCIP 1202 v0335 - Last update"
+  REVISION "199703310500Z"
+  DESCRIPTION
+    "NEMA TS 3.6 - Initial version of MIB as approved by NEMA. "
+
+  ::= { devices 1 }
+
+-- *****************************************************************************
+-- Administrative Objects
+-- *****************************************************************************
 
 --5.2	Phase Parameters
-phase OBJECT IDENTIFIER 
-::= { asc 1 }
+phase OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION  "<Definition> Phase parameters.
+        for ASC traffic controllers"
+    ::= { asc 1 }
 
 -- This node shall contain objects that configure, monitor or 
 -- control phase functions for this device.
 
---5.2.1	Maximum Phases
-maxPhases   OBJECT-TYPE
-SYNTAX INTEGER (2..255)
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION  "<Definition> The Maximum Number of Phases this Controller Unit supports. This object indicates the maximum rows which shall appear in the phaseTable object.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.1
-<Object Type> S
-<Unit> phase"
-::= { phase 1 }
-
---5.2.2	Phase Table
+--5.2.2 Phase Table
 phaseTable   OBJECT-TYPE
 SYNTAX SEQUENCE OF PhaseEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> A table containing Controller Unit phase parameters. The number of rows in this table is equal to the maxPhases object.
 <TableType> static
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2"
@@ -119,8 +151,8 @@ DESCRIPTION "<Definition> A table containing Controller Unit phase parameters. T
 
 phaseEntry   OBJECT-TYPE
 SYNTAX PhaseEntry
-ACCESS not-accessible
-STATUS mandatory
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> Parameters for a specific Controller Unit phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1
 <Unit> "
@@ -128,249 +160,250 @@ INDEX { phaseNumber }
 ::= { phaseTable 1 }
  
 PhaseEntry ::= SEQUENCE { 
-phaseNumber			INTEGER,
-phaseWalk			INTEGER,
-phasePedestrianClear	INTEGER,
-phaseMinimumGreen		INTEGER,
-phasePassage		INTEGER,
-phaseMaximum1		INTEGER,
-phaseMaximum2		INTEGER,
-phaseYellowChange		INTEGER,
-phaseRedClear		INTEGER,
-phaseRedRevert		INTEGER,
-phaseAddedInitial		INTEGER,
-phaseMaximumInitial	INTEGER,
-phaseTimeBeforeReduction	INTEGER,
-phaseCarsBeforeReduction	INTEGER,
-phaseTimeToReduce		INTEGER,
-phaseReduceBy		INTEGER,
-phaseMinimumGap		INTEGER,
-phaseDynamicMaxLimit	INTEGER,
-phaseDynamicMaxStep	INTEGER,
-phaseStartup		INTEGER,
-phaseOptions		INTEGER,
-phaseRing			INTEGER,
-phaseConcurrency		OCTET STRING,
-phaseMaximum3		INTEGER,
-phaseYellowandRedChangeTimeBeforeEndPedClear	INTEGER,
-phasePedWalkService	INTEGER,
-phaseDontWalkRevert	INTEGER,
-phasePedAlternateClearance	INTEGER,
-phasePedAlternateWalk		INTEGER,
-phasePedAdvanceWalkTime	INTEGER,
-phasePedDelayTime		INTEGER,
-phaseAdvWarnGrnStartTime	INTEGER,
-phaseAdvWarnRedStartTime	INTEGER,
-phaseAltMinTimeTransition	INTEGER }
+    phaseNumber         Integer32,
+    phaseWalk           Integer32,
+    phasePedestrianClear    Integer32,
+    phaseMinimumGreen       Integer32,
+    phasePassage        Integer32,
+    phaseMaximum1       Integer32,
+    phaseMaximum2       Integer32,
+    phaseYellowChange       Integer32,
+    phaseRedClear       Integer32,
+    phaseRedRevert      Integer32,
+    phaseAddedInitial       Integer32,
+    phaseMaximumInitial Integer32,
+    phaseTimeBeforeReduction    Integer32,
+    phaseCarsBeforeReduction    Integer32,
+    phaseTimeToReduce       Integer32,
+    phaseReduceBy       Integer32,
+    phaseMinimumGap     Integer32,
+    phaseDynamicMaxLimit    Integer32,
+    phaseDynamicMaxStep Integer32,
+    phaseStartup        INTEGER,
+    phaseOptions        Integer32,
+    phaseRing           Integer32,
+    phaseConcurrency        OCTET STRING,
+    phaseMaximum3       Integer32,
+    phasePedBuffer      Integer32,
+    phasePedWalkService Integer32,
+    phaseDontWalkRevert Integer32,
+    phasePedAlternateClearance  Integer32,
+    phasePedAlternateWalk       Integer32,
+    phasePedAdvanceWalkTime Integer32,
+    phasePedDelayTime       Integer32,
+    phaseAdvWarnGrnStartTime    Integer32,
+    phaseAdvWarnRedStartTime    Integer32,
+    phaseAltMinTimeTransition   Integer32 }
 
---5.2.2.1	Phase Number
+
+--5.2.2.1   Phase Number
 phaseNumber   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-only
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+UNITS	"pattern"
+MAX-ACCESS not-accessible
+STATUS current
 DESCRIPTION "<Definition> The phase number for objects in this row. This value shall not exceed the maxPhases object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.1
-<Object Type> S
-<Unit> phase"
+<Object Type> S"
 ::= { phaseEntry 1 }
 
---5.2.2.2	Phase Walk Parameter
+--5.2.2.2   Phase Walk Parameter
 phaseWalk   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Walk Parameter in seconds. This shall control the amount of time the Walk indication shall be displayed. This parameter shall be used regardless whether the pedestrian indication associated with this phase is for a ped-only phase or for a pedestrian indication that runs parallel to a vehicle phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.2
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.2.a"
 ::= { phaseEntry 2 }
 
---5.2.2.3	Phase Pedestrian Clear Parameter
+--5.2.2.3   Phase Pedestrian Clear Parameter
 phasePedestrianClear   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Pedestrian Clear Parameter in seconds. This shall control the duration of the Pedestrian Clearance output (if present) and the flashing period of the Don't Walk output.
 This parameter shall be used regardless whether the pedestrian indication associated with this phase is for a ped-only phase or for a pedestrian indication that runs parallel to a vehicle phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.3
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.2.b"
 ::= { phaseEntry 3 }
 
---5.2.2.4	Phase Minimum Green Parameter
+--5.2.2.4   Phase Minimum Green Parameter
 phaseMinimumGreen   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Minimum Green Parameter in seconds (NEMA TS 2 range: 1-255 sec). The first timed portion of the Green interval which may be set in consideration of the storage of vehicles between the zone of detection for the approach  vehicle detector(s) and the stop line.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.4
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.a.(1)"
 ::= { phaseEntry 4 }
 
---5.2.2.5	Phase Passage Parameter
+--5.2.2.5   Phase Passage Parameter
 phasePassage   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Passage Parameter in tenth seconds (0-25.5 sec). Passage Time, Vehicle Interval, Preset Gap, Vehicle Extension: the extensible portion of the Green shall be a function of vehicle actuations that occur during the Green interval. The phase shall remain in the extensible portion of the Green interval as long as the passage timer is not timed out. The timing of this portion of the green interval shall be reset with each subsequent vehicle actuation and shall not commence to time again until the vehicle actuation is removed or the maximum green timer has expired.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.5
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.a.(2)"
 ::= { phaseEntry 5 }
 
---5.2.2.6	Phase Maximum Green 1 Parameter
+--5.2.2.6   Phase Maximum Green 1 Parameter
 phaseMaximum1   OBJECT-TYPE
-SYNTAX INTEGER (0..255)--RAISE TO 999 IN NEW TABLE
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..999)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Maximum 1 Parameter in seconds (NEMA TS 2 range: 1-255 sec). This time setting shall determine the maximum length of time this phase may be held in Green in the presence of a serviceable conflicting call. In the absence of a  serviceable conflicting call the Maximum Green timer shall be held reset unless Max Vehicle Recall is enabled for this phase. This is the default maximum value to use. It may be overridden via an external input, coordMaximumMode or other method.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.6
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1, 3.5.3.2.1.a.(3) and 3.5.3.5"
 ::= { phaseEntry 6 }
 
---5.2.2.7	Phase Maximum Green 2 Parameter
+--5.2.2.7   Phase Maximum Green 2 Parameter
 phaseMaximum2   OBJECT-TYPE
-SYNTAX INTEGER (0..255)--RAISE TO 999 IN NEW TABLE
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..999)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Maximum 2 Parameter in seconds (NEMA TS 2 range: 1-255 sec). This time setting shall determine the maximum length of time this phase may be held in Green in the presence of a serviceable conflicting call. In the absence of a serviceable conflicting call the Maximum Green timer shall be  held reset unless Max Vehicle Recall is enabled for this phase. This may be implemented as the max green timer via an external input, coordMaximumMode or other method.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.7
-<Object Type> P
-<Unit> second"
-REFERENCE "NEMA TS 2 Clause 3.5.3.1, 3.5.3.2.1.a.(3), 3.5.3.5 
- and 3.5.4.1 (7)"
+<Object Type> P"
+REFERENCE "NEMA TS 2 Clause 3.5.3.1, 3.5.3.2.1.a.(3), 3.5.3.5 and 3.5.4.1 (7)"
 ::= { phaseEntry 7 }
 
---5.2.2.8	Phase Yellow Change Parameter
+--5.2.2.8   Phase Yellow Change Parameter
 phaseYellowChange   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Yellow Change Parameter in tenth  seconds (NEMA TS 2 range: 3-25.5 sec). Following the Green interval of each phase the CU shall provide a Yellow Change interval which is timed according to the Yellow Change parameter for that phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.8
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.5.a"
 ::= { phaseEntry 8 }
 
---5.2.2.9	Phase Red Clear Parameter
+--5.2.2.9   Phase Red Clear Parameter
 phaseRedClear   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Red Clearance Parameter in tenth seconds (0-25.5 sec).Following the Yellow Change interval for each phase, the CU shall provide a Red Clearance interval which is timed according to the Red Clearance parameter for that phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.9
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.5.b"
 ::= { phaseEntry 9 }
 
---5.2.2.10	Phase Red Revert
+--5.2.2.10  Phase Red Revert
 phaseRedRevert OBJECT-TYPE
-SYNTAX INTEGER (0..255) 
-ACCESS read-write
-STATUS mandatory
-DESCRIPTION "<Definition> Red revert time parameter in tenth seconds. A minimum Red indication to be timed following the Yellow Change interval and prior to the next display of Green on the same signal output driver group.
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
+DESCRIPTION "<Definition> Red revert time parameter in tenths of seconds (0-25.5 sec). A minimum Red indication to be timed following the Yellow Change interval and prior to the next display of Green on the same signal output driver group.
 The unitRedRevert parameter shall act as a minimum red revert time for all signal displays. The phaseRedRevert parameter may increase the red revert time for a specific phase. If the phaseRedRevert parameter is less than the unitRedRevert the  unitRedRevert time shall be used.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.10
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 ::= { phaseEntry 10 }
 
---5.2.2.11	Phase Added Initial Parameter
+--5.2.2.11  Phase Added Initial Parameter
 phaseAddedInitial   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Added Initial Parameter in tenths of seconds (0-25.5 sec). Added Initial parameter (Seconds / Actuation) shall determine the time by which the variable initial time period will be increased from zero with each vehicle actuation received during the associated phase Yellow and Red  intervals.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.11
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(1).(b)"
 ::= { phaseEntry 11 }
 
---5.2.2.12	Phase Maximum Initial Parameter
+--5.2.2.12  Phase Maximum Initial Parameter
 phaseMaximumInitial   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Maximum Initial Parameter in seconds (0-255 sec). The maximum value of the variable initial timing period. Variable Initial timing shall equal the lesser of [added initial (seconds / actuation) * number of actuations] or [ Max Initial ]. The variable initial time shall not be less than Minimum Green.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.12
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.2.1.b.(1).(c)"
 ::= { phaseEntry 12 }
 
---5.2.2.13	Phase Time Before Reduction Parameter
+--5.2.2.13  Phase Time Before Reduction Parameter
 phaseTimeBeforeReduction   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Time Before Reduction (TBR) Parameter in seconds (0-255 sec). The Time Before Reduction period shall begin when the phase is Green and there is a serviceable conflicting call. If the serviceable conflicting call is removed before completion of this time (or time to reduce), the timer shall reset. Upon completion of the TBR period or the CarsBeforeReduction (CBR) parameter is satisfied, whichever occurs first, the linear reduction of the allowable gap from the Passage Time shall begin.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.13
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
 ::= { phaseEntry 13 }
 
---5.2.2.14	Phase Cars Before Reduction Parameter
+--5.2.2.14  Phase Cars Before Reduction Parameter
 phaseCarsBeforeReduction   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"vehicle"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Cars Before Reduction (CBR) Parameter (0-255 vehicles). When the phase is Green and the sum of the cars waiting (vehicle actuations during Yellow & Red intervals) on serviceable conflicting phases equals or exceeds the CBR parameter or the Time Before Reduction (TBR) parameter is satisfied, whichever occurs first, the linear reduction of the allowable gap from the Passage Time shall begin.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.14
-<Object Type> P
-<Unit> vehicle"
+<Object Type> P"
 ::= { phaseEntry 14 }
 
---5.2.2.15	Phase Time To Reduce Parameter
+--5.2.2.15  Phase Time To Reduce Parameter
 phaseTimeToReduce   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Time To Reduce Parameter in seconds (0-255 sec). This parameter shall control the rate of reduction of the allowable gap between the Passage Time and Minimum Gap setting.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.15
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
 ::= { phaseEntry 15 }
  
---5.2.2.16	Phase Reduce By
+--5.2.2.16  Phase Reduce By
 phaseReduceBy   OBJECT-TYPE
-SYNTAX INTEGER (0..255) 
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object may be used for volume density gap reduction as an alternate to the linear reduction defined by NEMA TS 1 and TS 2. It contains the tenths of seconds to reduce the gap by (0.0 - 25.5 seconds). The frequency of reduction shall produce the Minimum Gap after a time equal to the  'phaseTimeToReduce' object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.16
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 ::= { phaseEntry 16 }
 
---5.2.2.17	Phase Minimum Gap Parameter
+--5.2.2.17  Phase Minimum Gap Parameter
 phaseMinimumGap   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Minimum Gap Parameter in tenth seconds (0-25.5 sec). The reduction of the allowable gap shall continue until the gap reaches a value equal to or less than the minimum gap as set on the Minimum Gap control after which the allowable gap shall remain fixed at the values set on the Minimum Gap control.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.17
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
 ::= { phaseEntry 17 }
 
---5.2.2.18	Phase Dynamic Max Limit
+--5.2.2.18  Phase Dynamic Max Limit
 phaseDynamicMaxLimit   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object shall determine either the upper or lower limit of the running max in seconds (0-255 sec) during dynamic max operation. The normal maximum (i.e. Max1, Max2, etc.) shall determine the other limit as follows:
 When dynamicMaxLimit is larger than the normal maximum, it shall become the upper limit.
 
@@ -380,235 +413,226 @@ Setting dynamicMaxLimit greater than zero enables dynamic max operation with the
 
 Maximum recall or a failed detector that is assigned to the associated phase shall disable dynamic max operation for the phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.18
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 ::= { phaseEntry 18 }
 
---5.2.2.19	Phase Dynamic Max Step
+--5.2.2.19  Phase Dynamic Max Step
 phaseDynamicMaxStep   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
-DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth seconds (0-25.5).
-
---REPLACE THE FOLLOWING WITH THIS IN NEW TABLE: This object shall determine the automatic adjustment to the running max in tenth seconds (0-25.5). When an ASC decides to adjust the runnning max for the phase, one dynamic max value shall be added or subtracted to the running max per cycle.
-
- 	When a phase maxes out twice in a row, and on each successive max out thereafter, one dynamic max step value shall be added to the running max until such addition would mean the running max was greater than the larger of normal max or dynamic max limit.
-
-When a phase gaps out twice in a row, and on each successive gap out thereafter, one dynamic max step value shall be subtracted from the running max until such subtraction would mean the running max was less than the smaller of the normal max or the dynamic max limit.
-
- 	If a phase gaps out in one cycle and maxes out in the next cycle, or vice versa, the running max will not change.
+UNITS	"decisecond"
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-write
+STATUS current
+DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth of seconds (0-25.5). If a phase gaps out in one cycle and maxes out in the next cycle, or vice versa, the running max will not change.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.19
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 ::= { phaseEntry 19 }
 
---5.2.2.20	Phase Startup
+--5.2.2.20  Phase Startup
 phaseStartup   OBJECT-TYPE
-SYNTAX INTEGER { other (1),
-phaseNotOn (2),
-greenWalk (3),
-greenNoWalk (4),
-yellowChange (5),
-redClear (6)}
-ACCESS read-write
-STATUS mandatory
-DESCRIPTION "<Definition> The Phase Startup parameter is an enumerated integer which selects the startup state for each phase after restoration of a defined power interruption or activation of the external start input. The following entries are defined:
-other: this phase is not enabled (phaseOptions bit 0=0 or phaseRing=0) or initializes in a state not defined by this standard.
-phaseNotOn: this phase initializes in a Red state (the phase is not active and no intervals are timing).
-greenWalk: this phase initializes at the beginning of the minimum green and walk timing intervals. 
-greenNoWalk: this phase initializes at the beginning of the minimum green timing interval.
-yellowChange: this phase initializes at the beginning of the Yellow Change interval.
-redClear: this phase initializes at the beginning of the Red Clearance interval.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.20
-<Object Type> P2"
-REFERENCE "NEMA TS 2 Clause 3.5.5.1 and 3.5.5.12"
-::= { phaseEntry 20 }
+    SYNTAX INTEGER { other (1),
+                       phaseNotOn (2),
+                       greenWalk (3),
+                       greenNoWalk (4),
+                       yellowChange (5),
+                       redClear (6)}
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "<Definition> The Phase Startup parameter is an enumerated integer which selects the startup state for each phase after restoration of a defined power interruption or activation of the external start input. The following entries are defined:
+        other: this phase is not enabled (phaseOptions bit 0=0 or phaseRing=0) or initializes in a state not defined by this standard.
+        phaseNotOn: this phase initializes in a Red state (the phase is not active and no intervals are timing).
+        greenWalk: this phase initializes at the beginning of the minimum green and walk timing intervals. 
+        greenNoWalk: this phase initializes at the beginning of the minimum green timing interval.
+        yellowChange: this phase initializes at the beginning of the Yellow Change interval.
+        redClear: this phase initializes at the beginning of the Red Clearance interval.
+        <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.20
+        <Object Type> P2"
+    REFERENCE "NEMA TS 2 Clause 3.5.5.1 and 3.5.5.12"
+    ::= { phaseEntry 20 }
 
---5.2.2.21	Phase Options
+--5.2.2.21  Phase Options
 phaseOptions   OBJECT-TYPE
-SYNTAX INTEGER (0..65535)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..65535)
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition>Optional phase functions ( 0 = False/
  Disabled, 1 = True/Enabled)
 Bit 15: AddedInitialCalculation - If set (1) the CU shall compare counts from all associated AddedInitial detectors and use the largest count value for the calculations. If clear (0) the CU shall sum all associated AddedInitial detector counts and use this sum for the calculations. The ability to modify the setting of this bit is optional.
 Bit 14: Conditional Service Enable - in multi-ring configurations when set to 1 causes a gapped/maxed phase to conditionally service a preceding actuated vehicle phase when sufficient time remains before max time out of the phase(s) not prepared to terminate. Support is optional.
- 	REFERENCE  NEMA TS 2 Clause 3.5.3.9
+    REFERENCE  NEMA TS 2 Clause 3.5.3.9
 Bit 13: Actuated Rest In Walk - when set to 1 causes an actuated phase to rest in Walk when there is no serviceable conflicting call at the end of Walk Timing. 
 Bit 12: Guaranteed Passage - when set to 1 enables an actuated phase operating in volume density mode (using gap reduction) to retain the right of way for the unexpired portion of the Passage time following the decision to terminate the green due to a reduced gap. Support is optional
 Bit 11: Simultaneous Gap Disable - in multi-ring configurations when set to 1 disables a gapped out phase from reverting to the extensible portion. Support is optional
- 	REFERENCE NEMA TS 2 Clause 3.5.5.3
+    REFERENCE NEMA TS 2 Clause 3.5.5.3
 Bit 10: Dual Entry Phase - in multi-ring configurations when set to 1 causes the phase to become active upon entry into a concurrency group (crossing a barrier) when no calls exist in its ring within its concurrency group.
- 	REFERENCE NEMA TS 2 Clause 3.5.5.3
+    REFERENCE NEMA TS 2 Clause 3.5.5.3
 Bit 9: Soft Vehicle Recall - when set to 1 causes a call on a phase when all conflicting phases are in green dwell or red dwell and there are no serviceable conflicting calls. Support is optional.
 Bit 8: Ped. Recall - when set to 1 causes a recurring pedestrian demand which shall function in the same manner as an external pedestrian call except that it shall not recycle the pedestrian service until a conflicting phase is serviced.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.7
+    REFERENCE NEMA TS 2 Clause 3.5.3.7
 Bit 7: Max Vehicle Recall - when set to 1 causes a call on a phase such that the timing of the Green interval for that phase shall be extended to Maximum Green time.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.5
+    REFERENCE NEMA TS 2 Clause 3.5.3.5
 Bit 6: Min. Vehicle Recall - when set to 1 causes recurring demand for vehicle service on the phase when that phase is not in its Green interval.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.6
+    REFERENCE NEMA TS 2 Clause 3.5.3.6
 Bit 5: Non Lock Detector Memory - when set to 0 will cause the call to be locked at the beginning of the yellow interval. When set to 1 call locking will depend on the detectorOptions object.
- 	REFERENCE NEMA TS 2 Clause 3.5.3.4
+    REFERENCE NEMA TS 2 Clause 3.5.3.4
 Bit 4: Non-Actuated 2 - when set to 1 causes a phase to respond to the Call To Non-Actuated 2 input (if present) or other method. Support is optional
- 	REFERENCE NEMA TS 2 Clause 3.5.5.5.8
+    REFERENCE NEMA TS 2 Clause 3.5.5.5.8
 Bit 3: Non-Actuated 1 - when set to 1 causes a phase to respond to the Call To Non-Actuated 1 input (if present) or other method. Support is optional
- 	REFERENCE NEMA TS 2 Clause 3.5.5.5.8
+    REFERENCE NEMA TS 2 Clause 3.5.5.5.8
 Bit 2: Automatic Flash Exit Phase - The CU shall move immediately to the beginning of the phase(s) programmed as Exit Phase(s) when Automatic Flash terminates. Support is optional
- 	REFERENCE NEMA TS 2 Clause 3.9.1.2.1
+    REFERENCE NEMA TS 2 Clause 3.9.1.2.1
 Bit 1: Automatic Flash Entry Phase - When Automatic Flash is called, the CU shall service the Entry Phase(s), clear to an All Red, then initiate flashing operation. Support is optional.
- 	REFERENCE NEMA TS 2 Clause 3.9.1.2.1
+    REFERENCE NEMA TS 2 Clause 3.9.1.2.1
 Bit 0: Enabled Phase - provide a means to define whether this phase is used in the current configuration. A disabled phase shall not provide any outputs nor respond to any phase inputs. The object phaseRing = 0 has the same effect.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.21
 <Object Type> P2"
 ::= { phaseEntry 21 }
 
---5.2.2.22	Phase Ring Parameter
+--5.2.2.22  Phase Ring Parameter
 phaseRing   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"ring"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase ring number (1..maxRings) that identified the ring which contains the associated  phase. This value must not exceed the maxRings object value. If the ring number is zero, the phase is disabled (phaseOptions Bit 0 = 0 has the same effect).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.22
-<Object Type> P2
-<Unit> ring"
+<Object Type> P2"
 ::= { phaseEntry 22 }
 
---5.2.2.23	Phase Concurrency
+--5.2.2.23  Phase Concurrency
 phaseConcurrency   OBJECT-TYPE
 SYNTAX OCTET STRING
-ACCESS read-write
-STATUS mandatory
-DESCRIPTION "<Definition>Each octet contains a phase number (binary value) that may run concurrently with the associated phase. Phases that are contained in the same ring may NOT run concurrently.
+MAX-ACCESS read-write
+STATUS current
+DESCRIPTION "<Definition>Each octet represents a phase number that may run concurrently with the associated phase. Phases that are contained in the same ring may NOT run concurrently.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.23
 <Object Type> P2"
 ::= { phaseEntry 23 }
 
---5.2.2.24	Phase Maximum Green 3 Parameter
+--5.2.2.24  Phase Maximum Green 3 Parameter
 phaseMaximum3  OBJECT-TYPE
-SYNTAX INTEGER (0..6000)--CHANGE TO 999 IN NEW TABLE
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..999)
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Phase Maximum 3 Parameter in seconds. This time setting shall determine the maximum length of time this phase may be held in Green in the presence of a serviceable conflicting call. In the absence of a serviceable conflicting call the Maximum Green timer shall be held reset unless Max Vehicle Recall is enabled for this phase. This may be implemented as the max green timer via an external input, coordMaximumMode or other method.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.24
 <Object Type> P
 <Unit> second"
 ::= { phaseEntry 24 }
 
---5.2.2.25	Phase Yellow and Red Change Time Before End of Ped Clearance Parameter
+--5.2.2.25  Phase Yellow and Red Change Time Before End of Ped Clearance Parameter
 phaseYellowandRedChangeTimeBeforeEndPedClear   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The amount of time that the pedestrian clearance may extend into the vehicle clearance time (yellow and red) for a phase. This parameter is expressed in 0.1 second increments ranging from 0.0 to 25.5 seconds.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.25
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 ::= { phaseEntry 25 }
 
---5.2.2.26	Pedestrian Phase Walk Recycle Parameter
+--5.2.2.26  Pedestrian Phase Walk Recycle Parameter
 phasePedWalkService   OBJECT-TYPE
-SYNTAX INTEGER (1..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (1..255)
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This parameter indicates whether and how many times this phase is allowed to recycle the pedestrian movement during a cycle. This parameter is used for ped-only, signalized intersections (mostly mid-block) that are within a coordinated roadway. If set to '1', no recycle is allowed and the pedestrian movement can be shown only up to once. If set to '2', the pedestrian movement can be shown up to twice during a cycle, etc.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.26
 <Object Type> P"
 ::= { phaseEntry 26 }
 
---5.2.2.27	Pedestrian Phase Dont Walk Revert Parameter
+--5.2.2.27  Pedestrian Phase Dont Walk Revert Parameter
 phaseDontWalkRevert   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> Dont Walk revert time parameter in tenth seconds. A minimum Dont Walk indication to be timed following the pedestrian clearance interval prior to the next Walk indication on the same signal output driver group.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.27
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 ::= { phaseEntry 27 }
 
---5.2.2.28	Phase Alternate Pedestrian Clearance Time Parameter
+--5.2.2.28  Phase Alternate Pedestrian Clearance Time Parameter
 phasePedAlternateClearance   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> An alternate (replacement) time, in seconds, for the duration of the pedestrian clearance output (if present) and the flashing period of the dont walk output. 
 This parameter may be used for a parallel pedestrian indication in conjunction with a vehicle phase or with a ped-only phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.28
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 ::= { phaseEntry 28 }
 
---5.2.2.29	Phase Alternate Pedestrian Walk Time Parameter
+--5.2.2.29  Phase Alternate Pedestrian Walk Time Parameter
 phasePedAlternateWalk   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> An alternate (replacement) time, in seconds,  for a pedestrian walk. This shall control the amount of time the Walk indication shall be displayed.
 This parameter may be used for a parallel pedestrian indication in conjunction with a vehicle phase or with a ped-only phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.29
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 ::= { phaseEntry 29 }
 
---5.2.2.30	Phase Pedestrian Advance Walk Time Parameter
+--5.2.2.30  Phase Pedestrian Advance Walk Time Parameter
 phasePedAdvanceWalkTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The amount of time, in tenths of a second from 0 to 25.5 seconds, that the vehicle phase's parallel pedestrian Walk indication starts before the start of the green indication of the vehicle phase. A value of 12.7 seconds indicates the pedestrian WALK indication starts 12.7 seconds before the GREEN indication of the vehicle phase. The actual offset used between the start of the pedestrian Walk indication and the start of the green indication of the vehicle phase is the sum of this object value plus the value in the phasePedDelayTime. 
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.30
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 DEFVAL { 0 }
 ::= { phaseEntry 30 }
 
---5.2.2.31	Phase Pedestrian Delay Walk Time Parameter
+--5.2.2.31  Phase Pedestrian Delay Walk Time Parameter
 phasePedDelayTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+UNITS	"decisecond"
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The amount of time, in tenths of a second from 0 to 25.5 seconds, that the vehicle phase's parallel pedestrian Walk indication starts after the start of the green indication of the vehicle phase. A value of 12.7 indicates the pedestrian WALK indication starts 12.7 seconds after the GREEN indication of the vehicle phase. The actual offset used between the start of the pedestrian Walk indication and the start of the green indication of the vehicle phase is the sum of this object value plus the value in the phasePedAdvanceWalkTime.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.31
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 DEFVAL { 0 }
 ::= { phaseEntry 31 }
 
---5.2.2.32	Phase Advanced Green Indication Start Time Parameter
+--5.2.2.32  Phase Advanced Green Indication Start Time Parameter
 phaseAdvWarnGrnStartTime   OBJECT-TYPE
-SYNTAX INTEGER (0..128)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..128)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The amount of time, in tenths of a second for a period of 0.0 to 12.8 seconds, that an advanced warning signal indication is displayed before the start of phase Green. The warning signal is placed upstream of the phase's approach and indicates that the phase's Green indication is about to start or has started.
-	The value of this object should not exceed the total amount of clearance time of the phase(s) that is being terminated prior to the start of this phase.
-	Note: The Advanced Warning Green terminates at the end of the green.
+    The value of this object should not exceed the total amount of clearance time of the phase(s) that is being terminated prior to the start of this phase.
+    Note: The Advanced Warning Green terminates at the end of the green.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.32
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 ::= { phaseEntry 32 }
 
---5.2.2.33	Phase Advanced Red Indication Start Time Parameter
+--5.2.2.33  Phase Advanced Red Indication Start Time Parameter
 phaseAdvWarnRedStartTime   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> The amount of time, in tenths of a second for a range of 0.0 to 25.5 seconds, prior to the start of the phase's RED indication that an advanced warning signal, placed upstream of the phase's approach, turns on.
-	Note: The Advanced Warning Red terminates at the end of Red.
+    Note: The Advanced Warning Red terminates at the end of Red.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.33
-<Object Type> P
-<Unit> tenth second"
+<Object Type> P"
 ::= { phaseEntry 33 }
 
---5.2.2.34	Phase Alternate Minimum Green Time During Transitions
+--5.2.2.34  Phase Alternate Minimum Green Time During Transitions
 phaseAltMinTimeTransition   OBJECT-TYPE
-SYNTAX INTEGER (0..255)
-ACCESS read-write
-STATUS mandatory
+SYNTAX Integer32 (0..255)
+UNITS	"second"
+MAX-ACCESS read-write
+STATUS current
 DESCRIPTION "<Definition> This object indicates the alternate minimum green time that is used during transitions, in seconds from 1 to 255 seconds. This object can be applied during transitions or signal priority. A value of 0 indicates that this object is not used during transitions. The alternate minimum green cannot be less than phaseMinimumGreen for this phase.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.34
-<Object Type> P
-<Unit> second"
+<Object Type> P"
 DEFVAL { 0 }
 ::= { phaseEntry 34 }
 
