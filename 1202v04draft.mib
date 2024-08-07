@@ -185,7 +185,7 @@ PhaseEntry ::= SEQUENCE {
     phaseConcurrency        OCTET STRING,
     phaseMaximum3       Integer32,
     phasePedBuffer      Integer32,
-    phasePedWalkService Integer32,
+    phasePedServiceLimit Integer32,
     phaseDontWalkRevert Integer32,
     phasePedAlternateClearance  Integer32,
     phasePedAlternateWalk       Integer32,
@@ -418,8 +418,8 @@ Maximum recall or a failed detector that is assigned to the associated phase sha
 
 --5.2.2.19  Phase Dynamic Max Step
 phaseDynamicMaxStep   OBJECT-TYPE
-UNITS	"decisecond"
 SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth of seconds (0-25.5). If a phase gaps out in one cycle and maxes out in the next cycle, or vice versa, the running max will not change.
@@ -589,8 +589,8 @@ DEFVAL { 0 }
 
 --5.2.2.31  Phase Pedestrian Delay Walk Time Parameter
 phasePedDelayTime   OBJECT-TYPE
-UNITS	"decisecond"
 SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> The amount of time, in tenths of a second from 0 to 25.5 seconds, that the vehicle phase's parallel pedestrian Walk indication starts after the start of the green indication of the vehicle phase. A value of 12.7 indicates the pedestrian WALK indication starts 12.7 seconds after the GREEN indication of the vehicle phase. The actual offset used between the start of the pedestrian Walk indication and the start of the green indication of the vehicle phase is the sum of this object value plus the value in the phasePedAdvanceWalkTime.
@@ -1040,7 +1040,7 @@ STATUS current
 
 --5.2.7 Phase Table
 phaseSetTable   OBJECT-TYPE
-SYNTAX SEQUENCE OF PhaseEntry
+SYNTAX SEQUENCE OF PhaseSetEntry
 MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> A table containing Controller Unit phase parameters.
@@ -1056,7 +1056,7 @@ MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> Parameters for a specific Controller Unit phase.
 <TableType> static
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.7.1"
+<Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.7.1"
 INDEX { phaseSetNumber, phaseNumber }
 ::= { phaseSetTable 1 }
 PhaseSetEntry ::= SEQUENCE { 
@@ -1082,7 +1082,7 @@ phaseSetDynamicMaxStep      	Integer32,
 phaseSetOptions             	Integer32, --NEED TO REVISE THESE PARAMETERS. POSSIBLY TYPE
 phaseSetMaximum3            	Integer32,
 phaseSetPedBuffer		Integer32,
-phaseSetPedWalkService          Integer32,
+phaseSetPedServiceLimit         Integer32,
 phaseSetDontWalkRevert          Integer32,
 phaseSetPedAlternateClearance   Integer32,
 phaseSetPedAlternateWalk        Integer32,
@@ -1093,7 +1093,7 @@ phaseSetAdvWarnRedStartTime     Integer32,
 phaseSetAltMinTimeTransition    Integer32 }
 
 --5.2.7.1   Phase Set Number
-phaseSetIndex   OBJECT-TYPE
+phaseSetNumber   OBJECT-TYPE
 SYNTAX Integer32 (1..255)
 MAX-ACCESS not-accessible
 STATUS current
@@ -1295,7 +1295,7 @@ REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
 ::= { phaseSetEntry 17 }
 
 --5.2.7.18  Phase Dynamic Max Limit
-phaseDynamicMaxLimit   OBJECT-TYPE
+phaseSetDynamicMaxLimit   OBJECT-TYPE
 SYNTAX Integer32 (0..255)
 UNITS	"decisecond"
 MAX-ACCESS read-write
@@ -1314,8 +1314,8 @@ Maximum recall or a failed detector that is assigned to the associated phase sha
 
 --5.2.7.19  Phase Dynamic Max Step
 phaseSetDynamicMaxStep   OBJECT-TYPE
-UNITS	"decisecond"
 SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This object shall determine the automatic adjustment to the running max in tenth of seconds (0-25.5). If a phase gaps out in one cycle and maxes out in the next cycle, or vice versa, the running max will not change.
@@ -1323,7 +1323,7 @@ DESCRIPTION "<Definition> This object shall determine the automatic adjustment t
 <Object Type> P"
 ::= { phaseSetEntry 19 }
 
---5.2.7.20  Phase Options -- UPDATE THIS OBJECT
+--5.2.7.20  Phase Options UPDATE THIS OBJECT
 phaseSetOptions   OBJECT-TYPE
 SYNTAX Integer32 (0..65535)
 MAX-ACCESS read-write
@@ -1442,8 +1442,8 @@ DEFVAL { 0 }
 
 --5.2.7.28  Phase Pedestrian Delay Walk Time Parameter
 phaseSetPedDelayTime   OBJECT-TYPE
-UNITS	"decisecond"
 SYNTAX Integer32 (0..255)
+UNITS	"decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> The amount of time, in tenths of a second from 0 to 25.5 seconds, that the vehicle phase's parallel pedestrian Walk indication starts after the start of the green indication of the vehicle phase. A value of 12.7 indicates the pedestrian WALK indication starts 12.7 seconds after the GREEN indication of the vehicle phase. The actual offset used between the start of the pedestrian Walk indication and the start of the green indication of the vehicle phase is the sum of this object value plus the value in the phasePedAdvanceWalkTime.
