@@ -199,7 +199,7 @@ PhaseEntry ::= SEQUENCE {
 --5.2.2.1   Phase Number
 phaseNumber   OBJECT-TYPE
 SYNTAX Integer32 (1..255)
-UNITS	"pattern"
+UNITS	"phase"
 MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> The phase number for objects in this row. This value shall not exceed the maxPhases object value.
