@@ -70,21 +70,25 @@
 -- 
 -- NTCIP is a trademark of AASHTO/ITE/NEMA.
 --**************************************************************************
+--**********************************************
 --
+
 -- simpleweb.org test compile
 --  NTCIP8004-Transportation.mib
 --  NTICP8004-NEMA.mib
 --  RFC1213-MIB-Modified.txt    <- added range to ifIndex
 --  ISO26048-1-FieldDevice-TC.mib
---
 
 -- 5.1 MIB Header
 NTCIP1202-v04 DEFINITIONS ::= BEGIN
+
+
 
 -- the following OBJECT IDENTIFIERS are used in the ASC MIB:
 IMPORTS
     IpAddress, Counter                      FROM RFC1155-SMI
     OBJECT-TYPE                             FROM RFC-1212
+
     DisplayString, ifIndex                  FROM RFC1213-MIB-Modified
     --zerodotzero                             FROM SNMPv2-SMI
     ITSOerString                            FROM ISO26048-1-FieldDevice-TC
@@ -95,6 +99,7 @@ IMPORTS
 --I think SMI v2 replaces null with zerodotzero from RFC2578? It seems we only use null for Object Identifiers
 -- Oerstring seems to be replaced by ITSOerString from the FieldDevice-TC mib?
 
+
     MODULE-IDENTITY, OBJECT-TYPE, OBJECT-IDENTITY, Integer32, Unsigned32
                                             FROM SNMPv2-SMI 
                                             -- RFC 2578
@@ -104,17 +109,18 @@ IMPORTS
     MODULE-COMPLIANCE, OBJECT-GROUP
                                             FROM SNMPv2-CONF
                                             -- RFC 2580
-;
 
 -- ****************************************************************************
 -- Administrative Objects
 -- ****************************************************************************
 asc MODULE-IDENTITY
   LAST-UPDATED "202408050500Z"
+
   ORGANIZATION "NTCIP ASC WG"
   CONTACT-INFO
    "name: NTCIP Coordinator
     email: ntcip@nema.org
+
     postal:  National Electrical Manufacturers Association
              1300 North 17th Street, Suite 1752
              Rosslyn, VA 22209-3801
@@ -131,17 +137,18 @@ asc MODULE-IDENTITY
   ::= { devices 1 }
 
 
-
 --5.2 Phase Parameters
 phase OBJECT-IDENTITY
     STATUS current
     DESCRIPTION  "<Definition> Phase parameters.
         for ASC traffic controllers.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1"
+
     ::= { asc 1 }
 
 -- This node shall contain objects that configure, monitor or 
 -- control phase functions for this device.
+
 
 --5.2.1 Maximum Phases
 maxPhases OBJECT-TYPE
@@ -205,7 +212,7 @@ PhaseEntry ::= SEQUENCE {
     phaseRing                   Integer32,
     phaseConcurrency            OCTET STRING,
     phaseMaximum3               Integer32,
-    phasePedBuffer              Integer32,
+    phasePedBufferDelay         Integer32,
     phasePedServiceLimit        Integer32,
     phaseDontWalkRevert         Integer32,
     phasePedAlternateClearance  Integer32,
@@ -218,6 +225,7 @@ PhaseEntry ::= SEQUENCE {
 
 
 --5.2.2.1   Phase Number
+
 phaseNumber OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "phase"
@@ -534,24 +542,6 @@ phaseDynamicMaxStep OBJECT-TYPE
         gaps out in one cycle and maxes out in the next cycle, or vice versa,
         the running max will not change.
 
-    -- (v04 check)
-        <Definition> This object shall determine the automatic adjustment
-        to the running max in tenths of seconds (0-25.5). When an ASC decides
-        to adjust the running max for the phase, one dynamic max value shall
-        be added or subtracted to the running max per cycle.
-
-        When a phase maxes out twice in a row, and on each successive max out
-        thereafter, one dynamic max step value shall be added to the running
-        max until such addition would mean the running max was greater than
-        the larger of normal max or dynamic max limit.
-
-        When a phase gaps out twice in a row, and on each successive gap out
-        thereafter, one dynamic max step value shall be subtracted from the
-        running max until such subtraction would mean the running max was less
-        than the smaller of the normal max or the dynamic max limit.
-
-        If a phase gaps out in one cycle and maxes out in the next cycle, or
-        vice versa, the running max will not change.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.19
     <Object Type> P"
     ::= { phaseEntry 19 }
@@ -586,7 +576,8 @@ phaseStartup OBJECT-TYPE
         <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.20
         <Object Type> P2
 
-        There is no object in the phaseSettable corresponding to phaseStartup"
+        The value of this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseStartup."
+
     REFERENCE "NEMA TS 2 Clause 3.5.5.1 and 3.5.5.12"
     ::= { phaseEntry 20 }
 
@@ -713,7 +704,7 @@ phaseMaximum3 OBJECT-TYPE
     ::= { phaseEntry 24 }
 
 --5.2.2.25  Phase Ped Buffer
-phasePedBuffer OBJECT-TYPE
+phasePedBufferDelay OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
     MAX-ACCESS read-write
@@ -929,6 +920,7 @@ phaseStatusGroupEntry OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.4.1"
     INDEX   { phaseStatusGroupNumber }
     ::= { phaseStatusGroupTable 1 }
+
  
 PhaseStatusGroupEntry ::= SEQUENCE { 
     phaseStatusGroupNumber      Integer32,
@@ -1357,10 +1349,10 @@ phaseControlGroupPedCall OBJECT-TYPE
     <Object Type> C"
     ::= { phaseControlGroupEntry 7 }
 
-
+--5.2.6 Maximum Phase Sets
 maxPhaseSets OBJECT-TYPE
     SYNTAX Integer32 (1..255)
-    UNITS "phaseSet"
+    UNITS "phase set"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION  "<Definition> The Maximum Number of Phase Sets this Controller
@@ -1371,7 +1363,7 @@ maxPhaseSets OBJECT-TYPE
     ::= { phase 6 }
 
 
---5.2.2 Phase Set Table
+--5.2.7 Phase Set Table
 phaseSetTable OBJECT-TYPE
     SYNTAX SEQUENCE OF PhaseSetEntry
     MAX-ACCESS not-accessible
@@ -1417,7 +1409,7 @@ PhaseSetEntry ::= SEQUENCE {
     phaseSetDynamicMaxStep          Integer32,
     phaseSetOptions                 Integer32,
     phaseSetMaximum3                Integer32,
-    phaseSetPedBuffer               Integer32,
+    phaseSetPedBufferDelay          Integer32,
     phaseSetPedServiceLimit         Integer32,
     phaseSetDontWalkRevert          Integer32,
     phaseSetPedAlternateClearance   Integer32,
@@ -1428,7 +1420,7 @@ PhaseSetEntry ::= SEQUENCE {
     phaseSetAdvWarnRedStartTime     Integer32,
     phaseSetAltMinTimeTransition    Integer32 }
 
---5.2.2.1   Phase Number
+--5.2.7.1   Phase Number
 phaseSetIndex OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "phaseSet"
@@ -1440,7 +1432,7 @@ phaseSetIndex OBJECT-TYPE
     <Object Type> S"
     ::= { phaseSetEntry 1 }
 
---5.2.2.2   Phase Walk Parameter
+--5.2.7.2   Phase Walk Parameter
 phaseSetWalk OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1456,7 +1448,7 @@ phaseSetWalk OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.2.a"
     ::= { phaseSetEntry 2 }
 
---5.2.2.3   Phase Pedestrian Clear Parameter
+--5.2.7.3   Phase Pedestrian Clear Parameter
 phaseSetPedestrianClear OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1474,7 +1466,7 @@ phaseSetPedestrianClear OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.2.b"
     ::= { phaseSetEntry 3 }
 
---5.2.2.4   Phase Minimum Green Parameter
+--5.2.7.4   Phase Minimum Green Parameter
 phaseSetMinimumGreen OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1490,7 +1482,7 @@ phaseSetMinimumGreen OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.a.(1)"
     ::= { phaseSetEntry 4 }
 
---5.2.2.5   Phase Passage Parameter
+--5.2.7.5   Phase Passage Parameter
 phaseSetPassage OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1510,7 +1502,7 @@ phaseSetPassage OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.a.(2)"
     ::= { phaseSetEntry 5 }
 
---5.2.2.6   Phase Maximum Green 1 Parameter
+--5.2.7.6   Phase Maximum Green 1 Parameter
 phaseSetMaximum1 OBJECT-TYPE
     SYNTAX Integer32 (0..999)
     UNITS "second"
@@ -1529,7 +1521,7 @@ phaseSetMaximum1 OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1, 3.5.3.2.1.a.(3) and 3.5.3.5"
     ::= { phaseSetEntry 6 }
 
---5.2.2.7   Phase Maximum Green 2 Parameter
+--5.2.7.7   Phase Maximum Green 2 Parameter
 phaseSetMaximum2 OBJECT-TYPE
     SYNTAX Integer32 (0..999)
     UNITS "second"
@@ -1549,7 +1541,7 @@ phaseSetMaximum2 OBJECT-TYPE
      and 3.5.4.1 (7)"
     ::= { phaseSetEntry 7 }
 
---5.2.2.8   Phase Yellow Change Parameter
+--5.2.7.8   Phase Yellow Change Parameter
 phaseSetYellowChange OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1564,7 +1556,7 @@ phaseSetYellowChange OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.5.a"
     ::= { phaseSetEntry 8 }
 
---5.2.2.9   Phase Red Clear Parameter
+--5.2.7.9   Phase Red Clear Parameter
 phaseSetRedClear OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1579,7 +1571,7 @@ phaseSetRedClear OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.5.b"
     ::= { phaseSetEntry 9 }
 
---5.2.2.10  Phase Red Revert
+--5.2.7.10  Phase Red Revert
 phaseSetRedRevert OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1598,7 +1590,7 @@ phaseSetRedRevert OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 10 }
 
---5.2.2.11  Phase Added Initial Parameter
+--5.2.7.11  Phase Added Initial Parameter
 phaseSetAddedInitial OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1614,7 +1606,7 @@ phaseSetAddedInitial OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(1).(b)"
     ::= { phaseSetEntry 11 }
 
---5.2.2.12  Phase Maximum Initial Parameter
+--5.2.7.12  Phase Maximum Initial Parameter
 phaseSetMaximumInitial OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1630,7 +1622,7 @@ phaseSetMaximumInitial OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.2.1.b.(1).(c)"
     ::= { phaseSetEntry 12 }
 
---5.2.2.13  Phase Time Before Reduction Parameter
+--5.2.7.13  Phase Time Before Reduction Parameter
 phaseSetTimeBeforeReduction OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1649,7 +1641,7 @@ phaseSetTimeBeforeReduction OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
     ::= { phaseSetEntry 13 }
 
---5.2.2.14  Phase Cars Before Reduction Parameter
+--5.2.7.14  Phase Cars Before Reduction Parameter
 phaseSetCarsBeforeReduction OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "vehicle"
@@ -1666,7 +1658,7 @@ phaseSetCarsBeforeReduction OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 14 }
 
---5.2.2.15  Phase Time To Reduce Parameter
+--5.2.7.15  Phase Time To Reduce Parameter
 phaseSetTimeToReduce OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1680,7 +1672,7 @@ phaseSetTimeToReduce OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
     ::= { phaseSetEntry 15 }
  
---5.2.2.16  Phase Reduce By
+--5.2.7.16  Phase Reduce By
 phaseSetReduceBy OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1695,7 +1687,7 @@ phaseSetReduceBy OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 16 }
 
---5.2.2.17  Phase Minimum Gap Parameter
+--5.2.7.17  Phase Minimum Gap Parameter
 phaseSetMinimumGap OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1711,7 +1703,7 @@ phaseSetMinimumGap OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
     ::= { phaseSetEntry 17 }
 
---5.2.2.18  Phase Dynamic Max Limit
+--5.2.7.18  Phase Dynamic Max Limit
 phaseSetDynamicMaxLimit OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1735,7 +1727,7 @@ phaseSetDynamicMaxLimit OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 18 }
 
---5.2.2.19  Phase Dynamic Max Step
+--5.2.7.19  Phase Dynamic Max Step
 phaseSetDynamicMaxStep OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1769,7 +1761,7 @@ phaseSetDynamicMaxStep OBJECT-TYPE
 --5.2.2.20  Phase Startup
 -- Note: There is no object corresponding to phaseStartup in phaseSetTable
 
---5.2.2.21  Phase Options
+--5.2.7.21  Phase Options
 phaseSetOptions OBJECT-TYPE
     SYNTAX Integer32 (0..65535)
     MAX-ACCESS read-write
@@ -1823,20 +1815,20 @@ phaseSetOptions OBJECT-TYPE
         Call To Non-Actuated 1 input (if present) or other method. Support is
         optional.
         REFERENCE NEMA TS 2 Clause 3.5.5.5.8
-    Bit 2: Not used (Automatic Flash Exit Phase only in object phaseOptions)
-    Bit 1: Not used (Automatic Flash Entry only in the object phaseOptions)
-    Bit 0: Not Used (Enabled Phase only in the object phaseOptions)
+    Bit 2: Reserved --Not used (Automatic Flash Exit Phase only in object phaseOptions)
+    Bit 1: Reserved --Not used (Automatic Flash Entry only in the object phaseOptions)
+    Bit 0: Reserved --Not Used (Enabled Phase only in the object phaseOptions)
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.7.1.20
     <Object Type> P2"
     ::= { phaseSetEntry 20 }
 
---5.2.2.22  Phase Ring Parameter
+--5.2.7.22  Phase Ring Parameter
 -- Note: There is no object corresponding to phaseRing in phaseSetTable
 
---5.2.2.23  Phase Concurrency
+--5.2.7.23  Phase Concurrency
 -- Note: There is no object corresponding to phaseConcurrency in phaseSetTable
 
---5.2.2.24  Phase Maximum Green 3 Parameter
+--5.2.7.24  Phase Maximum Green 3 Parameter
     phaseSetMaximum3 OBJECT-TYPE
     SYNTAX Integer32 (0..999)
     UNITS "second"
@@ -1853,8 +1845,8 @@ phaseSetOptions OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 21 }
 
---5.2.2.25  Phase Ped Buffer
-    phaseSetPedBuffer OBJECT-TYPE
+--5.2.7.25  Phase Ped Buffer Delay
+    phaseSetPedBufferDelay OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
     MAX-ACCESS read-write
@@ -1869,7 +1861,7 @@ phaseSetOptions OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 22 }
 
---5.2.2.26  Pedestrian Phase Walk Recycle Parameter
+--5.2.7.26  Pedestrian Phase Walk Recycle Parameter
     phaseSetPedServiceLimit OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     MAX-ACCESS read-write
@@ -1888,7 +1880,7 @@ phaseSetOptions OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 23 }
 
---5.2.2.27  Pedestrian Phase Dont Walk Revert Parameter
+--5.2.7.27  Pedestrian Phase Dont Walk Revert Parameter
 phaseSetDontWalkRevert OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1902,7 +1894,7 @@ phaseSetDontWalkRevert OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 24 }
 
---5.2.2.28  Phase Alternate Pedestrian Clearance Time Parameter
+--5.2.7.28  Phase Alternate Pedestrian Clearance Time Parameter
 phaseSetPedAlternateClearance OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1918,7 +1910,7 @@ phaseSetPedAlternateClearance OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 25 }
 
---5.2.2.29  Phase Alternate Pedestrian Walk Time Parameter
+--5.2.7.29  Phase Alternate Pedestrian Walk Time Parameter
 phaseSetPedAlternateWalk OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -1934,7 +1926,7 @@ phaseSetPedAlternateWalk OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 26 }
 
---5.2.2.30  Phase Pedestrian Advance Walk Time Parameter
+--5.2.7.30  Phase Pedestrian Advance Walk Time Parameter
 phaseSetPedAdvanceWalkTime OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1954,7 +1946,7 @@ phaseSetPedAdvanceWalkTime OBJECT-TYPE
     DEFVAL { 0 }
     ::= { phaseSetEntry 27 }
 
---5.2.2.31  Phase Pedestrian Delay Walk Time Parameter
+--5.2.7.31  Phase Pedestrian Delay Walk Time Parameter
 phaseSetPedDelayTime OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -1974,7 +1966,7 @@ phaseSetPedDelayTime OBJECT-TYPE
     DEFVAL { 0 }
     ::= { phaseSetEntry 28 }
 
---5.2.2.32  Phase Advanced Green Indication Start Time Parameter
+--5.2.7.32  Phase Advanced Green Indication Start Time Parameter
 phaseSetAdvWarnGrnStartTime OBJECT-TYPE
     SYNTAX Integer32 (0..128)
     UNITS "decisecond"
@@ -1994,7 +1986,7 @@ phaseSetAdvWarnGrnStartTime OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 29 }
 
---5.2.2.33  Phase Advanced Red Indication Start Time Parameter
+--5.2.7.33  Phase Advanced Red Indication Start Time Parameter
 phaseSetAdvWarnRedStartTime OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -2010,7 +2002,7 @@ phaseSetAdvWarnRedStartTime OBJECT-TYPE
     <Object Type> P"
     ::= { phaseSetEntry 30 }
 
---5.2.2.34  Phase Alternate Minimum Green Time During Transitions
+--5.2.7.34  Phase Alternate Minimum Green Time During Transitions
 phaseSetAltMinTimeTransition OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -2050,7 +2042,8 @@ maxVehicleDetectors OBJECT-TYPE
 
 --5.3.2 Vehicle Detector Parameter Table
 vehicleDetectorTable OBJECT-TYPE
-SYNTAX SEQUENCE OF VehicleDetectorEntryMAX-ACCESS not-accessible
+SYNTAX SEQUENCE OF VehicleDetectorEntry
+MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> A table containing Controller Unit vehicle detector parameters. The number of rows in this table is equal to the maxVehicleDetectors object.
 <TableType> static
@@ -2058,7 +2051,8 @@ DESCRIPTION "<Definition> A table containing Controller Unit vehicle detector pa
 ::= { detector 2 }
 
 vehicleDetectorEntry OBJECT-TYPE
-SYNTAX VehicleDetectorEntryMAX-ACCESS not-accessible
+SYNTAX VehicleDetectorEntry
+MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> Parameters for a specific Controller Unit detector.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1"
@@ -2089,7 +2083,8 @@ vehicleDetectorTravelMode   INTEGER }
 
 --5.3.2.1   Vehicle Detector Number
 vehicleDetectorNumber OBJECT-TYPE
-SYNTAX Integer32 (1..255)UNITS "detector"
+SYNTAX Integer32 (1..255)
+UNITS "detector"
 MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> The vehicle detector number for objects in this row. The value shall not exceed the maxVehicleDetectors object value.
@@ -2099,7 +2094,8 @@ DESCRIPTION "<Definition> The vehicle detector number for objects in this row. T
 
 --5.3.2.2   Vehicle Detector Options Parameter
 vehicleDetectorOptions OBJECT-TYPE
-SYNTAX Integer32 (0..255)MAX-ACCESS read-write
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Vehicle Detector Options Parameter as follows (0=Disabled, 1=Enabled):
 Bit 7: Call - if Enabled, the CU shall place a demand for vehicular service on the assigned phase when the phase is not timing the green interval and an actuation is present.
@@ -2120,7 +2116,8 @@ A SET of both bits 2 & 3 = 1 shall result in bit 2=1 and bit 3=0.
 --5.3.2.3   Vehicle Detector Call Phase Parameter
 vehicleDetectorCallPhase OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS "phase"MAX-ACCESS read-write
+UNITS "phase"
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This object contains assigned phase number for the detector input associated with this row. The associated detector call capability is enabled when this object is set to a non-zero value. The value shall not exceed the value of maxPhases.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.4
@@ -2131,7 +2128,8 @@ REFERENCE "NEMA TS 2 Clause 3.5.5.5.4 and 3.5.5.5.5"
 --5.3.2.4   Vehicle Detector Switch Phase Parameter
 vehicleDetectorSwitchPhase OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS "phase"MAX-ACCESS read-write
+UNITS "phase"
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Detector Switch Phase Parameter (i.e., Phase Number). The phase to which a vehicle detector actuation shall be switched when the assigned phase is Yellow or Red and the Switch Phase is Green.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.5
@@ -2141,7 +2139,8 @@ REFERENCE "NEMA TS 2 Clause 3.5.5.5.4.c"
 
 --5.3.2.5   Vehicle Detector Delay Parameter
 vehicleDetectorDelay OBJECT-TYPE
-SYNTAX Integer32 (0..65535)UNITS "decisecond"
+SYNTAX Integer32 (0..65535)
+UNITS "decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Detector Delay Parameter in tenth seconds (0-255.0 sec). The period a detector actuation (input recognition) shall be delayed when the phase is not Green. If a management station attempts to set a value between 2551 and 65535, inclusive, the parameter is undefined.
@@ -2152,7 +2151,8 @@ REFERENCE "NEMA TS 2 Clause 3.5.5.5.4.a"
 
 --5.3.2.6   Vehicle Detector Extend Parameter
 vehicleDetectorExtend OBJECT-TYPE
-SYNTAX Integer32 (0..255)UNITS "decisecond"
+SYNTAX Integer32 (0..255)
+UNITS "decisecond"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Detector Extend Parameter in tenth seconds (0-25.5 sec). The period a vehicle detector actuation (input duration) shall be extended from the point of termination, when the phase is Green.
@@ -2163,7 +2163,8 @@ REFERENCE "NEMA TS 2 Clause 3.5.5.5.4.b"
 
 --5.3.2.7   Vehicle Detector Queue Limit
 vehicleDetectorQueueLimit OBJECT-TYPE
-    SYNTAX Integer32 (0..255)    UNITS "second"
+    SYNTAX Integer32 (0..255)
+    UNITS "second"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Detector Queue Limit parameter in seconds 
@@ -2174,7 +2175,8 @@ vehicleDetectorQueueLimit OBJECT-TYPE
 
 --5.3.2.8   Vehicle Detector No Activity Parameter
 vehicleDetectorNoActivity OBJECT-TYPE
-SYNTAX Integer32 (0..255)UNITS "minute"
+SYNTAX Integer32 (0..255)
+UNITS "minute"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Detector No Activity diagnostic Parameter in minutes (0-255 min.). If an active detector does not exhibit an actuation in the specified period, it is considered a fault by the diagnostics and the detector is classified as Failed. A value of 0 for this object shall disable this diagnostic for this detector.
@@ -2186,7 +2188,8 @@ REFERENCE "NEMA TS 2 Clause 3.9.3.1.4.1"
 --5.3.2.9   Vehicle Detector Maximum Presence Parameter
 vehicleDetectorMaxPresence OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS "minute"MAX-ACCESS read-write
+UNITS "minute"
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Detector Maximum Presence diagnostic Parameter in minutes (0-255 min.). If an active detector exhibits continuous detection for too long a period, it is considered a fault by the diagnostics and the detector is classified as Failed. A value of 0 for this object shall disable this diagnostic for this detector.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.10
@@ -2197,7 +2200,8 @@ REFERENCE "NEMA TS 2 Clause 3.9.3.1.4.2"
 --5.3.2.10  Vehicle Detector Erratic Counts Parameter
 vehicleDetectorErraticCounts OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS "count"MAX-ACCESS read-write
+UNITS "count"
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Detector Erratic Counts diagnostic Parameter in counts/minute (0-255 cpm). If an active detector exhibits excessive actuations, it is considered a fault by the diagnostics and the detector is classified as Failed. A value of 0 for this object shall disable this diagnostic for this detector.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.11
@@ -2207,7 +2211,8 @@ REFERENCE "NEMA TS 2 Clause 3.9.3.1.4.3"
 
 --5.3.2.11  Vehicle Detector Fail Time Parameter
 vehicleDetectorFailTime OBJECT-TYPE
-SYNTAX Integer32 (0..255)    UNITS "second"
+SYNTAX Integer32 (0..255)
+    UNITS "second"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> Detector Fail Time in seconds (0..255 sec). If a detector diagnostic indicates that the associated detector input is failed, then a call shall be placed on the associated phase during all non-green intervals. When each green interval begins the call shall be maintained for the length of time specified by this object and then removed. If the value of this object equals the maximum value (255) then a constant call shall be placed on the associated phase (max recall). If the value of this object equals zero then no call shall be placed on the associated phase for any interval (no recall). Compliant devices may support a limited capability for this object (i.e. only max recall or max recall and no recall). At a minimum the max recall setting must be supported.
@@ -2217,7 +2222,8 @@ DESCRIPTION "<Definition> Detector Fail Time in seconds (0..255 sec). If a detec
 
 --5.3.2.12  Vehicle Detector Alarms
 vehicleDetectorAlarms OBJECT-TYPE
-SYNTAX Integer32 (0..255)MAX-ACCESS read-only
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> This object shall return indications of detector alarms. Detector Alarms are indicated as follows:
 Bit 7: Other Fault - The detector has failed due to some other cause.
@@ -2235,7 +2241,8 @@ Once set a bit shall maintain its state as long as the condition exists. The bit
 
 --5.3.2.13  Vehicle Detector Reported Alarms
 vehicleDetectorReportedAlarms OBJECT-TYPE
-SYNTAX Integer32 (0..255)MAX-ACCESS read-only
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> This object shall return detector device reported alarms (via some communications mechanism). Inductive Loop Detector Alarms are indicated as follows:
 Bit 7: Reserved.
@@ -2253,7 +2260,8 @@ Once set a bit shall maintain its state as long as the condition exists. The bit
 
 --5.3.2.14  Vehicle Detector Reset
 vehicleDetectorReset OBJECT-TYPE
-SYNTAX Integer32 (0..1)MAX-ACCESS read-write
+SYNTAX Integer32 (0..1)
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This object when set to TRUE (one) shall cause the CU to command the associated detector to reset. This object shall automatically return to FALSE (zero) after the CU has issued the reset command.
 Note: this may affect other detector (detector channels) that are physically attached to a common reset line.
@@ -2263,7 +2271,8 @@ Note: this may affect other detector (detector channels) that are physically att
 
 --5.3.2.15  Vehicle Detector Options 2
 vehicleDetectorOptions2 OBJECT-TYPE
-SYNTAX Integer32 (0..255)MAX-ACCESS read-write
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> A bit-mapped value as defined below for configuring detector options.
 <Format>
@@ -2278,7 +2287,8 @@ Speed Detector. If enabled, the detector is used to collect speed data (See volu
 
 --5.3.2.16  Vehicle Detector Paired Detector
 vehicleDetectorPairedDetector OBJECT-TYPE
-SYNTAX Integer32 (0..255)MAX-ACCESS read-write
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This is a detector identifier (vehicleDetectorNumber) that is used to determine speed. A value of 0 indicates there is no paired detector. Setting this value will automatically add this detector as the given detector's vehicleDetectorPairedDetector.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.17
@@ -2289,7 +2299,8 @@ DEFVAL { 0 }
 --5.3.2.17  Vehicle Detector Paired Detector Spacing
 vehicleDetectorPairedDetectorSpacing OBJECT-TYPE
 SYNTAX Integer32 (0..65535)
-UNITS "centimeter"MAX-ACCESS read-write
+UNITS "centimeter"
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This parameter allows the user to set the spacing, in 0.01 meters, between paired detectors for use in calculating vehicle speeds. This parameter is measured from the leading edge of one detector to the leading edge of the paired detector. A value of 0 indicates there is no paired detector.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.18
@@ -2300,7 +2311,8 @@ DEFVAL { 0 }
 --5.3.2.18  Vehicle Detector Average Vehicle Length
 vehicleDetectorAvgVehicleLength OBJECT-TYPE
 SYNTAX Integer32 (1..4000)
-UNITS "centimeter"MAX-ACCESS read-write
+UNITS "centimeter"
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This parameter allows the user to set the average vehicle length for use in determining speed and classification. This allows for a range of lengths between 0.01 meters to 40 meters in length.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.19
@@ -2310,7 +2322,8 @@ DESCRIPTION "<Definition> This parameter allows the user to set the average vehi
 --5.3.2.19  Vehicle Detector Length Parameter
 vehicleDetectorLength OBJECT-TYPE
 SYNTAX Integer32 (1..65535)
-UNITS "centimeter"MAX-ACCESS read-write
+UNITS "centimeter"
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This parameter allows the user to set the length of the detection zone. In the case of a loop detector, this is the length of the loop.
 <Valid Value Rule> Values 01 to 4000 are used to represent the length. This allows for a range of lengths between 0.01 meters to 40 meters in length. The value of 65535 shall be returned to represent no length set. Values 4001 to 65534 are not used.
@@ -2324,7 +2337,8 @@ vehicleDetectorTravelMode OBJECT-TYPE
 SYNTAX INTEGER { other (1),
                  vehicle (2),
                  transit (3),
-                 bicycle (4) }MAX-ACCESS read-write
+                 bicycle (4) }
+MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This parameter allows the user to identify detectors for specific types of travel modes.
 other: refers to a detector for a travel type not defined in this standard
@@ -2339,7 +2353,8 @@ DEFVAL { vehicle }
 --5.3.3 Maximum Vehicle Detector Status Groups
 maxVehicleDetectorStatusGroups OBJECT-TYPE
 SYNTAX Integer32 (1..255)
-UNITS "group"MAX-ACCESS read-only
+UNITS "group"
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> The maximum number of detector status groups (8 detectors per group) this device supports. This value is equal to TRUNCATE [(maxVehicleDetectors + 7 ) / 8]. This object indicates the maximum number of rows which shall appear in the vehicleDetectorStatusGroupTable object.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.3
@@ -2348,7 +2363,8 @@ DESCRIPTION "<Definition> The maximum number of detector status groups (8 detect
 
 --5.3.4 Vehicle Detector Status Group Table
 vehicleDetectorStatusGroupTable OBJECT-TYPE
-SYNTAX SEQUENCE OF VehicleDetectorStatusGroupEntryMAX-ACCESS not-accessible
+SYNTAX SEQUENCE OF VehicleDetectorStatusGroupEntry
+MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> A table containing detector status in groups of eight detectors. The number of rows in this table is equal to the maxVehicleDetectorStatusGroups object.
 <TableType> static
@@ -2356,7 +2372,8 @@ DESCRIPTION "<Definition> A table containing detector status in groups of eight 
 ::= { detector 4 }
 
 vehicleDetectorStatusGroupEntry OBJECT-TYPE
-SYNTAX VehicleDetectorStatusGroupEntryMAX-ACCESS not-accessible
+SYNTAX VehicleDetectorStatusGroupEntry
+MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> A group (row) of detector status.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.4.1"
@@ -2371,7 +2388,8 @@ vehicleDetectorStatusGroupAlarms    INTEGER }
 --5.3.4.1   Detector Status Group Number
 vehicleDetectorStatusGroupNumber OBJECT-TYPE
 SYNTAX Integer32 (1..255)
-UNITS "group"MAX-ACCESS read-only
+UNITS "group"
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> The detector status group number for objects in this row. This value shall not exceed the maxVehicleDetectorStatusGroups object value.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.4.1.1
@@ -2380,7 +2398,8 @@ DESCRIPTION "<Definition> The detector status group number for objects in this r
 
 --5.3.4.2   Detector Status Group Active
 vehicleDetectorStatusGroupActive OBJECT-TYPE
-SYNTAX Integer32 (0..255)MAX-ACCESS read-only
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> This object shall return the detection STATUS of each detector associated with the group. Each detector shall be represented as ON (detect) or OFF (no-detect) by individual bits in this object. If a detector is ON then the associated bit shall be set (1). If a detector is OFF then the associated bit shall be clear (0).
 Bit 7: Det # = ( vehicleDetectorStatusGroupNumber * 8)
@@ -2397,7 +2416,8 @@ Bit 0: Det # = ( vehicleDetectorStatusGroupNumber * 8) - 7
 
 --5.3.4.3   Detector Alarm Status
 vehicleDetectorStatusGroupAlarms OBJECT-TYPE
-SYNTAX Integer32 (0..255)MAX-ACCESS read-only
+SYNTAX Integer32 (0..255)
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> This object shall return the alarm status of the detectors associated with the group. Each detector alarm status shall be represented as ON or OFF by individual bits in this object. If any detector alarm (defined in the vehicleDetectorAlarm object) is active the associated bit shall be set (1). If a detector alarm is not active the associated bit shall be clear (0).
 Bit 7: Det # = ( vehicleDetectorStatusGroupNumber * 8)
@@ -2422,7 +2442,8 @@ volumeOccupancyReport   OBJECT IDENTIFIER
 --5.3.5.1   Volume / Occupancy Sequence
 volumeOccupancySequence OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS "sequence"MAX-ACCESS read-only
+UNITS "sequence"
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> This object defines a Sequence Number for Volume/Occupancy data collection. This object is used to detect duplicate or missing reports. The value cycles within the limits of 0 to 255. This object is incremented by one at the expiration of the volumeOccupancyPeriod time.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.5.1
@@ -2431,7 +2452,8 @@ DESCRIPTION "<Definition> This object defines a Sequence Number for Volume/Occup
 
 --5.3.5.2   Volume / Occupancy Period
 volumeOccupancyPeriod OBJECT-TYPE
-SYNTAX Integer32 (0..255)UNITS "second"
+SYNTAX Integer32 (0..255)
+UNITS "second"
 MAX-ACCESS read-write
 STATUS current
 DESCRIPTION "<Definition> This object defines the number of seconds (0-255 sec) that comprise the Volume/Occupancy/Speed collection period. When the collection period expires the device shall increment the volumeOccupancySequence, update the volumeOccupancyTable entries and reset the volume occupancy timer. If the value is 0, the value in volumeOccupancyPeriodV3 is used if supported. If both the volumeOccupancyPeriod and volumeOccupancyPeriodV3 are 0, then no sampling is to be performed. If both the volumeOccupancyPeriod and volumeOccupancyPeriodV3 are non-zero then the volumeOccupancyPeriod takes precedence.
@@ -2442,7 +2464,8 @@ DESCRIPTION "<Definition> This object defines the number of seconds (0-255 sec) 
 --5.3.5.3   Active Volume / Occupancy Detectors
 activeVolumeOccupancyDetectors OBJECT-TYPE
 SYNTAX Integer32 (0..255)
-UNITS "detector"MAX-ACCESS read-only
+UNITS "detector"
+MAX-ACCESS read-only
 STATUS current
 DESCRIPTION "<Definition> The number of detectors in this device. This object indicates how many rows are in the volumeOccupancyTable object. There shall be a row for every detector that is collecting volume, occupancy, or speed data (refer to detectorOptions in the detectorTable).
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.5.3
@@ -2451,7 +2474,8 @@ DESCRIPTION "<Definition> The number of detectors in this device. This object in
 
 --5.3.5.4   Volume / Occupancy Table
 volumeOccupancyTable OBJECT-TYPE
-SYNTAX SEQUENCE OF VolumeOccupancyEntryMAX-ACCESS not-accessible
+SYNTAX SEQUENCE OF VolumeOccupancyEntry
+MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> A table containing Detector Volume, Occupancy and Speed data collected. The number of rows in this table is equal to the activeVolumeOccupancyDetectors object.
 <TableType> static
@@ -2459,7 +2483,8 @@ DESCRIPTION "<Definition> A table containing Detector Volume, Occupancy and Spee
 ::= { volumeOccupancyReport 4 }
 
 volumeOccupancyEntry OBJECT-TYPE
-SYNTAX VolumeOccupancyEntryMAX-ACCESS not-accessible
+SYNTAX VolumeOccupancyEntry
+MAX-ACCESS not-accessible
 STATUS current
 DESCRIPTION "<Definition> The Volume, Occupancy and Speed data collected for one of the detectors in the device.
 <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.5.4.1"
