@@ -1367,7 +1367,6 @@ phaseControlGroupPedCall OBJECT-TYPE
 maxPhaseSets OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "phase set"
->>>>>>> main
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION  "<Definition> The Maximum Number of Phase Sets this Controller
@@ -1377,10 +1376,7 @@ maxPhaseSets OBJECT-TYPE
     <Object Type> S"
     ::= { phase 6 }
 
-
-
 --5.2.7 Phase Set Table
->>>>>>> main
 phaseSetTable OBJECT-TYPE
     SYNTAX SEQUENCE OF PhaseSetEntry
     MAX-ACCESS not-accessible
