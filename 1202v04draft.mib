@@ -755,6 +755,7 @@ phasePedServiceLimit OBJECT-TYPE
         This object was named phasePedWalkService in 1202v03.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.26
     <Object Type> P"
+    DEFVAL { 0 }
     ::= { phaseEntry 26 }
 
 --5.2.2.27  Pedestrian Phase Dont Walk Revert Parameter
@@ -3398,7 +3399,7 @@ vehicleDetectorControlGroupActuation OBJECT-TYPE
         The device shall reset this object to ZERO when in BACKUP Mode. A
         write to this object shall reset the Backup timer to ZERO
         (see unitBackupTime).
-    <Object Type> P
+    <Object Type> C
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.12.1.2"
     ::= { vehicleDetectorControlGroupEntry 2 }
 
