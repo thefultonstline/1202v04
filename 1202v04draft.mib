@@ -5568,7 +5568,7 @@ other: the operation is not specified in this standard
 none: no split mode control.
 minimumVehicleRecall: this phase operates with a minimum vehicle recall.
 maximumVehicleRecall: this phase operates with a maximum vehicle recall. This value shall also be used for bicycle phase recalls and transit phase recalls.
-pedestrianRecall: this phase operates with a pedestrian recall.
+pedestrianRecall: this phase operates with a pedestrian recall. The settings for minimumVehicleRecall also apply.
 maximumVehicleAndPedestrianRecall: this phase operates with a maximum vehicle & pedestrian recall.
 phaseOmitted: this phase is omitted.
 nonActuated: this phase operates with a fixed split time.
