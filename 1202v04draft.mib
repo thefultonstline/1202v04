@@ -5359,6 +5359,7 @@ patternSplitNumber OBJECT-TYPE
     DESCRIPTION "<Definition> This object is used to locate information in the splitTable to use for this pattern. This value shall not exceed the maxSplits object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.4
     <Object Type> P"
+    DEFVAL { 1 }
     ::= { patternEntry 4 }
 
 --5.5.7.5   Pattern Sequence Number Parameter
@@ -5370,6 +5371,7 @@ patternSequenceNumber OBJECT-TYPE
     DESCRIPTION "<Definition> This object is used to locate information in the sequenceTable to use with this pattern. This value shall not exceed the maxSequences object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.5
     <Object Type> P"
+    DEFVAL { 1 }
     ::= { patternEntry 5 }
 
 --5.5.7.6   Pattern Coordination Sync Point
