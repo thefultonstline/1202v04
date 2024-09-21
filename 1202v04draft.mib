@@ -6555,7 +6555,7 @@ PreemptGateEntry ::= SEQUENCE {
 
 --5.7.9.1   Preempt Gate Number
 preemptGateNumber OBJECT-TYPE
-    SYNTAX Integer32 (1..8)
+    SYNTAX Integer32 (1..255)
     MAX-ACCESS not-accessible
     STATUS current
     DESCRIPTION "<Definition> The Preempt Gate number for objects in this row.
@@ -6565,8 +6565,8 @@ preemptGateNumber OBJECT-TYPE
 
 --5.7.9.2   Preempt Gate Status
 preemptGateStatus OBJECT-TYPE
-    SYNTAX INTEGER { unknown(1),
-                     other(2),
+    SYNTAX INTEGER { other(1),
+                     unknown(2),
                      up(3),
                      down(4) }
     MAX-ACCESS read-only
