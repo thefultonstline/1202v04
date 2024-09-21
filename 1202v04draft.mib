@@ -6672,7 +6672,7 @@ sequenceData OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Each octet is a Phase Number (binary value) within the associated ring number. The phase number value shall not exceed the maxPhases object value. The order of phase numbers determines the phase sequence for the ring. The phase numbers shall not be ordered in a manner that would violate the Consistency Checks defined in Section 4.3.2.
+    DESCRIPTION "<Definition> Each octet is a Phase Number (binary value) within the associated ring number. The phase number value shall not exceed the maxPhases object value. The order of phase numbers determines the phase sequence for the ring. The phase numbers shall not be ordered in a manner that would violate the Consistency Checks defined in Section 4.3.2. Additonally, this object does not specify where barriers are present in the ring - the presences of barriers is determined by phaseConcurrency.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.7.3.1.3
     <Object Type> P2"
     ::= { sequenceEntry 3 }
