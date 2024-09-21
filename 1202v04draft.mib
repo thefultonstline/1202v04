@@ -7516,6 +7516,7 @@ overlapType OBJECT-TYPE
         violation of MUTCD operational guidelines.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.9.2.1.2
     <Object Type> P"
+    DEFVAL {2}
     ::= { overlapEntry 2 }
 
 --5.10.2.3  Overlap Included Phase Parameter
