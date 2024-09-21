@@ -5656,7 +5656,7 @@ An ASC may provide diagnostics beyond those stated herein. Therefore, for a set 
 
 --5.5.12    Coordination Cycle Status
 coordCycleStatus OBJECT-TYPE
-    SYNTAX Integer32 (0..510)
+    SYNTAX Integer32 (0..1898)
     UNITS "second"
     MAX-ACCESS read-only
     STATUS current
@@ -5667,7 +5667,7 @@ coordCycleStatus OBJECT-TYPE
 
 --5.5.13    Coordination Sync Status
 coordSyncStatus OBJECT-TYPE
-    SYNTAX Integer32 (0..510)
+    SYNTAX Integer32 (0..1898)
     UNITS "second"
     MAX-ACCESS read-only
     STATUS current
