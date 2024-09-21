@@ -5776,10 +5776,8 @@ timebaseAscPatternSync OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Pattern Sync Reference in minutes past
-        midnight. When the value is 65535, the controller unit shall use the
-        Action time as the Sync Reference for that pattern. Action time is the
-        hour and minute associated with the active dayPlanEventNumber (as
-        defined in NTCIP 1201).
+        midnight. This is the time that the master cycle is relative is relative to. When the value is 65535, the controller unit shall use the
+        Action time as the Sync Reference for that pattern. This value is defined in ISO 26048-1.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.5.1
     <Object Type> P"
     REFERENCE "NEMA TS 2 Clause 3.8.2"
@@ -5835,8 +5833,7 @@ timebaseAscActionNumber OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> The time base Action number for objects in this
         row. This value shall not exceed the maxTimebaseAscActions object
-        value. This object may be defined as a dayPlanActionOID (as defined
-        in NTCIP 1201).
+        value. This value may be referenced by ISO 26048-1. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.5.3.1.1
     <Object Type> S"
     ::= { timebaseAscActionEntry 1 }
@@ -8132,7 +8129,7 @@ ascBlockData OBJECT-TYPE
     SYNTAX OCTET STRING (SIZE(6..65535))
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> An OER encoded string used for uploading and downloading ASC parameters. See SECTION 6 for encoding and decoding the block. A SET on this object shall require the use of 'dbCreateTransaction' defined in NTCIP 1201 Clause 2.3.1.
+    DESCRIPTION "<Definition> An OER encoded string used for uploading and downloading ASC parameters. See SECTION 6 for encoding and decoding the block. A SET on this object shall require the use of the Transaction feature defined in ISO 26048-1. 
 
 A SET of this object shall be evaluated for validity and Error Status of badValue(3) be returned for the following conditions:
 1) ascBlockDataType is not supported
@@ -8582,7 +8579,7 @@ ascIOactiveMap OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object selects the active I/O map.         This object has to be changed as part of a 1201 Database Transaction (see the dbCreateTransaction object). A Database Transaction that changes this object or edits the currently active I/O map has to satisfy the activation requirements in ascIOactivateRequirement at the time dbCreateTransaction is set to verify (3) for the transaction to successfully verify.
+    DESCRIPTION "<Definition> This object selects the active I/O map. This object has to be changed using the Transaction feature defined in ISO 26048-1. A Database Transaction that changes this object or edits the currently active I/O map has to satisfy the activation requirements in ascIOactivateRequirement at the time fdTransactionMode is set to verify (3) for the transaction to successfully verify.
 
       The value of this object cannot exceed the value of ascIOmaxMaps.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.13.1.2
