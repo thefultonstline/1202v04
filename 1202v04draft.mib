@@ -6513,7 +6513,7 @@ preemptDetectorWeight OBJECT-TYPE
     SYNTAX Integer32 (0..1000) 
     MAX-ACCESS read-write 
     STATUS current 
-    DESCRIPTION "<Definition> This object defines the relative weight for the associated detector when using the detector data to determine the queue delay recovery exit strategy from a preempt input. The association between the vehicleDetectorNumber and a phase is identified by the vehicleDetectorCallPhase.
+    DESCRIPTION "<Definition> This object defines the relative weight for the associated detector when using the detector data to determine the queue delay recovery exit strategy from a preempt input. The association between the vehicleDetectorNumber and a phase is identified by the vehicleDetectorCallPhase. A higher number for this object indicates a larger weight for the demand and wait time for that phase.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.7.1.1
     <Object Type> P"
     ::= { preemptQueueDelayEntry 1 }
