@@ -6368,7 +6368,10 @@ preemptSequenceNumber OBJECT-TYPE
     UNITS "sequence"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to configure the sequenceNumber to run during the preempt's dwell duration. This value shall not exceed the maxSequences object value.
+    DESCRIPTION "<Definition> This object is used to configure the sequence to run during the preempt's dwell duration. The selected sequence defines the order in which the phases defined the preemptCyclingPhase and preemptCyclingPed objects are allowed to cycle. Phases in the selected sequence that are not defined in preemptCyclingPhase nor preemptCyclingPed do not cycle. 
+
+This value is a sequenceNumber used to select a sequence from the sequenceTable and shall not exceed the maxSequences object value.
+
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.26
     <Object Type> P"
     ::= { preemptEntry 26 }
