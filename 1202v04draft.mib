@@ -726,9 +726,8 @@ phasePedClearDuringVehicleClear OBJECT-TYPE
         phase. This parameter is expressed in 0.1 second increments ranging
         from 0.0 to 25.5 seconds.
 
-
         This object corresponds to the object
-        phaseSet PedClearDuringVehicleClear.1.n in the phaseSetTable.
+        phaseSetPedClearDuringVehicleClear.1.n in the phaseSetTable.
 
         This object was named phaseYellowandRedChangeTimeBeforeEndPedClear in
         1202v03.
