@@ -232,7 +232,8 @@ PhaseEntry ::= SEQUENCE {
     phasePedDelayTime               Integer32, --deprecated
     phaseAdvWarnGrnStartTime        Integer32,
     phaseAdvWarnRedStartTime        Integer32,
-    phaseAltMinTimeTransition       Integer32 }
+    phaseAltMinTimeTransition       Integer32,
+    phasePedStartOffset             Integer32    }
 
 
 --5.2.2.1   Phase Number
