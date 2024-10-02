@@ -8283,7 +8283,7 @@ maxCabinetEnvironDevices OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "device" -- number? v04 check
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The maximum number of environmental monitoring devices this CU supports. This object indicates the maximum rows which shall appear in the cabinetEnvironDevicesTable object.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.1
     <Object Type> S"
@@ -8293,7 +8293,7 @@ maxCabinetEnvironDevices OBJECT-TYPE
 cabinetEnvironDevicesTable OBJECT-TYPE
     SYNTAX SEQUENCE OF CabinetEnvironDevicesEntry
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> A table containing the parameters of the environmental monitoring devices contained in the cabinet. The number of rows in this table is equal to the maxCabinetEnvironDevices object.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.2
     <TableType> static"
@@ -8302,26 +8302,26 @@ cabinetEnvironDevicesTable OBJECT-TYPE
 cabinetEnvironDevicesEntry OBJECT-TYPE
     SYNTAX CabinetEnvironDevicesEntry
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Parameters for a specific CU cabinet environmental condition monitoring device.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.2.1"
     INDEX   { cabinetEnvironDeviceNumber, cabinetEnvironDeviceIndex }
     ::= { cabinetEnvironDevicesTable 1 }
 
 CabinetEnvironDevicesEntry ::= SEQUENCE { 
-    cabinetEnvironDeviceNumber      INTEGER,
-    cabinetEnvironDeviceType        INTEGER,
-    cabinetEnvironDeviceIndex       INTEGER,
-    cabinetEnvironDeviceDescription DisplayString,
-    cabinetEnvironDeviceOnStatus    INTEGER,
-    cabinetEnvironDeviceErrorStatus INTEGER }
+    cabinetEnvironDeviceNumber      INTEGER, --deprecated
+    cabinetEnvironDeviceType        INTEGER, --deprecated
+    cabinetEnvironDeviceIndex       INTEGER, --deprecated
+    cabinetEnvironDeviceDescription DisplayString, --deprecated
+    cabinetEnvironDeviceOnStatus    INTEGER, --deprecated
+    cabinetEnvironDeviceErrorStatus INTEGER } --deprecated
 
 --5.13.2.1  Cabinet Environmental Monitoring Device Number
 cabinetEnvironDeviceNumber OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "device"
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The environmental monitoring number for objects in this row. This value shall not exceed the maxCabinetEnvironDevices object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.2.1.1
     <Object Type> S"
@@ -8335,7 +8335,7 @@ cabinetEnvironDeviceType OBJECT-TYPE
     heater (4),
     floatSwitch (5)}
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The type of environment monitoring device to monitor the cabinet is an enumerated integer.
 other: the type of environmental monitoring device is not defined by this standard.
 door: this cabinet environmental monitoring device is a door to the cabinet.
@@ -8350,7 +8350,7 @@ floatSwitch: this cabinet environmental monitoring device is a float switch for 
 cabinetEnvironDeviceIndex OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The index for the cabinetEnvironDeviceType. This value allows support for multiple sensors of a specific environment monitoring device type.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.2.1.3
     <Object Type> S"
@@ -8360,7 +8360,7 @@ cabinetEnvironDeviceIndex OBJECT-TYPE
 cabinetEnvironDeviceDescription OBJECT-TYPE
     SYNTAX DisplayString (SIZE (0..64))
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Human-readable description of the cabinet
         environmental device. This value should provide enough information for
         maintenance personnel to identify the type (door, fan, heater, etc.)
@@ -8375,7 +8375,7 @@ cabinetEnvironDeviceOnStatus OBJECT-TYPE
     SYNTAX INTEGER { true (1),
                      false (2) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates if this environmental monitoring
         device is on/open or off/closed. A bit orientation of 1 (true)
         indicates the environmental monitoring device is on, or in the case
@@ -8393,7 +8393,7 @@ cabinetEnvironDeviceErrorStatus OBJECT-TYPE
                      fail (3),
                      notMonitored (4) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the current status of the
         environmental monitoring device.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.2.1.6
@@ -8405,7 +8405,7 @@ maxCabinetTempSensors OBJECT-TYPE
     SYNTAX Integer32 (0..16)
     UNITS "temperature sensor" -- sensor? v04 check
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the number of rows in the cabinetTempSensorStatusTable. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.3
     <Object Type> S"
@@ -8415,7 +8415,7 @@ maxCabinetTempSensors OBJECT-TYPE
 cabinetTempSensorStatusTable OBJECT-TYPE
     SYNTAX SEQUENCE OF CabinetTempSensorStatusEntry 
     MAX-ACCESS not-accessible 
-    STATUS current 
+    STATUS deprecated 
     DESCRIPTION "<Definition> A table containing status information for each temperature sensor within a CU and CU cabinet. 
 <Table Type> static 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4"
@@ -8424,25 +8424,25 @@ cabinetTempSensorStatusTable OBJECT-TYPE
 cabinetTempSensorStatusEntry OBJECT-TYPE 
     SYNTAX CabinetTempSensorStatusEntry 
     MAX-ACCESS not-accessible 
-    STATUS current 
+    STATUS deprecated
     DESCRIPTION "<Definition> An entry in the cabinet temperature sensor status table.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4.1"
     INDEX { cabinetTempSensorIndex } 
     ::= { cabinetTempSensorStatusTable 1} 
 
 CabinetTempSensorStatusEntry ::= SEQUENCE {
-    cabinetTempSensorIndex          INTEGER,
-    cabinetTempSensorDescription    DisplayString,
-    cabinetTempSensorCurrentReading INTEGER,
-    cabinetTempSensorHighThreshold  INTEGER,
-    cabinetTempSensorLowThreshold   INTEGER,
-    cabinetTempSensorStatus         INTEGER }
+    cabinetTempSensorIndex          INTEGER, --deprecated
+    cabinetTempSensorDescription    DisplayString, --deprecated
+    cabinetTempSensorCurrentReading INTEGER, --deprecated
+    cabinetTempSensorHighThreshold  INTEGER, --deprecated
+    cabinetTempSensorLowThreshold   INTEGER, --deprecated
+    cabinetTempSensorStatus         INTEGER } --deprecated
 
 --5.13.4.1  Cabinet Temperature Sensor Index
 cabinetTempSensorIndex OBJECT-TYPE
     SYNTAX Integer32 (1..16)
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Index of the cabinet temperature sensor status table. This value shall not exceed maxCabinetTempSensors.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4.1.1
     <Object Type> S"
@@ -8452,7 +8452,7 @@ cabinetTempSensorIndex OBJECT-TYPE
 cabinetTempSensorDescription OBJECT-TYPE
     SYNTAX DisplayString (SIZE (0..64))
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Human-readable description of the temperature sensor. This value should provide enough information for maintenance personnel to identify the physical location of the temperature sensor within the CU or CU cabinet. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4.1.2
     <Object Type> S" 
@@ -8463,7 +8463,7 @@ cabinetTempSensorCurrentReading OBJECT-TYPE
     SYNTAX Integer32  (-128..127)
     UNITS "degree Celsius"
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the current reading, in degrees Celsius, of the temperature sensor.
 <Valid Value Rule> The value -127 shall indicate a temperature of -127 degrees Celsius or lower. The value 127 shall indicate a temperature of 127 degrees Celsius or higher. The value -128 shall indicate an error condition or missing value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4.1.3
@@ -8476,7 +8476,7 @@ cabinetTempSensorHighThreshold OBJECT-TYPE
     SYNTAX Integer32  (-128..127)
     UNITS "degree Celsius"
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the high value of the temperature, in degrees Celsius, associated with this temperature sensor above which would generate a warning (Bit 3 of unitAlarmStatus4). This value should not be lower than the value of the cabinetTempSensorLowThreshold object.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4.1.4
     <Object Type> P"
@@ -8487,7 +8487,7 @@ cabinetTempSensorLowThreshold OBJECT-TYPE
     SYNTAX Integer32 (-128..127)
     UNITS "degree Celsius"
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the low value of the temperature, in degrees Celsius, associated with this temperature sensor below which would generate a warning (Bit 3 of unitAlarmStatus4). This value should not be higher than the value of the cabinetTempSensorHighThreshold object.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4.1.5
     <Object Type> P"
@@ -8499,7 +8499,7 @@ cabinetTempSensorStatus OBJECT-TYPE
                      noError (2),
                      fail (3) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the current status of the indicated temperature sensor. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.4.1.6
     <Object Type> P" 
@@ -8510,7 +8510,7 @@ maxCabinetHumiditySensors OBJECT-TYPE
     SYNTAX Integer32 (0..16)
     UNITS "humidity sensor"
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the number of rows in the cabinetHumiditySensorStatusTable.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.5
     <Object Type> P"
@@ -8520,7 +8520,7 @@ maxCabinetHumiditySensors OBJECT-TYPE
 cabinetHumiditySensorStatusTable OBJECT-TYPE
     SYNTAX SEQUENCE OF CabinetHumiditySensorStatusEntry 
     MAX-ACCESS not-accessible 
-    STATUS current 
+    STATUS deprecated 
     DESCRIPTION "<Definition> A table containing status information for each humidity sensor within a CU cabinet. 
 <Table Type> static 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.6" 
@@ -8536,17 +8536,17 @@ cabinetHumiditySensorStatusEntry OBJECT-TYPE
     ::= { cabinetHumiditySensorStatusTable 1} 
 
 CabinetHumiditySensorStatusEntry ::= SEQUENCE {
-    cabinetHumiditySensorIndex          INTEGER,
-    cabinetHumiditySensorDescription    DisplayString,
-    cabinetHumiditySensorCurrentReading INTEGER,
-    cabinetHumidityThreshold            INTEGER,
-    cabinetHumiditySensorStatus         INTEGER }
+    cabinetHumiditySensorIndex          INTEGER, --deprecated
+    cabinetHumiditySensorDescription    DisplayString,--deprecated
+    cabinetHumiditySensorCurrentReading INTEGER,--deprecated
+    cabinetHumidityThreshold            INTEGER,--deprecated
+    cabinetHumiditySensorStatus         INTEGER } --deprecated
 
 --5.13.6.1  Cabinet Humidity Sensor Index
 cabinetHumiditySensorIndex OBJECT-TYPE
     SYNTAX Integer32 (1..16)
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Index of the humidity sensor status table. This value does not exceed maxCabinetHumiditySensors.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.6.1.1
     <Object Type> S" 
@@ -8556,7 +8556,7 @@ cabinetHumiditySensorIndex OBJECT-TYPE
 cabinetHumiditySensorDescription OBJECT-TYPE
     SYNTAX DisplayString (SIZE (0..64))
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Human-readable description of the humidity sensor. This value should provide enough information for maintenance personnel to identify the physical location of the humidity sensor within the CU cabinet.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.6.1.2
     <Object Type> P" 
@@ -8567,7 +8567,7 @@ cabinetHumiditySensorCurrentReading OBJECT-TYPE
     SYNTAX Integer32 (0..101)
     UNITS "percent relative humidity"
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the current reading of the humidity sensor, in percent relative humidity.
 <Valid Value Rule> The value 101 shall indicate an error condition or missing value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.6.1.3 
@@ -8580,7 +8580,7 @@ cabinetHumidityThreshold OBJECT-TYPE
     SYNTAX Integer32 (0..101)
     UNITS "percent humidity"
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the relative humidity, in percent, within the CU cabinet above which the humidity threshold alarm shall be activated (Bit 3 of unitAlarmStatus4).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.6.1.4
     <Object Type> P"
@@ -8592,7 +8592,7 @@ cabinetHumiditySensorStatus OBJECT-TYPE
 noError (2), 
 fail (3) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the current status of the indicated humidity sensor.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.6.1.5
     <Object Type> S" 
@@ -8609,7 +8609,7 @@ battery-UPS (6),
 dc48VPower (7),
 dc24Vpower (8) }   
     MAX-ACCESS read-only
-    STATUS current 
+    STATUS deprecated 
     DESCRIPTION "<Definition> Integer value that indicates the current primary power source for the CU cabinet, expressed as an enumerated integer.
 unknown:    the current primary power source is unknown or cannot be determined.
 other:  the current primary power source is not defined by this standard.
@@ -8629,7 +8629,7 @@ ascLineVolts OBJECT-TYPE
     SYNTAX Integer32 (0..6001)
     UNITS "0.1 Volts Root Mean Squared (Vrms)"
     MAX-ACCESS read-only 
-    STATUS current 
+    STATUS deprecated
     DESCRIPTION "<Definition> Indicates the voltage, in 0.1 RMS volt units, measured on the incoming power line for the CU. This object shall only be used to indicate A/C power conditions. If the line power is DC, this object shall not apply (i.e., this object will either not be supported or this object will have a value of 3001).
 <Valid Value Rule> Values 0 through 5999 shall indicate valid values. The value 6000 shall mean a voltage of 600.0 Vrms or greater. The value of 6001 shall indicate an error condition or missing value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.12.8
@@ -8643,7 +8643,7 @@ atccLEDMode OBJECT-TYPE
 on (2),
 off (3) }
     MAX-ACCESS read-write
-    STATUS current 
+    STATUS deprecated 
     DESCRIPTION "<Definition> Object that allows control of the LED displays within an ATC cabinet.
 other: LED mode of operation is not defined by this standard.
 on: ATCC module LEDs operate normally (e.g., full brightness and flashing are prescribed by module documentation).
