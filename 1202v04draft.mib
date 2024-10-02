@@ -10101,8 +10101,8 @@ siuport1Entry OBJECT-TYPE
     ::= { siuport1Table 1 }
 
 SIUPort1Entry ::= SEQUENCE {
-    siuport1Number        INTEGER,
-    siuport1DevicePresent INTEGER,
+    siuport1Number        Integer32,
+    siuport1DevicePresent Integer32,
     siuport1Status        INTEGER}
  
 --5.15.2.1  SIU Port 1 Number
@@ -10132,8 +10132,8 @@ False (zero) - the device is not present.
 --5.15.2.3  SIU Port 1 Status
 siuport1Status OBJECT-TYPE
     SYNTAX INTEGER { other (1),
-online (2),
-responseFault (3)}
+                    online (2),
+                    responseFault (3)}
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object indicates the communications status with the associated device:
