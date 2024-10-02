@@ -8092,11 +8092,11 @@ port1Entry OBJECT-TYPE
     ::= { port1Table 1 }
 
 Port1Entry ::= SEQUENCE {
-    port1Number        INTEGER,
-    port1DevicePresent INTEGER,
-    port1Frame40Enable INTEGER,
+    port1Number        Integer32,
+    port1DevicePresent Integer32,
+    port1Frame40Enable Integer32,
     port1Status        INTEGER,
-    port1FaultFrame    INTEGER }
+    port1FaultFrame    Integer32 }
 
 --5.11.2.1  Port 1 Number
 port1Number OBJECT-TYPE
@@ -8166,7 +8166,7 @@ port1Status OBJECT-TYPE
 
 --5.11.2.5  Port 1 Fault Frame
 port1FaultFrame OBJECT-TYPE
-    SYNTAX INTEGER  (0..255)
+    SYNTAX Integer32 (0..255)
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object indicates the frame number that
