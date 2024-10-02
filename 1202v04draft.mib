@@ -2506,16 +2506,18 @@ vehicleDetectorTravelMode OBJECT-TYPE
     ::= { vehicleDetectorEntry 21 }
 
 --5.3.3 Maximum Vehicle Detector Status Groups
-maxVehicleDetectorStatusGroups OBJECT-TYPE
+maxVehicleDetectorGroups OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "group"
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> The maximum number of detector status groups
+    DESCRIPTION "<Definition> The maximum number of detector groups
         (8 detectors per group) this device supports. This value is equal to
         TRUNCATE [(maxVehicleDetectors + 7 ) / 8]. This object indicates the
         maximum number of rows which shall appear in the
-        vehicleDetectorStatusGroupTable object.
+        vehicleDetectorStatusGroupTable and the vehicleDetectorControlGroupTable.
+
+        This object was named maxVehicleDetectorStatusGroups in 1202 v03.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.3
     <Object Type> S"
     ::= { detector 3 }
@@ -2527,7 +2529,7 @@ vehicleDetectorStatusGroupTable OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> A table containing detector status in groups of
         eight detectors. The number of rows in this table is equal to the
-        maxVehicleDetectorStatusGroups object.
+        maxVehicleDetectorGroups object.
     <TableType> static
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.4"
     ::= { detector 4 }
@@ -2554,7 +2556,7 @@ vehicleDetectorStatusGroupNumber OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> The detector status group number for objects in
         this row. This value shall not exceed the
-        maxVehicleDetectorStatusGroups object value.
+        maxVehicleDetectorGroups object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.4.1.1
     <Object Type> S"
     ::= { vehicleDetectorStatusGroupEntry 1 }
@@ -3323,7 +3325,7 @@ maxVehicleDetectorControlGroups OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "group"
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The maximum number of vehicle detector control
         groups (8 detectors per group) this device supports. This value is
         equal to TRUNCATE [(maxVehicleDetectors + 7 ) / 8]. This object
@@ -3340,7 +3342,7 @@ vehicleDetectorControlGroupTable OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> A table containing vehicle detector control in
         groups of eight detectors. The number of rows in this table is equal
-        to the maxVehicleDetectorControlGroups object.
+        to the maxVehicleDetectolGroups object.
     <TableType> static
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.12"
     ::= { detector 12 }
@@ -3366,7 +3368,7 @@ vehicleDetectorControlGroupNumber OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> The vehicle detector control group number for
         objects in this row. This value shall not exceed the
-        maxVehicleDetectorControlGroups object value.
+        maxVehicleDetectorGroups object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.12.1.1
     <Object Type> S"
     ::= { vehicleDetectorControlGroupEntry 1 }
