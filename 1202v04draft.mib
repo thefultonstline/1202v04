@@ -5385,7 +5385,9 @@ patternCoordSyncPoint OBJECT-TYPE --add language clarifying these terms
     lastCoordPhsYelEnd (8) }
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to indicate the location of the system reference point for this pattern. The valid coordination sync points are:
+    DESCRIPTION "<Definition> This object is used to indicate the location of the system reference point for this pattern based on the first coordinated phase that 
+    turns on since the start of the timing pattern cycle or the last coordinated phase to turn on before the end of the timing pattern cycle 
+    The valid coordination sync points are:
 other: the coordination sync point is not described in this standard
 unitCoordSyncPoint: the coordination point is defined by unitCoordSyncPoint.
 firstCoordPhsGrnBegin: the coordination point is the beginning of the Green indication of the first coordinated phase.
@@ -5765,10 +5767,8 @@ unitCoordSyncPoint OBJECT-TYPE
                      lastPhaseYellowEnd (7) }
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to indicate the location of
-        the system reference point for the running pattern. The valid
-        coordination sync points are:
-
+    DESCRIPTION "<Definition> This object is used to indicate the default coordination point for all timing patterns based on the first coordinated phase that turns on since 
+    the start of the timing pattern cycle or the last coordinated phase to turn on before the end of the timing pattern cycle. The valid coordination sync points are:
         other: the coordination sync point is not described in this standard
         firstPhaseGreenBegin: the coordination point is the beginning of the
             Green indication of the first coordinated phase.
