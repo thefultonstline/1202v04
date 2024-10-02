@@ -5229,7 +5229,7 @@ coordMaximumMode OBJECT-TYPE
     ::= { coord 3 }
 
 --5.5.4 Coord Force Mode Parameter
-coordForceMode OBJECT-TYPE
+unitCoordForceMode OBJECT-TYPE
     SYNTAX INTEGER { other(1),
                      floating (2),
                      fixed (3) }
@@ -5244,6 +5244,8 @@ coordForceMode OBJECT-TYPE
         fixed: each non-coord phase will be forced at a fixed position in the
             cycle. This allows unused split time to revert to the following
              phase.
+
+    This object was named coordForceMode in 1202 v03.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.4
     <Object Type> P"
     ::= { coord 4 }
@@ -5533,7 +5535,7 @@ splitTime OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> The time in seconds the splitPhase is allowed to receive (i.e. before a Force Off is applied) when constant demands exist on all phases. In floating coordForceMode, this is always the maximum time a non-coordinated phase is allowed to receive. In fixed coordForceMode, the actual allowed time may be longer if a previous phase gapped out.
+    DESCRIPTION "<Definition> The time in seconds the splitPhase is allowed to receive (i.e. before a Force Off is applied) when constant demands exist on all phases. In floating force mode for coordination this is always the maximum time a non-coordinated phase is allowed to receive. In fixed force mode for coordination, the actual allowed time may be longer if a previous phase gapped out.
 
     The splitTime includes all phase clearance times for the associated phase. The split time shall be longer than the sum of the phase minimum service requirements for the phase. When the time is NOT adequate to service the minimum service requirements of the phase, Free Mode shall be the result. The minimum requirements of a phase with a not-actuated ped include Minimum Green, Walk, Pedestrian Clear, Yellow Clearance, and Red Clearance; the minimum requirements of a phase with an actuated pedestrian include Minimum Green, Yellow Clearance, and Red Clearance.
 
@@ -5607,7 +5609,7 @@ A SET of a 'reserved' bit to a value other than zero (0) shall return a badValue
 --5.5.9.7 Split Phase Coord Force Mode Parameter
 splitCoordForceMode OBJECT-TYPE
     SYNTAX INTEGER { other(1),
-                     coordForceMode(2),
+                     unitCoordForceMode(2),
                      floating (3),
                      fixed (4) }
     MAX-ACCESS read-write
@@ -5615,7 +5617,7 @@ splitCoordForceMode OBJECT-TYPE
     DESCRIPTION "<Definition> This object defines the Force Mode for the phase when the split
     is in use. The possible modes are:
         other: the CU implements a mechanism not defined in this standard.
-        coordForceMode: The CU uses the current setting of the coordForceMode object for 
+        unitCoordForceMode: The CU uses the current setting of the unitCoordForceMode object for 
         this phase. 
         floating: The phase will be forced to limit its time to the splitTime value.
         fixed: The phase will be forced off at a fixed position in the cycle, allowing it's on-time 
