@@ -4280,10 +4280,11 @@ specialFunctionOutputEntry OBJECT-TYPE
     ::= { specialFunctionOutputTable 1 }
 
 SpecialFunctionOutputEntry ::= SEQUENCE {
-    specialFunctionOutputNumber  INTEGER,
-    specialFunctionOutputState   INTEGER, -- deprecated
-    specialFunctionOutputControl INTEGER,
-    specialFunctionOutputStatus  INTEGER }
+    specialFunctionOutputNumber          Integer32,
+    specialFunctionOutputState           INTEGER, -- deprecated
+    specialFunctionOutputControl         Integer32,
+    specialFunctionOutputStatus          Integer32,
+    specialFunctionOutputControlSource   INTEGER}
 
 --5.4.14.1  Special Function Output Number
 specialFunctionOutputNumber OBJECT-TYPE
@@ -4312,7 +4313,7 @@ specialFunctionOutputState OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.14.1.2"
     ::= { specialFunctionOutputEntry  2 }
 
---5.4.14.3  Special Function Output Control
+--5.4.14.2  Special Function Output Control
 specialFunctionOutputControl OBJECT-TYPE
     SYNTAX Integer32 (0..1)
     MAX-ACCESS read-write
@@ -4326,7 +4327,7 @@ specialFunctionOutputControl OBJECT-TYPE
     <Object Type> P"
     ::= { specialFunctionOutputEntry  3 }
 
---5.4.14.4  Special Function Output Status
+--5.4.14.3  Special Function Output Status
 specialFunctionOutputStatus OBJECT-TYPE
     SYNTAX Integer32 (0..1)
     MAX-ACCESS read-only
@@ -4336,6 +4337,26 @@ specialFunctionOutputStatus OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.14.1.4
     <Object Type> S"
     ::= { specialFunctionOutputEntry  4 }
+
+--5.4.14.4  Special Function Output Control Source
+specialFunctionOutputStatus OBJECT-TYPE
+    SYNTAX INTEGER { other(1),
+                    off(2)
+                    remote(3),
+                    timebase(4),
+                    frontPanel(5) }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "<Definition> This object indicates why the special function is active:
+    Valid values are:
+        other: the special function was activated from a source not defined in this standard. 
+        off: the special function is currently off.
+        remote: the special function was activated remotely through a management station locally or from a central system.
+        timebased: the special function was activated by the scheduler.
+        frontPanel: the special function was commanded from the front panel. 
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.14.1.5
+    <Object Type> S"
+    ::= { specialFunctionOutputEntry  5 }
 
 --5.4.15    Remote Manual Control Timer
 unitMCETimeout OBJECT-TYPE
@@ -5805,17 +5826,15 @@ ascCommandSource OBJECT-TYPE
                         remote(2),
                         timebased(3),
                         frontPanel(4),
-                        local(5),
-                        backup(6) }
+                        backup(5) }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object indicates why the current pattern or mode is currently in effect. 
     Valid values are:
         other: the current pattern or mode was activated from a source not defined in this standard.
-        remote: the current pattern or mode was commanded from the system interface.
+        remote: the current pattern or mode was commanded from a management locally or through a central system.
         timebased: the current pattern or mode is running as scheduled and not as a result of the CU going into backup mode. 
         frontPanel: the current pattern or mode was commanded from the front panel.
-        local: the current pattern or mode was commanded via local interface (management station)
         backup: the current pattern or mode is running because the CU went into backup mode. The CU may go into backup mode due to a failure. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.18
     <Object Type> S"
