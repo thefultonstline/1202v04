@@ -2275,7 +2275,7 @@ vehicleDetectorErraticCounts OBJECT-TYPE
 
 --5.3.2.11  Vehicle Detector Fail Time Parameter
 vehicleDetectorFailTime OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..999)
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
@@ -2891,7 +2891,7 @@ pedestrianDetectorCallPhase OBJECT-TYPE
 
 --5.3.7.3   Pedestrian Detector No Activity Parameter
 pedestrianDetectorNoActivity OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..999)
     UNITS "minute"
     MAX-ACCESS read-write
     STATUS current
@@ -3677,7 +3677,7 @@ vehicleDetectorSetQueueLimit OBJECT-TYPE
 
 --5.3.2.8   Vehicle Detector No Activity Parameter
 vehicleDetectorSetNoActivity OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..999)
     UNITS "minute"
     MAX-ACCESS read-write
     STATUS current
