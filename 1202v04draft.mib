@@ -5939,7 +5939,7 @@ timebaseAscPattern OBJECT-TYPE
 timebaseAscAuxiliaryFunction OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The Auxiliary functions that shall be active
         when this Action is active.
 
