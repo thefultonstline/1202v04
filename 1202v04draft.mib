@@ -6421,16 +6421,17 @@ preemptTrackRedClear OBJECT-TYPE
 
 --5.7.2.26  Preempt Sequence Number
 preemptSequenceNumber OBJECT-TYPE
-    SYNTAX Integer32 (1..255)
+    SYNTAX Integer32 (0..255)
     UNITS "sequence"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object is used to configure the sequence to run during the preempt's dwell duration. The selected sequence defines the order in which the phases defined the preemptCyclingPhase and preemptCyclingPed objects are allowed to cycle. Phases in the selected sequence that are not defined in preemptCyclingPhase nor preemptCyclingPed do not cycle. 
 
-This value is a sequenceNumber used to select a sequence from the sequenceTable and shall not exceed the maxSequences object value.
+This value is a sequenceNumber used to select a sequence from the sequenceTable and shall not exceed the maxSequences object value. A value of zero indicates that the sequence to run is the one that was in effect when the preempt was activated.
 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.26
     <Object Type> P"
+    DEFVAL { 0 }
     ::= { preemptEntry 26 }
 
 --5.7.2.27  Preempt Exit Type
