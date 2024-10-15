@@ -7213,7 +7213,7 @@ Bit 7: Reserved
 Bit 6: Reserved
 Bit 5: Reserved
 Bit 4: Reserved
-Bit 3: Flash Alternate Half Hertz
+Bit 3: Flash Alternate Half Hertz --deprecated
 Bit=0: Off/Disabled & Bit=1: On/Enabled
 Bit 2: Flash Red 
 Bit=0: Off/Red Dark & Bit=1: On/Flash Red
