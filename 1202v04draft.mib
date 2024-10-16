@@ -6266,7 +6266,7 @@ preemptDwellGreen OBJECT-TYPE
     DESCRIPTION "<Definition> Minimum Dwell interval in seconds (1-255 sec). This parameter controls the minimum timing for the dwell interval. Phase(s) active during the Dwell interval are enabled in preemptDwellPhase and preemptCyclingPhase objects. The Dwell interval shall not terminate prior to the completion of preemptMinimumDuration, preemptDwellGreen (this object), and the call is no longer present.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.10
     <Object Type> P"
-    DEFVAL { 10 }
+    DEFVAL { 0 }
     ::= { preemptEntry 10 }
 
 --5.7.2.11  Preempt Maximum Presence Parameter
