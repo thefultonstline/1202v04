@@ -96,6 +96,9 @@ IMPORTS
     OBJECT-TYPE                             FROM RFC-1212
 
     DisplayString, ifIndex                  FROM RFC1213-MIB-Modified
+    SnmpAdminString
+                                                 FROM SNMP-FRAMEWORK-MIB
+                                                   -- RFC 3411
     --zerodotzero                             FROM SNMPv2-SMI
     ITSOerString                            FROM ISO26048-1-FieldDevice-TC
     devices                                 FROM NTCIP8004-Transportation
@@ -2080,18 +2083,18 @@ VehicleDetectorEntry ::= SEQUENCE {
     vehicleDetectorDelay                 Integer32,
     vehicleDetectorExtend                Integer32,
     vehicleDetectorQueueLimit            Integer32,
-    vehicleDetectorNoActivity            INTEGER,
-    vehicleDetectorMaxPresence           INTEGER,
-    vehicleDetectorErraticCounts         INTEGER,
-    vehicleDetectorFailTime              INTEGER,
-    vehicleDetectorAlarms                INTEGER,
-    vehicleDetectorReportedAlarms        INTEGER,
-    vehicleDetectorReset                 INTEGER, 
-    vehicleDetectorOptions2              INTEGER,
-    vehicleDetectorPairedDetector        INTEGER,
-    vehicleDetectorPairedDetectorSpacing INTEGER,
-    vehicleDetectorAvgVehicleLength      INTEGER,
-    vehicleDetectorLength                INTEGER,
+    vehicleDetectorNoActivity            Integer32,
+    vehicleDetectorMaxPresence           Integer32,
+    vehicleDetectorErraticCounts         Integer32,
+    vehicleDetectorFailTime              Integer32,
+    vehicleDetectorAlarms                Integer32,
+    vehicleDetectorReportedAlarms        Integer32,
+    vehicleDetectorReset                 Integer32, 
+    vehicleDetectorOptions2              Integer32,
+    vehicleDetectorPairedDetector        Integer32,
+    vehicleDetectorPairedDetectorSpacing Integer32,
+    vehicleDetectorAvgVehicleLength      Integer32,
+    vehicleDetectorLength                Integer32,
     vehicleDetectorTravelMode            INTEGER }
 
 --5.3.2.1   Vehicle Detector Number
@@ -2688,9 +2691,9 @@ volumeOccupancyEntry OBJECT-TYPE
     ::= { volumeOccupancyTable 1 }
 
 VolumeOccupancyEntry ::= SEQUENCE { 
-    detectorVolume      INTEGER,
-    detectorOccupancy   INTEGER,
-    detectorAvgSpeed    INTEGER }
+    detectorVolume      Integer32,
+    detectorOccupancy   Integer32,
+    detectorAvgSpeed    Integer32 }
  
 --5.3.5.4.1 Volume Data
 detectorVolume OBJECT-TYPE
@@ -2854,15 +2857,15 @@ pedestrianDetectorEntry OBJECT-TYPE
     ::= { pedestrianDetectorTable 1 }
 
 PedestrianDetectorEntry ::= SEQUENCE {
-    pedestrianDetectorNumber        INTEGER,
-    pedestrianDetectorCallPhase     INTEGER,
-    pedestrianDetectorNoActivity    INTEGER,
-    pedestrianDetectorMaxPresence   INTEGER,
-    pedestrianDetectorErraticCounts INTEGER,
-    pedestrianDetectorAlarms        INTEGER,
-    pedestrianDetectorReset         INTEGER,
-    pedestrianButtonPushTime        INTEGER,
-    pedestrianDetectorOptions       INTEGER }
+    pedestrianDetectorNumber        Integer32,
+    pedestrianDetectorCallPhase     Integer32,
+    pedestrianDetectorNoActivity    Integer32,
+    pedestrianDetectorMaxPresence   Integer32,
+    pedestrianDetectorErraticCounts Integer32,
+    pedestrianDetectorAlarms        Integer32,
+    pedestrianDetectorReset         Integer32,
+    pedestrianButtonPushTime        Integer32,
+    pedestrianDetectorOptions       Integer32 }
  
 --5.3.7.1   Pedestrian Detector Number
 pedestrianDetectorNumber OBJECT-TYPE
@@ -3357,8 +3360,8 @@ vehicleDetectorControlGroupEntry OBJECT-TYPE
     ::= { vehicleDetectorControlGroupTable  1 }
 
 VehicleDetectorControlGroupEntry ::= SEQUENCE {
-    vehicleDetectorControlGroupNumber    INTEGER,
-    vehicleDetectorControlGroupActuation INTEGER }
+    vehicleDetectorControlGroupNumber    Integer32,
+    vehicleDetectorControlGroupActuation Integer32 }
      
 --5.3.11.2  Vehicle Detector Control Group Number
 vehicleDetectorControlGroupNumber OBJECT-TYPE
@@ -3425,8 +3428,8 @@ pedestrianDetectorControlGroupEntry OBJECT-TYPE
     ::= { pedestrianDetectorControlGroupTable  1 }
 
 PedestrianDetectorControlGroupEntry ::= SEQUENCE {
-    pedestrianDetectorControlGroupNumber    INTEGER,
-    pedestrianDetectorControlGroupActuation INTEGER }
+    pedestrianDetectorControlGroupNumber    Integer32,
+    pedestrianDetectorControlGroupActuation Integer32 }
      
 --5.3.12.1  Pedestrian Detector Control Group Number
 pedestrianDetectorControlGroupNumber OBJECT-TYPE
@@ -3511,19 +3514,19 @@ vehicleDetectorSetEntry OBJECT-TYPE
     ::= { vehicleDetectorSetTable 1 }
 
 VehicleDetectorSetEntry ::= SEQUENCE {
-    vehicleDetectorSetIndex                 INTEGER,
-    vehicleDetectorSetOptions               INTEGER,
-    vehicleDetectorSetCallPhase             INTEGER,
-    vehicleDetectorSetSwitchPhase           INTEGER,
-    vehicleDetectorSetDelay                 INTEGER,
-    vehicleDetectorSetExtend                INTEGER,
-    vehicleDetectorSetQueueLimit            INTEGER,
-    vehicleDetectorSetNoActivity            INTEGER,
-    vehicleDetectorSetMaxPresence           INTEGER,
-    vehicleDetectorSetErraticCounts         INTEGER,
-    vehicleDetectorSetFailTime              INTEGER,
-    vehicleDetectorSetOptions2              INTEGER,
-    vehicleDetectorSetAvgVehicleLength      INTEGER,
+    vehicleDetectorSetIndex                 Integer32,
+    vehicleDetectorSetOptions               Integer32,
+    vehicleDetectorSetCallPhase             Integer32,
+    vehicleDetectorSetSwitchPhase           Integer32,
+    vehicleDetectorSetDelay                 Integer32,
+    vehicleDetectorSetExtend                Integer32,
+    vehicleDetectorSetQueueLimit            Integer32,
+    vehicleDetectorSetNoActivity            Integer32,
+    vehicleDetectorSetMaxPresence           Integer32,
+    vehicleDetectorSetErraticCounts         Integer32,
+    vehicleDetectorSetFailTime              Integer32,
+    vehicleDetectorSetOptions2              Integer32,
+    vehicleDetectorSetAvgVehicleLength      Integer32,
     vehicleDetectorSetTravelMode            INTEGER }
 
 --5.3.2.1   Vehicle Detector Set Index
@@ -4211,8 +4214,8 @@ alarmGroupEntry OBJECT-TYPE
 
 
 AlarmGroupEntry ::= SEQUENCE {
-    alarmGroupNumber    INTEGER,
-    alarmGroupState     INTEGER }
+    alarmGroupNumber    Integer32,
+    alarmGroupState     Integer32 }
 
 --5.4.12.1  Alarm Group Number
 alarmGroupNumber OBJECT-TYPE
@@ -4740,10 +4743,10 @@ commPortsEntry OBJECT-TYPE
 
 CommPortsEntry ::= SEQUENCE { 
     commPortType                INTEGER,
-    commPortTypeIndex           INTEGER,
+    commPortTypeIndex           Integer32,
     commPortEnable              INTEGER,
     commPortProtocolsSupported  Unsigned32,
-    commPortProtocol            INTEGER,
+    commPortProtocol            Integer32,
     commPortDiagnostics         INTEGER }
 
 --5.4.23.2.1    Communications Port Type
@@ -5081,7 +5084,7 @@ globalSetIdEntry OBJECT-TYPE
     ::= { globalSetIdTable  1 }
 
 GlobalSetIdEntry ::= SEQUENCE {
-    globalSetIdNumber INTEGER,
+    globalSetIdNumber Integer32,
     globalSetIdOID    OBJECT IDENTIFIER }
 
 --5.4.25.1  Global Set ID Number
@@ -5938,11 +5941,11 @@ timebaseAscActionEntry OBJECT-TYPE
     ::= { timebaseAscActionTable 1 }
 
 TimebaseAscActionEntry ::= SEQUENCE { 
-    timebaseAscActionNumber      INTEGER,
-    timebaseAscPattern           INTEGER,
-    timebaseAscAuxiliaryFunction INTEGER,
-    timebaseAscSpecialFunction   INTEGER,
-    timebaseAscEnabledLane       INTEGER }
+    timebaseAscActionNumber      Integer32,
+    timebaseAscPattern           Integer32,
+    timebaseAscAuxiliaryFunction Integer32,
+    timebaseAscSpecialFunction   Integer32,
+    timebaseAscEnabledLane       Integer32 }
 
 --5.6.3.1   Time Base Action Number
 timebaseAscActionNumber OBJECT-TYPE
@@ -6110,17 +6113,17 @@ preemptEntry OBJECT-TYPE
     ::= { preemptTable 1}
 
 PreemptEntry ::= SEQUENCE {
-    preemptNumber            INTEGER,
-    preemptControl           INTEGER,
-    preemptLink              INTEGER,
-    preemptDelay             INTEGER,
-    preemptMinimumDuration   INTEGER,
-    preemptMinimumGreen      INTEGER,
-    preemptMinimumWalk       INTEGER,
-    preemptEnterPedClear     INTEGER,
-    preemptTrackGreen        INTEGER,
-    preemptDwellGreen        INTEGER,
-    preemptMaximumPresence   INTEGER,
+    preemptNumber            Integer32,
+    preemptControl           Integer32,
+    preemptLink              Integer32,
+    preemptDelay             Integer32,
+    preemptMinimumDuration   Integer32,
+    preemptMinimumGreen      Integer32,
+    preemptMinimumWalk       Integer32,
+    preemptEnterPedClear     Integer32,
+    preemptTrackGreen        Integer32,
+    preemptDwellGreen        Integer32,
+    preemptMaximumPresence   Integer32,
     preemptTrackPhase        OCTET STRING,
     preemptDwellPhase        OCTET STRING,
     preemptDwellPed          OCTET STRING,
@@ -6131,11 +6134,11 @@ PreemptEntry ::= SEQUENCE {
     preemptCyclingPhase      OCTET STRING,
     preemptCyclingPed        OCTET STRING,
     preemptCyclingOverlap    OCTET STRING,
-    preemptEnterYellowChange INTEGER,
-    preemptEnterRedClear     INTEGER,
-    preemptTrackYellowChange INTEGER,
-    preemptTrackRedClear     INTEGER,
-    preemptSequenceNumber    INTEGER,
+    preemptEnterYellowChange Integer32,
+    preemptEnterRedClear     Integer32,
+    preemptTrackYellowChange Integer32,
+    preemptTrackRedClear     Integer32,
+    preemptSequenceNumber    Integer32,
     preemptExitType          INTEGER }
 
 --5.7.2.1   Preempt Number
@@ -6573,8 +6576,8 @@ preemptStatusGroupEntry OBJECT-TYPE
     ::= { preemptStatusGroupTable 1 }
 
 PreemptStatusGroupEntry ::= SEQUENCE {
-    preemptStatusGroupNumber INTEGER,
-    preemptStatusGroup       INTEGER  }
+    preemptStatusGroupNumber Integer32,
+    preemptStatusGroup       Integer32  }
 
 --5.7.6.1   Preempt Status Group Number
 preemptStatusGroupNumber OBJECT-TYPE
@@ -6626,7 +6629,7 @@ preemptQueueDelayEntry OBJECT-TYPE
     ::= { preemptQueueDelayTable 1}
 
 PreemptQueueDelayEntry ::= SEQUENCE {
-    preemptDetectorWeight INTEGER }
+    preemptDetectorWeight Integer32 }
 
 --5.7.7.1   Preempt Detector Weight
 preemptDetectorWeight OBJECT-TYPE 
@@ -6671,7 +6674,7 @@ preemptGateEntry OBJECT-TYPE
 PreemptGateEntry ::= SEQUENCE {
     preemptGateNumber      INTEGER,
     preemptGateStatus      INTEGER,
-    preemptGateDescription DisplayString }
+    preemptGateDescription SnmpAdminString }
 
 --5.7.9.1   Preempt Gate Number
 preemptGateNumber OBJECT-TYPE
@@ -6704,7 +6707,7 @@ preemptGateStatus OBJECT-TYPE
 
 --5.7.9.3   Preempt Gate Description
 preemptGateDescription OBJECT-TYPE
-    SYNTAX DisplayString (SIZE (0..255)) 
+    SYNTAX SnmpAdminString 
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> A textual string indicating the location and perhaps type of gate.
@@ -6761,8 +6764,8 @@ sequenceEntry OBJECT-TYPE
     ::= { sequenceTable 1 }
 
 SequenceEntry ::= SEQUENCE {
-    sequenceNumber     INTEGER,
-    sequenceRingNumber INTEGER,
+    sequenceNumber     Integer32,
+    sequenceRingNumber Integer32,
     sequenceData       OCTET STRING }
 
 --5.8.3.1   Sequence Number
@@ -6828,15 +6831,15 @@ ringControlGroupEntry OBJECT-TYPE
     ::= { ringControlGroupTable 1 }
 
 RingControlGroupEntry ::= SEQUENCE { 
-    ringControlGroupNumber       INTEGER,
-    ringControlGroupStopTime     INTEGER,
-    ringControlGroupForceOff     INTEGER,
-    ringControlGroupMax2         INTEGER,
-    ringControlGroupMaxInhibit   INTEGER,
-    ringControlGroupPedRecycle   INTEGER,
-    ringControlGroupRedRest      INTEGER,
-    ringControlGroupOmitRedClear INTEGER,
-    ringControlGroupMax3         INTEGER }
+    ringControlGroupNumber       Integer32,
+    ringControlGroupStopTime     Integer32,
+    ringControlGroupForceOff     Integer32,
+    ringControlGroupMax2         Integer32,
+    ringControlGroupMaxInhibit   Integer32,
+    ringControlGroupPedRecycle   Integer32,
+    ringControlGroupRedRest      Integer32,
+    ringControlGroupOmitRedClear Integer32,
+    ringControlGroupMax3         Integer32 }
 
 --5.8.5.1   Ring Control Group Number
 ringControlGroupNumber OBJECT-TYPE
@@ -7326,10 +7329,10 @@ channelStatusGroupEntry OBJECT-TYPE
     ::= { channelStatusGroupTable 1 }
 
 ChannelStatusGroupEntry ::= SEQUENCE { 
-    channelStatusGroupNumber  INTEGER,
-    channelStatusGroupReds    INTEGER,
-    channelStatusGroupYellows INTEGER,
-    channelStatusGroupGreens  INTEGER }
+    channelStatusGroupNumber  Integer32,
+    channelStatusGroupReds    Integer32,
+    channelStatusGroupYellows Integer32,
+    channelStatusGroupGreens  Integer32 }
 
 --5.9.4.1   Channel Status Group Number
 channelStatusGroupNumber OBJECT-TYPE
@@ -7439,15 +7442,15 @@ overlapEntry OBJECT-TYPE
     ::= { overlapTable 1 }
 
 OverlapEntry ::= SEQUENCE { 
-    overlapNumber               INTEGER,
+    overlapNumber               Integer32,
     overlapType                 INTEGER,
     overlapIncludedPhases       OCTET STRING,
     overlapModifierPhases       OCTET STRING,
-    overlapTrailGreen           INTEGER,
-    overlapTrailYellow          INTEGER,
-    overlapTrailRed             INTEGER,
-    overlapWalk                 INTEGER,
-    overlapPedClearance         INTEGER,
+    overlapTrailGreen           Integer32,
+    overlapTrailYellow          Integer32,
+    overlapTrailRed             Integer32,
+    overlapWalk                 Integer32,
+    overlapPedClearance         Integer32,
     overlapConflictingPedPhases OCTET STRING }
 
 --5.10.2.1  Overlap Number
@@ -7511,11 +7514,8 @@ overlapType OBJECT-TYPE
         pedestrianNormal: The overlap output shall be controlled by the
             overlapIncludedPhases when this type is indicated. The overlap
             output shall be Walk in the following situations:
-            (1) when an overlap included phase is green.
-            (2) when an overlap included phase is yellow (or red clearance)
-                    and an overlap included phase is next.
-            (3) when an overlap included phase is Walk.
-            (4) when an overlap included phase is in a pedestrian clearance
+            (1) when an overlap included phase is Walk.
+            (2) when an overlap included phase is in a pedestrian clearance
                     interval and an overlap included phase is next.
             Upon completion of the Walk interval, the overlap enters the
             pedestrian clearance interval.
@@ -7820,10 +7820,10 @@ overlapStatusGroupEntry OBJECT-TYPE
     ::= { overlapStatusGroupTable 1 }
 
 OverlapStatusGroupEntry ::= SEQUENCE { 
-    overlapStatusGroupNumber  INTEGER,
-    overlapStatusGroupReds    INTEGER,
-    overlapStatusGroupYellows INTEGER,
-    overlapStatusGroupGreens  INTEGER }
+    overlapStatusGroupNumber  Integer32,
+    overlapStatusGroupReds    Integer32,
+    overlapStatusGroupYellows Integer32,
+    overlapStatusGroupGreens  Integer32 }
 
 --5.10.4.1  Overlap Status Group Number
 overlapStatusGroupNumber OBJECT-TYPE
@@ -7941,14 +7941,14 @@ overlapSetEntry OBJECT-TYPE
     ::= { overlapSetTable 1 }
 
 OverlapSetEntry ::= SEQUENCE { 
-    overlapSetIndex                INTEGER,
+    overlapSetIndex                Integer32,
     overlapSetIncludedPhases       OCTET STRING,
     overlapSetModifierPhases       OCTET STRING,
-    overlapSetTrailGreen           INTEGER,
-    overlapSetTrailYellow          INTEGER,
-    overlapSetTrailRed             INTEGER,
-    overlapSetWalk                 INTEGER,
-    overlapSetPedClearance         INTEGER,
+    overlapSetTrailGreen           Integer32,
+    overlapSetTrailYellow          Integer32,
+    overlapSetTrailRed             Integer32,
+    overlapSetWalk                 Integer32,
+    overlapSetPedClearance         Integer32,
     overlapSetConflictingPedPhases OCTET STRING }
 
 --5.10.2.1  Overlap Set Index
@@ -8790,18 +8790,18 @@ ascIOinputMapTableEntry OBJECT-TYPE
     ::= { ascIOinputMapTable 1 }
 
 AscIOinputMapTableEntry ::= SEQUENCE {
-   ascIOmapNumber           INTEGER,   -- up to ascIOmaxMaps
-   ascIOinputMapIOindex     INTEGER,   -- up to ascIOmapMaxInputs
+   ascIOmapNumber           Integer32,   -- up to ascIOmaxMaps
+        INTEGER,   -- up to ascIOmapMaxInputs
 
-   ascIOinputMapDeviceType  INTEGER,   -- enum custom, FIO,TS1,BIU,SIU,AUX, reserved
-   ascIOinputMapDevicePNN   INTEGER,   -- NEMA PNN if DeviceType is custom
-   ascIOinputMapDevicePtype INTEGER,   -- Custom device type
-   ascIOinputMapDeviceAddr  INTEGER,   -- only used if needed (BIU, SIU)
+   ascIOinputMapDeviceType  Integer32,   -- enum custom, FIO,TS1,BIU,SIU,AUX, reserved
+   ascIOinputMapDevicePNN   Integer32,   -- NEMA PNN if DeviceType is custom
+   ascIOinputMapDevicePtype Integer32,   -- Custom device type
+   ascIOinputMapDeviceAddr  Integer32,   -- only used if needed (BIU, SIU)
    ascIOinputMapDevicePin   INTEGER,   -- device I/O pin index
-   ascIOinputMapFuncType    INTEGER,   -- 0=STD, else nemaPrivate vendor code
-   ascIOinputMapFuncPtype   INTEGER,   -- Custom function type set
-   ascIOinputMapFunction    INTEGER,   -- function 
-   ascIOinputMapFuncIndex   INTEGER }  -- index if function support more than one input or output
+   ascIOinputMapFuncType    Integer32,   -- 0=STD, else nemaPrivate vendor code
+   ascIOinputMapFuncPtype   Integer32,   -- Custom function type set
+   ascIOinputMapFunction    Integer32,   -- function 
+   ascIOinputMapFuncIndex   Integer32 }  -- index if function support more than one input or output
 
 --5.14.4.1  I/O Map Number
 ascIOmapNumber OBJECT-TYPE
@@ -9032,16 +9032,16 @@ ascIOoutputMapTableEntry OBJECT-TYPE
     ::= { ascIOoutputMapTable 1 }
 
 AscIOoutputMapTableEntry ::= SEQUENCE {
-   ascIOoutputMapIOindex       INTEGER,   -- up to ascIOmapMaxOutputs
-   ascIOoutputMapDeviceType    INTEGER,   -- enum custom, FIO,TS1,BIU,SIU,AUX, reserved
-   ascIOoutputMapDevicePNN     INTEGER,   -- NEMA PNN if DeviceType is custom
-   ascIOoutputMapDevicePtype   INTEGER,   -- Custom device type
-   ascIOoutputMapDeviceAddr    INTEGER,   -- only used if needed (BIU, SIU)
-   ascIOoutputMapDevicePin     INTEGER,   -- device I/O pin index
-   ascIOoutputMapFuncType      INTEGER,   -- 0=STD, else nemaPrivate vendor code
-   ascIOoutputMapFuncPtype     INTEGER,   -- Custom function type
-   ascIOoutputMapFunction      INTEGER,   -- function 
-   ascIOoutputMapFuncIndex     INTEGER }  -- index if function support more than one input or output
+   ascIOoutputMapIOindex       Integer32,   -- up to ascIOmapMaxOutputs
+   ascIOoutputMapDeviceType    Integer32,   -- enum custom, FIO,TS1,BIU,SIU,AUX, reserved
+   ascIOoutputMapDevicePNN     Integer32,   -- NEMA PNN if DeviceType is custom
+   ascIOoutputMapDevicePtype   Integer32,   -- Custom device type
+   ascIOoutputMapDeviceAddr    Integer32,   -- only used if needed (BIU, SIU)
+   ascIOoutputMapDevicePin     Integer32,   -- device I/O pin index
+   ascIOoutputMapFuncType      Integer32,   -- 0=STD, else nemaPrivate vendor code
+   ascIOoutputMapFuncPtype     Integer32,   -- Custom function type
+   ascIOoutputMapFunction      Integer32,   -- function 
+   ascIOoutputMapFuncIndex     Integer32 }  -- index if function support more than one input or output
 
 --5.14.6.1  I/O Output Map Index
 ascIOoutputMapIOindex OBJECT-TYPE
@@ -9211,11 +9211,11 @@ ascIOoutputMapStatusTableEntry OBJECT-TYPE
 
 AscIOoutputMapStatusTableEntry ::= SEQUENCE {
    ascIOoutputMapDevPinDescr   OCTET STRING, -- description of output pin
-   ascIOoutputMapDevPinStatus  INTEGER }     -- 0 or 1 for active
+   ascIOoutputMapDevPinStatus  Integer32 }     -- 0 or 1 for active
 
 --5.14.7.1  I/O Output Map Device Pin Description
 ascIOoutputMapDevPinDescr OBJECT-TYPE
-    SYNTAX OCTET STRING (SIZE (32))
+    SYNTAX OCTET STRING (SIZE (32)) --snmpadminstring
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object returns the name of the output pin, such as 'C1-39 Detector 2'. Since the physical pins are determined by the controller hardware, the value is read-only.
@@ -9254,7 +9254,7 @@ ascIOmapDescriptionTableEntry OBJECT-TYPE
     ::= { ascIOmapDescriptionTable   1 }
 
 AscIOmapDescriptionTableEntry ::= SEQUENCE {
-   ascIOmapDescription   OCTET STRING } -- description of table
+   ascIOmapDescription   OCTET STRING } -- description of table snmpadminstring
 
 --5.14.8.1  I/O Map Description
 ascIOmapDescription OBJECT-TYPE
@@ -9361,8 +9361,8 @@ ascIOmapInputFuncEntry OBJECT-TYPE
     ::= { ascIOmapInputFuncTable 1 }
 
 AscIOmapInputFuncEntry ::= SEQUENCE {
-    ascIOinputIndex          INTEGER,
-    ascIOinputMaxFuncIndex   INTEGER,
+    ascIOinputIndex          Integer32,
+    ascIOinputMaxFuncIndex   Integer32,
     ascIOinputFunctionName   OCTET STRING }
 
 --5.14.9.2.1    I/O Map Input Functions Table Index
@@ -9388,7 +9388,7 @@ ascIOinputMaxFuncIndex OBJECT-TYPE
 
 --5.14.9.2.3    I/O Map Input Function Name
 ascIOinputFunctionName OBJECT-TYPE
-    SYNTAX OCTET STRING (SIZE (32))
+    SYNTAX OCTET STRING (SIZE (32))--snmpadminstring
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object contains an ASCII string describing the input function.
@@ -9465,8 +9465,8 @@ ascIOmapOutputFuncEntry OBJECT-TYPE
     ::= { ascIOmapOutputFuncTable 1 }
 
 AscIOmapOutputFuncEntry ::= SEQUENCE {
-    ascIOoutputIndex          INTEGER,
-    ascIOoutputMaxFuncIndex   INTEGER,
+    ascIOoutputIndex          Integer32,
+    ascIOoutputMaxFuncIndex   Integer32,
     ascIOoutputFunctionName   OCTET STRING }
 
 --5.14.10.2.1   I/O Map Output Functions Table Index
@@ -9492,7 +9492,7 @@ ascIOoutputMaxFuncIndex OBJECT-TYPE
 
 --5.14.10.2.3   I/O Map Output Function Name
 ascIOoutputFunctionName OBJECT-TYPE
-    SYNTAX OCTET STRING (SIZE (32))
+    SYNTAX OCTET STRING (SIZE (32)) --snmpadminstring
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object contains an ASCII string describing the output function.
@@ -10234,10 +10234,10 @@ rsuPortEntry OBJECT-TYPE
 RsuPortEntry ::= SEQUENCE {
     rsuPortIndex         INTEGER,
     rsuPortPointer       INTEGER,
-    rsuPortName          DisplayString,
-    rsuPortPollingPeriod INTEGER,
-    rsuPortWatchdogTime  INTEGER,
-    rsuPortWatchdogTimer INTEGER,
+    rsuPortName          SnmpAdminString,
+    rsuPortPollingPeriod Integer32,
+    rsuPortWatchdogTime  Integer32,
+    rsuPortWatchdogTimer Integer32,
     rsuPortNumber        INTEGER }
 
 --5.16.3.1  RSU Port Index
@@ -10262,7 +10262,7 @@ rsuPortPointer OBJECT-TYPE
 
 --5.16.3.3  RSU Port Name
 rsuPortName OBJECT-TYPE 
-    SYNTAX DisplayString (SIZE (0..255)) 
+    SYNTAX SnmpAdminString
     MAX-ACCESS read-write 
     STATUS current 
     DESCRIPTION "<Definition> A textual string describing the RSU or the location of the RSU. 
@@ -10427,7 +10427,7 @@ spatPortEntry OBJECT-TYPE
     ::= { spatPortTable 1 }
 
 SpatPortEntry ::= SEQUENCE {
-    spatPortOptions           INTEGER,
+    spatPortOptions           Integer32,
     spatPortStatus            INTEGER,
     spatPortMapActivationCode MapActivationCode }
 
@@ -10546,16 +10546,16 @@ signalGroupEntry OBJECT-TYPE
     ::= { signalGroupEntryTable 1 }
 
 SignalGroupEntry ::= SEQUENCE {
-    signalGroupEntryNumber             INTEGER,
-    signalGroupIntersection            INTEGER,
-    signalGroupID                      INTEGER,
-    signalGroupControlSource           INTEGER,
+    signalGroupEntryNumber             Integer32,
+    signalGroupIntersection            Integer32,
+    signalGroupID                      Integer32,
+    signalGroupControlSource           Integer32,
     signalGroupControlType             INTEGER,
     signalGroupGreenType               INTEGER,
     signalGroupRedType                 INTEGER,
-    signalGroupPermissiveControlSource INTEGER,
-    signalGroupPermissiveControlType   INTEGER,
-    signalGroupLane                    INTEGER }
+    signalGroupPermissiveControlSource Integer32,
+    signalGroupPermissiveControlType   Integer32,
+    signalGroupLane                    Integer32 }
 
 --5.17.10.1 Signal Group Entry Number
 signalGroupEntryNumber OBJECT-TYPE
@@ -10748,10 +10748,10 @@ agencySignalStateEntry OBJECT-TYPE
     ::= { agencySignalStateTable 1 }
 
 AgencySignalStateEntry ::= SEQUENCE {
-    agencySignalStateNumber      INTEGER,
+    agencySignalStateNumber      Integer32,
     agencySignalStateColor       INTEGER,
     agencySignalStateControlType INTEGER,
-    agencySignalStateOptions     INTEGER,
+    agencySignalStateOptions     Integer32,
     agencySignalStateValue       INTEGER }
 
 --5.17.12.1 Agency Signal State Entry Number
