@@ -6486,8 +6486,8 @@ queueDelayRecovery: the CU immediately enters the phase with the highest demand 
 shortService: the CU immediately enters the first short service phase. The first short service phase is a phase where only the preempt minimum green time was serviced during the advanced preemption time or the right-of-way transfer time
 exitCoord: the CU immediately returns to the place in the coordinated cycle where the ASC would have been if there was no preempt 
     <Object Type> P
-    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.28"
-    ::= { preemptEntry 28 }
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.27"
+    ::= { preemptEntry 27 }
 
 --5.7.3 Preempt Control Table
 preemptControlTable OBJECT-TYPE
