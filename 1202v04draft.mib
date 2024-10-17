@@ -11632,6 +11632,7 @@ ascRedLightViolationDetectors OBJECT-TYPE
 ecla OBJECT IDENTIFIER
     ::= { asc 18 }
 
+--5.19.1 ECLA Communications
 eclaCommEnable OBJECT-TYPE 
     SYNTAX Integer32 (0..1)
     MAX-ACCESS read-write
@@ -11644,6 +11645,7 @@ eclaCommEnable OBJECT-TYPE
     DEFVAL { 0 }
     ::= { ecla 1 }
 
+--5.19.2 ECLA Timestamp
 eclaDataTimestamp OBJECT-TYPE
     SYNTAX Integer32 (0..36111)
     UNITS "tick" --"decisecond"
@@ -11660,6 +11662,7 @@ eclaDataTimestamp OBJECT-TYPE
     DEFVAL { 36111 }
     ::= { ecla 2 }
 
+--5.19.3 ECLA Input Table
 eclaInputTable OBJECT-TYPE
     SYNTAX SEQUENCE OF PhaseEntry
     MAX-ACCESS not-accessible
@@ -11690,6 +11693,7 @@ EclaEntry  ::= SEQUENCE {
     eclaRingNextPhase           Integer32 }
 
 
+--5.19.3.1 ECLA Ring Current Phase
 eclaRingCurrentPhase OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
@@ -11703,6 +11707,7 @@ eclaRingCurrentPhase OBJECT-TYPE
     DEFVAL { 0 }
     ::= { eclaEntry 1 }
 
+--5.19.3.2 ECLA Ring Current Phase Minimum Green End Time
 eclaRingGreenMinEndTime OBJECT-TYPE
     SYNTAX Integer32 (0..36111)
     UNITS "decisecond"
@@ -11719,6 +11724,7 @@ eclaRingGreenMinEndTime OBJECT-TYPE
     DEFVAL { 36111 }
     ::= { eclaEntry 2 }
 
+--5.19.3.3 ECLA Ring Current Phase Maximum Green End Time
 eclaRingGreenMaxEndTime OBJECT-TYPE
     SYNTAX Integer32 (0..36111)
     UNITS "decisecond"
@@ -11735,6 +11741,7 @@ eclaRingGreenMaxEndTime OBJECT-TYPE
     DEFVAL { 36111 }
     ::= { eclaEntry 3 }
 
+--5.19.3.4 ECLA Ring Current Phase Likely Green End Time
 eclaRingGreenLikelyEndTime OBJECT-TYPE
     SYNTAX Integer32 (0..36111)
     UNITS "decisecond"
@@ -11751,6 +11758,7 @@ eclaRingGreenLikelyEndTime OBJECT-TYPE
     DEFVAL { 36111 }
     ::= { eclaEntry 4 }
 
+--5.19.3.5 ECLA Ring Current Phase End Time Confidence
 eclaRingEndTimeConfidence OBJECT-TYPE
     SYNTAX Integer32 (0..15)
     MAX-ACCESS read-write
@@ -11764,6 +11772,7 @@ eclaRingEndTimeConfidence OBJECT-TYPE
     DEFVAL { 0 }
     ::= { eclaEntry 5 }
 
+--5.19.3.6 ECLA Ring Next Phase
 eclaRingNextPhase OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
@@ -11777,6 +11786,7 @@ eclaRingNextPhase OBJECT-TYPE
     DEFVAL { 0 }
     ::= { eclaEntry 6 }
 
+--5.19.4 ECLA Ring Next Phase
 eclaInputBlock OBJECT-TYPE
     SYNTAX       OCTET STRING
     MAX-ACCESS   read-write
