@@ -4440,7 +4440,6 @@ If the value of this object is non-zero, then all functionality related to unitB
 --5.4.20    Maximum Number of User Definable OIDs for Backup Timer
 maxUserDefinedBackupTimeContent OBJECT-TYPE
     SYNTAX Integer32 (2..255)
-    UNITS "phase"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION  "<Definition> The Maximum Number of user content backup time contents this controller supports. This object indicates the maximum rows which shall appear in the unitUserDefinedBackupTimeContentTable object.
@@ -4475,7 +4474,6 @@ UnitUserDefinedBackupTimeContentEntry ::= SEQUENCE {
 --5.4.21.1  Backup Time - User Defined Number
 unitUserDefinedBackupTimeContentNumber OBJECT-TYPE
     SYNTAX Integer32 (1..65535)
-    UNITS "number"
     MAX-ACCESS not-accessible
     STATUS current
     DESCRIPTION "<Definition> A userDefinedBackupTimeContent number for objects in this row. The value shall not exceed maxUserDefinedBackupTimeContents object value.
@@ -4491,6 +4489,7 @@ unitUserDefinedBackupTimeContentOID OBJECT-TYPE
     DESCRIPTION "<Definition> This object contains a reference to the function, which, if any SET operation is  performed on it, leads to a reset of the timer associated with the unitUserDefinedbackupTime object. This object shall reference the function by its associated identifier including its instance (i.e., the full OID of the scalar or columnar object).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.21.1.2
     <Object Type> P"
+    DEFVAL { "0.0" }
     ::= { unitUserDefinedBackupTimeContentEntry 2 }
 
 --5.4.21.3  Backup Time - User Defined Content Description
