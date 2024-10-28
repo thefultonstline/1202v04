@@ -5438,7 +5438,7 @@ patternSequenceNumber OBJECT-TYPE
     ::= { patternEntry 5 }
 
 --5.5.7.6   Pattern Coordination Sync Point
-patternCoordSyncPoint OBJECT-TYPE --add language clarifying these terms
+patternCoordSyncPoint OBJECT-TYPE
     SYNTAX INTEGER { other (1),
     unitCoordSyncPoint (2),
     firstCoordPhsGrnBegin (3),
