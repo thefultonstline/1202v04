@@ -914,8 +914,8 @@ phasePedStartOffset OBJECT-TYPE
         0 to 25.5 seconds, that the phase's parallel pedestrian Walk
         indication starts relative to the start of the phase's GREEN indication. 
         A negative value indicates that the phase's parallel Walk indication starts
-        BEFORE the phase's GREEN indication. A positive value indicates that the
-        phase's Walk indication starts AFTER the phase's GREEN indication.
+        BEFORE the phase's vehicle GREEN indication. A positive value indicates that the
+        phase's Walk indication starts AFTER the phase's vehicle GREEN indication.
         
         A value of 70 indicates that the pedestrian Walk indication starts 7 seconds AFTER 
         the phase's GREEN indication.. A value of -70 indicates that the pedestrian Walk 
