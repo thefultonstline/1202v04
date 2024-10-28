@@ -3870,13 +3870,13 @@ unit OBJECT IDENTIFIER
 --5.4.1 Startup Flash Parameter
 unitStartUpFlash OBJECT-TYPE
     SYNTAX Integer32 (0..255)
-        UNITS "second"
+    UNITS "second"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Unit Start up Flash time parameter in seconds
         (0 to 255 sec). The period/state (Start-Up Flash) occurs when power is
         restored following a device defined power interruption. During the
-        Start-Up Flash state, the Fault Monitor and Voltage  Monitor outputs
+        Start-Up Flash state, the Fault Monitor and Voltage Monitor outputs
         shall be inactive (if present) and the Channel Flash settings shall be
         overridden.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.1
@@ -3932,15 +3932,11 @@ unitBackupTime OBJECT-TYPE
             ringControlGroupRedRest, 
             ringControlGroupOmitRedClear, 
             unitControl, 
-            specialFunctionOutputState (deprecated), and 
-            specialFunctionOutputControl.
-
-        These system control parameters are added for controllers that support
-        1202 v3 and above:
-                ringControlGroupMax3 
-                vehicleDetectorControlGroupActuation 
-                pedestrianDetectorControlGroupActuation 
-                actionPlanControl
+            specialFunctionOutputControl,
+            ringControlGroupMax3,
+            vehicleDetectorControlGroupActuation,
+            pedestrianDetectorControlGroupActuation, and
+            actionPlanControl
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.3 
     <Object Type> P"
     ::= { unit 3 }
@@ -11648,7 +11644,7 @@ eclaCommEnable OBJECT-TYPE
 --5.19.2 ECLA Timestamp
 eclaDataTimestamp OBJECT-TYPE
     SYNTAX Integer32 (0..36111)
-    UNITS "tick" --"decisecond"
+    UNITS "decisecond"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> The most recent time point when the ECLA provided input into the controller. 
