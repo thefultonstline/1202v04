@@ -3935,8 +3935,9 @@ unitBackupTime OBJECT-TYPE
             specialFunctionOutputControl,
             ringControlGroupMax3,
             vehicleDetectorControlGroupActuation,
-            pedestrianDetectorControlGroupActuation, and
-            actionPlanControl
+            pedestrianDetectorControlGroupActuation,
+            actionPlanControl, and 
+            eclaDataTimestamp
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.3 
     <Object Type> P"
     ::= { unit 3 }
@@ -11650,6 +11651,8 @@ eclaDataTimestamp OBJECT-TYPE
     DESCRIPTION "<Definition> The most recent time point when the ECLA provided input into the controller. 
 
     Values from 0 to 35999 cover one hour. Values from 36000 to 36009 are used when a leap second occurs. Values from 36010 to 36110 are reserved for future use. A value of 36111 indicates the time point of the event is undefined or unknown.
+
+    The device shall reset this object to ZERO when in BACKUP Mode. A write to this object shall reset the Backup timer to ZERO  (see unitBackupTime).
 
     See Annex F.3.3.6.2 for additional guidance.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.18.2
