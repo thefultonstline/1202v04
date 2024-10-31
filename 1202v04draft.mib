@@ -4100,7 +4100,7 @@ unitAlarmStatus1 OBJECT-TYPE
 shortAlarmStatus OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Short Alarm Mask ( 0 = False, 1 = True) as
         follows:
 
@@ -4126,6 +4126,41 @@ shortAlarmStatus OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.9
     <Object Type> S"
     ::= { unit 9 }
+
+--PROPOSED REPLACEMENT
+--5.4.28    Unit Alarm Status 
+shortAlarmStatus OBJECT-TYPE
+    SYNTAX BITS { preemptActive(0),
+                flashActive(1),
+                offsetTransitioning(2),
+                localOveride(3),
+                coordinationAlarm(4),
+                detectorFault(5),
+                physicalAlarm(6),
+                stopTime(7) }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "<Definition> Short Alarm Mask ( 0 = False, 1 = True) as
+        follows:
+
+        Bit 0: Preempt - When any of the CU Preempt inputs become active.
+        Bit 1: Flash Active - When the CU is in Flash. The unitFlashStatus object shall                 indicate the reason the CU is in flash. 
+        Bit 2: Offset Transitioning - Whenever the CU is performing an offset
+                transition (correction in process).
+        Bit 3: Local Override - When any of the CU inputs and/or programming
+                cause it not to run coordination.
+        Bit 4: Coordination Alarm - When the CU is not running the called
+                pattern without offset correction within three cycles of the
+                command. An offset correction requiring less than three cycles
+                due to cycle overrun caused by servicing a pedestrian call
+                shall not cause a Coordination Alarm.
+        Bit 5: Detector Fault - When any detectorAlarm fault occurs.
+        Bit 6: Physcial Alarm / Non-Critical Alarm - When an physical alarm input is                     active.
+        Bit 7: Stop Time / Critical Alarm - When the Stop Time input is active.
+        
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.29
+    <Object Type> S"
+    ::= { unit 29 }
 
 --5.4.10    Unit Control
 unitControl OBJECT-TYPE
@@ -4181,7 +4216,7 @@ unitControl OBJECT-TYPE
 --5.4.11    Maximum Alarm Groups
 maxAlarmGroups OBJECT-TYPE
     SYNTAX Integer32 (1..255)
-    UNITS "alarm group" -- group? v04 check
+    UNITS "group"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object contains the maximum number of alarm
@@ -4406,7 +4441,7 @@ ascElevationOffset OBJECT-TYPE
     SYNTAX Integer32 (0..31)
     UNITS "meter" 
     MAX-ACCESS read-write 
-    STATUS current 
+    STATUS deprecated
     DESCRIPTION "<Definition>The offset in height, in meters, from the antenna of a GNSS or similar geopositioning device to the base of CU cabinet. It is assumed that the antenna is at a height higher than the base of the CU structure.
 <Valid Value Rule>Values of 0 to 30 provides a range from 0 meters to 30 meters. The value of 31 represents unknown.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.17
@@ -4519,7 +4554,7 @@ maxTimeSources OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "timeSource"
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The maximum number of time sources that this Controller Unit supports. This object indicates the maximum rows which shall appear in the unitTimeTable object.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.22.1
     <Object Type> S"
@@ -4529,7 +4564,7 @@ maxTimeSources OBJECT-TYPE
 unitTimeTable OBJECT-TYPE
     SYNTAX SEQUENCE OF UnitTimeEntry
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> A table containing Controller Unit time sources. The number of rows in this table is equal to the maxTimeSources object.
     <TableType> static
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.22.2"
@@ -4538,7 +4573,7 @@ unitTimeTable OBJECT-TYPE
 unitTimeEntry OBJECT-TYPE
     SYNTAX UnitTimeEntry
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> Parameters for a specific Controller Unit time source.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.22.2.1"
     INDEX { unitTimeIndex }
@@ -4553,7 +4588,7 @@ unitTimeIndex OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "timeSource"
     MAX-ACCESS not-accessible
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The index number for objects in this row. The value shall not exceed the maxTimeSources object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.22.2.1.1
     <Object Type> S"
@@ -4568,7 +4603,7 @@ rtcSqwr (3),
     gnss (5),
 ntp (6) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> An enumerated value representing the available sources for adjusting the clock. This object sets up the clock sources available for use by the CU.
 other: the source of the unit time is not defined by this standard.
 lineSync: the source of the unit time is determined by tracking the (AC) power line frequency
@@ -4590,7 +4625,7 @@ rtcSqwr (3),
     gnss (5),
 ntp (6) }
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition>  Commands the unit to the primary source for adjusting the unit clock:
 other: the source of the unit time is not defined by this standard.
 lineSync: the source of the unit time is determined by tracking the (AC) power line frequency
@@ -4612,7 +4647,7 @@ unitTimeSourceCurrent OBJECT-TYPE
                    gnss (5),
                    ntp (6) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> An enumerated value representing the current source for adjusting the unit clock as follows:
 other: the source of the unit time is not defined by this standard.
 lineSync: the source of the unit time is determined by tracking the (AC) power line frequency
@@ -4634,7 +4669,7 @@ unitTimeSourceStatus OBJECT-TYPE
                   pendingUpdate (5),
                   nonSequential (6) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition>  An enumerated value representing the status of the current unit clock source (unitTimeSourceCurrent).
     notActive: The unit is not monitoring this clock source, or updates are not available.
 active: The unit is receiving valid updates and is updating the controller time without errors.
@@ -4655,7 +4690,7 @@ localUser (4),
 timeSourceChange (5),
 timeSourceDiscontinuity (6) }
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> An enumerated value that indicates the source of a non-sequential change to the ASC clock time. A non-sequential change occurs anytime the clock changes by more than 1 increment (whether in seconds or milliseconds).
 unknown: the source of the non-sequential change to the unit time is unknown or cannot be determined.
 dstChange: the source of the non-sequential change to the unit time is a change in daytime savings time.
@@ -4675,7 +4710,7 @@ unitTimeNonSequentialChange OBJECT-TYPE
     SYNTAX Counter
     UNITS "second"
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> The 'new' globalTime after a non-sequential change to the ASC clock time. A non-sequential change occurs anytime the clock changes by more than 1 increment (whether in seconds or milliseconds). The value of this object is number of seconds since the epoch of 00:00:00 (midnight) January 1, 1970 UTC (a.k.a. Zulu or GMT).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.22.7
     <Object Type> S"
@@ -4686,7 +4721,7 @@ unitTimeNonSequentialChange OBJECT-TYPE
 unitTimeNonSequentialDelta OBJECT-TYPE
     SYNTAX OCTET STRING (SIZE(0 | 5))
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION
         "<Definition> An octet string indicating the difference between the
         'expected' time and the new time for the ASC clock after a
@@ -5172,42 +5207,35 @@ unitAlarmStatus OBJECT-TYPE
                 coordFault(1),
                 coordFail(2),
                 cycleFail(3),
-                mmuFlash(4),
-                localFlash(5),
-                localFree(6),
-                coordActive(7),
-                responseFault(8),
-                externalStart(9),
-                transition(10),
-                processFailure(11),
-                commTimeout(12),
-                cmuLinkError(13),
-                rsuLinkError(14),
-                cvCertificateError(15),
-                preemmptMaxPresence(16),
-                usbDetected(17)    }
+                localFree(4),
+                coordActive(5),
+                responseFault(6),
+                cmuLinkError(7)
+                rsuLinkError(8),
+                cvCertificateError(9),
+                preemmptMaxPresence(10)   }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Device Alarm Mask 4 ( 0 = False, 1 = True) as
         follows:
-        Bit 0: Cycle Fault - When the Controller Unit is operating in the coordinated mode and cycling diagnostics indicate that a serviceable call exists that             has not been serviced for two cycles.
-        Bit 1: Coord Fault - When a Cycle Fault is in effect and the serviceable call has been serviced within two cycles after the Cycle Fault.
-        Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs again within two cycles of the coordination retry.
-        Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs again within two cycles of the coordination retry.
-        Bit 4: MMU Flash - When the Controller Unit MMU Flash input remains active for a period of time exceeding the Start-Up Flash time.
-        Bit 5: Local Flash - When the Controller Unit Local Flash input becomes active, MMU Flash input is not active, and Flash is not commanded by the system.
-        Bit 6: Local Free - When any of the CU inputs and/or programming cause it not to run coordination.
-        Bit 7: Coordination Active - When coordination is active and not preempted or overridden.
-        Bit 8: Response Fault - When any NEMA TS2 Port 1 response frame fault occurs.
+        Bit 0: Cycle Fault - When the Controller Unit is operating in the coordinated             mode and cycling diagnostics indicate that a serviceable call exists that                 has not been serviced for two cycles.
+        Bit 1: Coord Fault - When a Cycle Fault is in effect and the serviceable call             has been serviced within two cycles after the Cycle Fault.
+        Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs             again within two cycles of the coordination retry.
+       Bit 3: Cycle Fail - When a local Controller Unit is operating in the non-                coordinated mode, whether the result of a Cycle Fault or Free being the current         normal mode, and cycling diagnostics indicate that a serviceable call exists that         has not been serviced for two cycles.
+        Bit 4: Local Free - When any of the CU inputs and/or programming cause it not to         run coordination.
+        Bit 5: Coordination Active - When coordination is active and not preempted or            overridden.
+        Bit 6: Response Fault - When any NEMA TS2 Port 1 response frame fault occurs.
+        Bit 7: CMU Link Status = Whenever the CU is unable to communicate to the CMU             because the the communication link is failed (e.g., timeouts, errors) or because         the CMU has been removed.
+        Bit 8: RSU Link Status = Whenever the CU is configured to communicate with a RSU         but the communications link is failed (e.g., timeouts, errors).
+        Bit 9: CV Certificate = Whenever the CU detects a fault related to invalid               connected vehicle certificates.
+        Bit 10: Preempt Maximum Presence - Preempt maximum presence time exceeded
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.28
     <Object Type> S"
     ::= { unit 28 }
 
-
 --5.5   Coordination Parameters
 coord OBJECT IDENTIFIER
     ::= { asc 4 }
-
 
 -- The coord node contains objects that support coordination
 -- configuration, status and control functions for the device.
@@ -5898,7 +5926,7 @@ timebaseAscPatternSync OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Pattern Sync Reference in minutes past
-        midnight. This is the time that the master cycle is relative is relative to. When the value is 65535, the controller unit shall use the
+        midnight. This is the time that the master cycle begins. When the value is 65535, the controller unit shall use the
         Action time as the Sync Reference for that pattern. This value is defined in ISO 26048-1.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.5.1
     <Object Type> P"
@@ -5943,7 +5971,7 @@ timebaseAscActionEntry OBJECT-TYPE
 TimebaseAscActionEntry ::= SEQUENCE { 
     timebaseAscActionNumber      Integer32,
     timebaseAscPattern           Integer32,
-    timebaseAscAuxiliaryFunction Integer32,
+    timebaseAscAuxiliaryFunction Integer32, --deprecated
     timebaseAscSpecialFunction   Integer32,
     timebaseAscEnabledLane       Integer32 }
 
@@ -6218,7 +6246,7 @@ preemptMinimumGreen OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Preempt Minimum Green Time in seconds (0-255 sec). A preempt initiated transition shall not cause the termination of an existing Green prior to its display for lesser of the phase's Minimum Green time or this period. CAUTION - if this value is zero, phase Green is terminated immediately.
+    DESCRIPTION "<Definition> Preempt Minimum Green Time in seconds (0-255 sec). A preempt initiated transition shall not cause the termination of an existing Green indication for lesser of the phase's Minimum Green time or this period. CAUTION - if this value is zero, the currently active phases' Green indications are terminated immediately.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.6
     <Object Type> P"
     DEFVAL { 255 }
@@ -6230,7 +6258,7 @@ preemptMinimumWalk OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Preempt Minimum Walk Time in seconds (0-255 sec). A preempt initiated transition shall not cause the termination of an existing Walk prior to its display for the lesser of the phase's Walk time or this period. CAUTION - if this value is zero, phase Walk is terminated immediately.
+    DESCRIPTION "<Definition> Preempt Minimum Walk Time in seconds (0-255 sec). A preempt initiated transition shall not cause the termination of an existing Walk prior to its display for the lesser of the phase's Walk time or this period. CAUTION - if this value is zero, currently active phases' Walk indications are terminated immediately.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.7
     <Object Type> P"
     DEFVAL { 255 }
@@ -6242,7 +6270,7 @@ preemptEnterPedClear OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Enter Ped ClearTime in seconds (0-255 sec). This parameter controls the ped clear timing for a normal Walk signal terminated by a preempt initiated transition. A preempt initiated transition shall not cause the termination of a Pedestrian Clearance prior to its display for the lesser of the phase's Pedestrian Clearance time or this period. CAUTION - if this value is zero, phase Ped Clear is terminated immediately.
+    DESCRIPTION "<Definition> Enter Ped ClearTime in seconds (0-255 sec). This parameter controls the ped clear timing for a normal Walk signal terminated by a preempt initiated transition. A preempt initiated transition shall not cause the termination of a Pedestrian Clearance (Flashing Don't Walk) prior to its display for the lesser of the phase's Pedestrian Clearance time or this period. CAUTION - currently active phases' Pedestrian Clearance indications are terminated immediately or skipped.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.8
     <Object Type> P"
     DEFVAL { 255 }
@@ -6289,7 +6317,7 @@ preemptTrackPhase OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Each octet within the octet string contains a phaseNumber(binary value) that shall be active during the Preempt Track Clear         intervals. The values of phaseNumber used here shall not exceed maxPhases or violate the Consistency Checks defined in Section 4.3.2.
+    DESCRIPTION "<Definition> Each octet within the octet string contains a phaseNumber(binary value) that shall be active during the Preempt Track Clearance         intervals. The values of phaseNumber used here shall not exceed maxPhases or violate the Consistency Checks defined in Section 4.3.2.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.12
     <Object Type> P2"
     DEFVAL { "" }
@@ -6442,7 +6470,7 @@ preemptTrackYellowChange OBJECT-TYPE
     UNITS "decisecond"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Track Clear Yellow Change time in tenth seconds (0-25.5 sec). The lesser of the phase's Yellow Change time or this parameter controls the yellow timing for the track clearance movement. Track clear phase(s) are enabled in the preemptTrackPhase object.
+    DESCRIPTION "<Definition> Track Clear Yellow Change time in tenth seconds (0-25.5 sec). The lesser of the phase's Yellow Change time or this parameter controls the yellow timing for the track clearance movement. Track clear phases are specified in the preemptTrackPhase object. The track clearance movement is enabled in the preemptTrackGreen object. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.24
     <Object Type> P"
     DEFVAL { 255 }
@@ -6454,7 +6482,7 @@ preemptTrackRedClear OBJECT-TYPE
     UNITS "decisecond"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Track Clear Red Clear time in tenth seconds (0-25.5 sec). The lesser of the phase's Red Clear time or this parameter controls the Red Clear timing for the track clearance movement. Track clear phase(s) are enabled in the preemptTrackPhase object.
+    DESCRIPTION "<Definition> Track Clear Red Clearance time in tenth seconds (0-25.5 sec). The lesser of the phase's Red Clearance time or this parameter controls the Red Clearance timing for the track clearance movement. Track clear phases are specified in the preemptTrackPhase object. The track clearance movement is enabled in the preemptTrackGreen object. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.25
     <Object Type> P"
     DEFVAL { 255 }
@@ -8314,7 +8342,7 @@ ascBlockErrorStatus OBJECT-TYPE
     ::= { ascBlock 3 }
 
 --5.13  Cabinet Parameters
-cabinetEnvironment  OBJECT IDENTIFIER
+cabinetEnvironment  OBJECT IDENTIFIER --deprecated
     ::= { asc 12 }
 -- This node contains objects that monitor and control the cabinet
 -- environment functions for this device.
