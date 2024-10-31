@@ -6575,7 +6575,7 @@ preemptStatus OBJECT-TYPE
 
 --5.7.5 Maximum Preempt Groups
 maxPreemptGroups OBJECT-TYPE
-    SYNTAX Integer32 (0..2)
+    SYNTAX Integer32 (0..32)
     UNITS "group"
     MAX-ACCESS read-only
     STATUS current
@@ -7328,7 +7328,7 @@ channelIntersectionId OBJECT-TYPE
 
 --5.9.3 Maximum Channel Status Groups
 maxChannelStatusGroups OBJECT-TYPE
-    SYNTAX Integer32 (1..255)
+    SYNTAX Integer32 (1..32)
     UNITS "group"
     MAX-ACCESS read-only
     STATUS current
@@ -7811,7 +7811,7 @@ overlapConflictingPedPhases OBJECT-TYPE
 
 --5.10.3    Maximum Overlap Status Groups
 maxOverlapStatusGroups OBJECT-TYPE
-    SYNTAX Integer32 (1..255)
+    SYNTAX Integer32 (1..32)
     UNITS "group"
     MAX-ACCESS read-only
     STATUS current
