@@ -7123,17 +7123,17 @@ ringCurrentPhase OBJECT-TYPE
     UNITS "phase"
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> The number of the phase in this ring that is currently on in a green, yellow, or red clearance interval. A value of 0 indicates no phase is on for this ring. This value shall not exceed the value of maxPhases.
+    DESCRIPTION "<Definition> The phaseNumber of the phase in this ring that is currently on in a green, yellow, or red clearance interval. A value of 0 indicates no phase is on for this ring. This value shall not exceed the value of maxPhases.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.7.6.1.2
     <Object Type> S"
     ::= { ringStatusEntry 2 }
 
 ringCurrentOnTime OBJECT-TYPE
-    SYNTAX Counter
+    SYNTAX Integer32 (0..65535)
     UNITS "decisecond"
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> This value is the time, in tenth seconds, that the phase in ringCurrentPhase has been on since it began it's vehicle GREEN or WALK indication. This value shall reset to zero when the phase in ringCurrentPhase exits vehicle clearance intervals. 
+    DESCRIPTION "<Definition> This value is the time, in tenth seconds, that the phase in ringCurrentPhase has been on since it began it's vehicle GREEN (or WALK for leading pedestrian intervals) indication. This value shall reset to zero when the phase in ringCurrentPhase completes its red clearance interval. A value of 65535 indicates that the phase has been on for a longer period of time.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.7.6.1.3
     <Object Type> S"
     ::= { ringStatusEntry 3 }
