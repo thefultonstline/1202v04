@@ -6039,7 +6039,7 @@ timebaseAscPattern OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> The Pattern that shall be active when this
         Action is active. The value shall not exceed the value of maxPatterns,
-        except for flash or free. A pattern of zero indicates that no pattern
+        except for 254 (Free) and 255 (Flash). A pattern of zero indicates that no pattern
         is being selected. A pattern = 0 relinquishes control to entity of a
         lower priority than timebase and allows that entity to control (i.e.,
         interconnect if available).
