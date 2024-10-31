@@ -4380,7 +4380,7 @@ specialFunctionOutputStatus OBJECT-TYPE
     ::= { specialFunctionOutputEntry  4 }
 
 --5.4.14.4  Special Function Output Control Source
-specialFunctionOutputStatus OBJECT-TYPE
+specialFunctionOutputControlSource OBJECT-TYPE
     SYNTAX INTEGER { other(1),
                     off(2)
                     remote(3),
