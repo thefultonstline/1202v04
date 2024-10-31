@@ -4213,6 +4213,49 @@ unitControl OBJECT-TYPE
     <Object Type> P"
     ::= { unit 10 }
 
+--PROPOSED REPLACEMENT
+--Unit Control
+unitControl OBJECT-TYPE
+    SYNTAX BITS { disableRemoteCommand(0),
+                globalMinRecall(1),
+                nonactuated1(2),
+                nonactuated2(3),
+                walkRestModifier(4),
+                interconnect(5) }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "<Definition> Short Alarm Mask ( 0 = False, 1 = True) as
+        follows:
+
+        Bit 0: Disable Remote Commands - when set to 1, causes a CU to ignore
+                commands (all SET requests) from all management station except
+                and until this bit is SET to 0 (i.e., a management station can
+                still SET this bit to 0 to enable Remote Command).
+        Bit 1: Global Minimum Recall - when set to 1, causes a recurring
+                demand on all vehicle phases for a minimum vehicle service.
+                REFERENCE NEMA TS 2 Clause 3.5.5.5.9
+        Bit 2: Call to Non-Actuated 1 - when set to 1, causes any phase(s)
+                appropriately programmed in the phaseOptions object to operate
+                in the Non-Actuated Mode.
+                REFERENCE NEMA TS 2 Clause 3.5.5.5.8
+        Bit 3: Call to Non-Actuated 2 - when set to 1, causes any phase(s)
+                appropriately programmed in the phaseOptions object to operate
+                in the Non-Actuated Mode.
+                REFERENCE NEMA TS 2 Clause 3.5.5.5.8
+        Bit 4: Walk Rest Modifier - when set to 1, causes non-actuated phases
+                to remain in the timed-out Walk state (rest in Walk) in the
+                absence of a serviceable conflicting call.
+                REFERENCE NEMA TS 2 Clause 3.5.5.5.13
+        Bit 5: Interconnect - when set to 1, shall cause the interconnect
+                inputs to operate at a higher priority than the timebase
+                control (TBC On Line).
+                REFERENCE NEMA TS 2 Clause 3.6.2.3 and 3.8.3
+        
+    The device shall reset this object to ZERO when in BACKUP Mode. A write to this object shall reset the BACKUP timer         (see unitBackupTime).
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.30
+    <Object Type> S"
+    ::= { unit 30 }
+
 --5.4.11    Maximum Alarm Groups
 maxAlarmGroups OBJECT-TYPE
     SYNTAX Integer32 (1..255)
