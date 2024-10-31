@@ -5867,19 +5867,19 @@ systemPatternControl OBJECT-TYPE
  
 --5.5.15    System Sync Control
 systemSyncControl OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..999)
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object is used to establish the system
         reference point for the Called System Pattern by providing the current
-        position in the system pattern cycle (0-254 sec). The device shall
+        position in the system pattern cycle (0-998 sec). The device shall
         recognize a write to this object as a command to establish the time
         until the next system reference point. Thereafter, the system
         reference point shall be assumed to occur at a frequency equal to the
         patternCycleTime.
 
-        When the value in the object is 255, the system REFERENCE point shall
+        When the value in the object is 999, the system REFERENCE point shall
         be referenced to the local Time Base in accordance with its
         programming.
 
