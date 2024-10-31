@@ -5222,7 +5222,7 @@ unitAlarmStatus OBJECT-TYPE
         Bit 1: Coord Fault - When a Cycle Fault is in effect and the serviceable call             has been serviced within two cycles after the Cycle Fault.
         Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs             again within two cycles of the coordination retry.
        Bit 3: Cycle Fail - When a local Controller Unit is operating in the non-                coordinated mode, whether the result of a Cycle Fault or Free being the current         normal mode, and cycling diagnostics indicate that a serviceable call exists that         has not been serviced for two cycles.
-        Bit 4: Local Free - When any of the CU inputs and/or programming cause it not to         run coordination. The localFreeStatus object indicates why the CU is not running coordination.
+        Bit 4: Local Free - When any of the CU inputs and/or programming cause it not to         run coordination. The localFreeStatus object shall indicate why the CU is not running coordination.
         Bit 5: Coordination Active - When coordination is active and not preempted or            overridden.
         Bit 6: Response Fault - When any NEMA TS2 Port 1 response frame fault occurs.
         Bit 7: CMU Link Status = Whenever the CU is unable to communicate to the CMU             because the the communication link is failed (e.g., timeouts, errors) or because         the CMU has been removed.
