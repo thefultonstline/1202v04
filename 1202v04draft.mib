@@ -3981,14 +3981,14 @@ unitControlStatus OBJECT-TYPE
         the device:
 
         other: control by a source other than those listed here.
-        systemControl: control by master or central commands.
-        systemStandby: control by local based on master or central command to
+        systemControl: control by central commands.
+        systemStandby: control by local based on central command to
                 use local control.
         backupMode: Backup Mode (see Terms).
         manual: control by entry other than zero in coordOperationalMode.
         timebase: control by the local Time Base.
         interconnect: control by the local Interconnect inputs.
-        interconnectBackup: control by local TBC due to invalid Interconnect
+        interconnectBackup: control by local timebase control due to invalid Interconnect
                 inputs or loss of sync.
         remoteManualControl: control by central command via remote MCE
                 commands (See unitMCEIntAdv and unitMCETimeout).
@@ -4017,7 +4017,7 @@ unitFlashStatus OBJECT-TYPE
         automatic: the CU is currently in an Automatic Flash state.
         localManual: the Controller Unit Local Flash input is active, MMU
                 Flash input is not active, and Flash is not commanded by
-                the Master.
+                the central system.
         faultMonitor: the CU is currently in a Fault Monitor State.
         mmu: the Controller Unit MMU Flash input is active and the CU is not
                 in Start-Up Flash.
