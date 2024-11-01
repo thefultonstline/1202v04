@@ -2098,7 +2098,7 @@ VehicleDetectorEntry ::= SEQUENCE {
     vehicleDetectorPairedDetector        Integer32,
     vehicleDetectorPairedDetectorSpacing Integer32,
     vehicleDetectorAvgVehicleLength      Integer32,
-    vehicleDetectorLength                Integer32,
+                   Integer32,
     vehicleDetectorTravelMode            INTEGER }
 
 --5.3.2.1   Vehicle Detector Number
@@ -2479,7 +2479,8 @@ vehicleDetectorLength OBJECT-TYPE
     DESCRIPTION "<Definition> This parameter allows the user to set the length
         of the detection zone. In the case of a loop detector, this is the
         length of the loop.
-    <Valid Value Rule> Values 01 to 4000 are used to represent the length.
+        
+        Values 01 to 4000 are used to represent the length.
         This allows for a range of lengths between 0.01 meters to 40 meters in
         length. The value of 65535 shall be returned to represent no length
         set. Values 4001 to 65534 are not used.
