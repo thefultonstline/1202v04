@@ -2286,12 +2286,12 @@ vehicleDetectorFailTime OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Detector Fail Time in seconds (0..255 sec). If a
+    DESCRIPTION "<Definition> Detector Fail Time in seconds (0..999 sec). If a
         detector diagnostic indicates that the associated detector input is
         failed, then a call shall be placed on the associated phase during all
         non-green intervals. When each green interval begins the call shall be
         maintained for the length of time specified by this object and then
-        removed. If the value of this object equals the maximum value (255)
+        removed. If the value of this object equals the maximum value (999)
         then a constant call shall be placed on the associated phase (max
         recall). If the value of this object equals zero then no call shall be
         placed on the associated phase for any interval (no recall). Compliant
