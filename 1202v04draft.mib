@@ -3349,7 +3349,7 @@ vehicleDetectorControlGroupTable OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> A table containing vehicle detector control in
         groups of eight detectors. The number of rows in this table is equal
-        to the maxVehicleDetectolGroups object.
+        to the maxVehicleDetectorGroups object.
     <TableType> static
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.12"
     ::= { detector 12 }
