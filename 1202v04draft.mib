@@ -6,7 +6,7 @@
 --              SAE data elements.
 -- Source:      NTCIP 1202 v?????????????
 -- MIB Revision History:
--- Date:        October 17, 2024
+-- Date:        November 1, 2024
 --
 -- Copyright 2023 by the American Association of State Highway and
 -- Transportation Officials (AASHTO), the Institute of Transportation
@@ -591,7 +591,7 @@ phaseStartup OBJECT-TYPE
 
         <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.20
         <Object Type> P2
-    REFERENCE "NEMA TS 2 Clause 3.5.5.1 and 3.5.5.12"
+    REFERENCE NEMA TS 2 Clause 3.5.5.1 and 3.5.5.12"
     ::= { phaseEntry 20 }
 
 --5.2.2.21  Phase Options
@@ -3909,18 +3909,16 @@ unitAutoPedestrianClear OBJECT-TYPE
 
 --5.4.3 Backup Time Parameter
 unitBackupTime OBJECT-TYPE
-    SYNTAX Integer32 (0..65535)
+    SYNTAX Integer32 (0..16777216)
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> The Backup Time in seconds (0-65535 sec). When
+    DESCRIPTION "<Definition> The Backup Time in seconds (0-16777216 sec). When
         any of the defined system control parameters is SET, the backup timer
         is reset. After reset the CU times the unitBackupTime interval. If the
         unitBackupTime interval expires without a SET operation to any of the
         system control parameters, then the CU shall revert to Backup Mode. A
-        value of zero (0) for this object shall disable this feature. The
-        setting of this object shall be ignored if the
-        unitUserDefinedBackupTime is set to a non-zero value. The system
+        value of zero (0) for this object shall disable this feature.  The system
         control parameters are: 
             phaseControlGroupPhaseOmit, 
             phaseControlGroupPedOmit, 
@@ -4158,7 +4156,7 @@ shortAlarmStatus OBJECT-TYPE
                 due to cycle overrun caused by servicing a pedestrian call
                 shall not cause a Coordination Alarm.
         Bit 5: Detector Fault - When any detectorAlarm fault occurs.
-        Bit 6: Physcial Alarm / Non-Critical Alarm - When an physical alarm input is                     active.
+        Bit 6: Physcial Alarm / Non-Critical Alarm - When an physical alarm       input is active.
         Bit 7: Stop Time / Critical Alarm - When the Stop Time input is active.
         
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.29
@@ -4224,8 +4222,7 @@ unitControl OBJECT-TYPE
                 nonactuated1(2),
                 nonactuated2(3),
                 walkRestModifier(4),
-                interconnect(5),
-                MMUMonitoring(6) }
+                interconnect(5) }
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Short Alarm Mask ( 0 = False, 1 = True) as
@@ -4254,9 +4251,9 @@ unitControl OBJECT-TYPE
                 inputs to operate at a higher priority than the timebase
                 control (TBC On Line).
                 REFERENCE NEMA TS 2 Clause 3.6.2.3 and 3.8.3
-        Bit 6:  MMU Monitoring - when set to 1, enables the CU to monitor the voltage levels, current levels, and flash state from the MMU.
         
-    The device shall reset this object to ZERO when in BACKUP Mode. A write to this object shall reset the BACKUP timer         (see unitBackupTime).
+        
+    The device shall reset this object to ZERO when in BACKUP Mode. A write to this object shall reset the BACKUP timer (see unitBackupTime).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.30
     <Object Type> S"
     ::= { unit 30 }
@@ -4491,7 +4488,9 @@ ascElevationOffset OBJECT-TYPE
     MAX-ACCESS read-write 
     STATUS deprecated
     DESCRIPTION "<Definition>The offset in height, in meters, from the antenna of a GNSS or similar geopositioning device to the base of CU cabinet. It is assumed that the antenna is at a height higher than the base of the CU structure.
-<Valid Value Rule>Values of 0 to 30 provides a range from 0 meters to 30 meters. The value of 31 represents unknown.
+
+    Values of 0 to 30 provides a range from 0 meters to 30 meters. The value of 31 represents unknown.
+    
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.17
     <Object Type> P" 
     DEFVAL { 31 }
@@ -4499,15 +4498,22 @@ ascElevationOffset OBJECT-TYPE
 
 --5.4.18    Startup Flash Mode
 unitStartUpFlashMode OBJECT-TYPE
-    SYNTAX INTEGER { autoFlash (1),
-                 allRedFlashOverride (2),
-                 allRedControllerFlash (3) }
+    SYNTAX INTEGER { other(1)
+                automaticFlash (2),
+                cabinetFlash (3),
+                allRedControllerFlash (4) }
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Defines the startup flash state for the unit. For autoFlash (1), the startup flash state for each signal indication is also the state of the channel during Automatic Flash mode. For allRedFlashOverride (2), during the Start-Up Flash state, the Fault Monitor and Voltage Monitor outputs shall be inactive (if present) and the Channel Flash settings shall be overridden. For allRedControllerFlash(3), the load switch flash would flash all red regardless of the auto flash channel configuration.
+    DESCRIPTION "<Definition> Defines the startup flash state for the unit. The possible states are:
+    
+    other: The startup flash state is a state not defined by this standard.
+    Automatic Flash: The startup flash state for each signal indication is defined by the channelFlash object.
+    Cabinet Flash: Upon startup, the intersection shall flash based on the cabinet's internal flash transfer relay configuration. 
+    All Red Controller Flash: Upon startup, the intersection shall flash all-red regardless of the channelFlash object settings.
+
     <Object Type> P
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.18"
-    DEFVAL { autoFlash }
+    DEFVAL { 2 }
     ::= { unit 18 }
 
 --5.4.19    Backup Timer Parameter - User Defined
@@ -4529,7 +4535,7 @@ maxUserDefinedBackupTimeContent OBJECT-TYPE
     SYNTAX Integer32 (2..255)
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION  "<Definition> The Maximum Number of user content backup time contents this controller supports. This object indicates the maximum rows which shall appear in the unitUserDefinedBackupTimeContentTable object.
+    DESCRIPTION  "<Definition> The Maximum Number of user defined functions to this controller allows for to be subject to unitBackUpTime. This object indicates the maximum rows which shall appear in the unitUserDefinedBackupTimeContentTable object.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.20
     <Object Type> S"
     ::= { unit 20 }
@@ -4539,7 +4545,7 @@ unitUserDefinedBackupTimeContentTable OBJECT-TYPE
     SYNTAX SEQUENCE OF UnitUserDefinedBackupTimeContentEntry
     MAX-ACCESS not-accessible
     STATUS current
-    DESCRIPTION "<Definition> A table containing the parameters of the user defined parameters for the backup timer.
+    DESCRIPTION "<Definition> A table containing the parameters of the user defined parameters for the backup timer. All functions defined in this table are subject to the backup timer in addition to the ones defined in unitBackUpTime.
     <TableType> static
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.21"
     ::= { unit 21 }
@@ -4556,7 +4562,7 @@ unitUserDefinedBackupTimeContentEntry OBJECT-TYPE
 UnitUserDefinedBackupTimeContentEntry ::= SEQUENCE { 
     unitUserDefinedBackupTimeContentNumber      INTEGER,
     unitUserDefinedBackupTimeContentOID         OBJECT IDENTIFIER,
-    unitUserDefinedBackupTimeContentDescription OCTET STRING }
+    unitUserDefinedBackupTimeContentDescription SnmpAdminString }
 
 --5.4.21.1  Backup Time - User Defined Number
 unitUserDefinedBackupTimeContentNumber OBJECT-TYPE
@@ -4573,7 +4579,7 @@ unitUserDefinedBackupTimeContentOID OBJECT-TYPE
     SYNTAX OBJECT IDENTIFIER
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object contains a reference to the function, which, if any SET operation is  performed on it, leads to a reset of the timer associated with the unitUserDefinedbackupTime object. This object shall reference the function by its associated identifier including its instance (i.e., the full OID of the scalar or columnar object).
+    DESCRIPTION "<Definition> This object contains a reference to the function, which, if any SET operation is  performed on it, leads to a reset of the timer associated with the unitbackupTime object. This object shall reference the function by its associated identifier including its instance (i.e., the full OID of the scalar or columnar object).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.21.1.2
     <Object Type> P"
     DEFVAL { "0.0" }
@@ -4581,10 +4587,10 @@ unitUserDefinedBackupTimeContentOID OBJECT-TYPE
 
 --5.4.21.3  Backup Time - User Defined Content Description
 unitUserDefinedBackupTimeContentDescription OBJECT-TYPE
-    SYNTAX OCTET STRING
+    SYNTAX SnmpAdminString
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Contains a text description of the referenced function that, if performing a SET command against its corresponding object, will reset the timer associated with the unitUserDefinedBackupTime object.
+    DESCRIPTION "<Definition> Contains a text description of the referenced function that, if performing a SET command against its corresponding object, will reset the timer associated with the unitDefinedBackupTime object.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.21.1.3
     <Object Type> P"
     DEFVAL { "" }
@@ -11716,6 +11722,7 @@ eclaCommEnable OBJECT-TYPE
     DESCRIPTION "<Definition> This object controls if an ASC should use any data received from an ECLA to determine when the current phases may terminate and what phases may be next. 
             TRUE (one) - Use data provided by an ECLA.
             FALSE (zero) - Do not use data provided by an ECLA.
+
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.18.1
     <Object Type> P"
     DEFVAL { 0 }
