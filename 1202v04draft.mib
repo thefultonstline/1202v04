@@ -2187,7 +2187,7 @@ vehicleDetectorSwitchPhase OBJECT-TYPE
 
 --5.3.2.5   Vehicle Detector Delay Parameter
 vehicleDetectorDelay OBJECT-TYPE
-    SYNTAX Integer32 (0..65535)
+    SYNTAX Integer32 (0..2550)
     UNITS "decisecond"
     MAX-ACCESS read-write
     STATUS current
