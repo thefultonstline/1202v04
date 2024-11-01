@@ -4224,7 +4224,8 @@ unitControl OBJECT-TYPE
                 nonactuated1(2),
                 nonactuated2(3),
                 walkRestModifier(4),
-                interconnect(5) }
+                interconnect(5),
+                MMUMonitoring(6) }
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Short Alarm Mask ( 0 = False, 1 = True) as
@@ -4253,6 +4254,7 @@ unitControl OBJECT-TYPE
                 inputs to operate at a higher priority than the timebase
                 control (TBC On Line).
                 REFERENCE NEMA TS 2 Clause 3.6.2.3 and 3.8.3
+        Bit 6:  MMU Monitoring - when set to 1, enables the CU to monitor the voltage levels, current levels, and flash state from the MMU.
         
     The device shall reset this object to ZERO when in BACKUP Mode. A write to this object shall reset the BACKUP timer         (see unitBackupTime).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.30
