@@ -2628,7 +2628,7 @@ volumeOccupancySequence OBJECT-TYPE
     UNITS "sequence"
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> This object defines a Sequence Number for
+    DESCRIPTION "<Definition> This object defines a sequence number for
         Volume/Occupancy data collection. This object is used to detect
         duplicate or missing reports. The value cycles within the limits of 0
         to 255. This object is incremented by one at the expiration of the
