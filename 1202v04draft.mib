@@ -2702,7 +2702,7 @@ VolumeOccupancyEntry ::= SEQUENCE {
 --5.3.5.4.1 Volume Data
 detectorVolume OBJECT-TYPE
     SYNTAX Integer32 (0..255)
-    UNITS "volume" -- vehicle?? v04 check
+    UNITS "vehicle"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Detector Volume data collected over the
@@ -2716,7 +2716,7 @@ detectorVolume OBJECT-TYPE
 --5.3.5.4.2 Occupancy Data
 detectorOccupancy OBJECT-TYPE
     SYNTAX Integer32 (0..255)
-    UNITS "occupancy" -- percent?? v04 check
+    UNITS "percent"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Detector Occupancy as a percentage of the
@@ -2770,7 +2770,7 @@ volumeOccupancyPeriodV3 OBJECT-TYPE
     SYNTAX Integer32 (0..65535)
     UNITS "second"
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> This object indicates the number of seconds
         (0-3600 seconds) that comprise the Volume/Occupancy/Speed collection
         period. When the collection period expires the device shall increment
@@ -3171,7 +3171,7 @@ pedestrianDetectorPeriod OBJECT-TYPE
         (0-3600 seconds) that comprise the pedestrian detector data
         collection period. When the collection period expires the device shall
         increment the pedestrianDetectorSequence, update the
-        pedestrianSampleTable entries and reset the pedestrian volume timer. A
+        pedestrianSampleTable entries, and reset the pedestrian volume timer. A
         value of 0 indicates that no sampling is to be performed. 
 
         A value of 65534 indicates that the pedestrian detector data
@@ -3320,7 +3320,7 @@ pedestrianDetectorSampleDuration OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object indicates the number of seconds
-        (1-3600 seconds) that comprise the duration of the pedestrian detector
+        (1-3600 seconds) that comprise the sampling of the pedestrian detector
         data collection period. A value of 0 indicates that duration is
         invalid. Values of 3601-65535 are reserved. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.10.6
