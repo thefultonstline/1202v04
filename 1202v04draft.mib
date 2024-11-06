@@ -6,7 +6,7 @@
 --              SAE data elements.
 -- Source:      NTCIP 1202 v?????????????
 -- MIB Revision History:
--- Date:        November 1, 2024
+-- Date:        November 5, 2024
 --
 -- Copyright 2023 by the American Association of State Highway and
 -- Transportation Officials (AASHTO), the Institute of Transportation
@@ -853,18 +853,17 @@ phasePedDelayTime OBJECT-TYPE
 
 --5.2.2.32  Phase Advanced Green Indication Start Time Parameter
 phaseAdvWarnGrnStartTime OBJECT-TYPE
-    SYNTAX Integer32 (0..128)
+    SYNTAX Integer32 (0..255)
     UNITS "decisecond"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> The amount of time, in tenths of a second for a
-        period of 0.0 to 12.8 seconds, that an advanced warning signal
+        period of 0.0 to 25.5 seconds, that an advanced warning signal
         indication is displayed before the start of phase Green. The warning
         signal is placed upstream of the phase's approach and indicates that
         the phase's Green indication is about to start or has started.
 
-        The value of this object should not exceed the total amount of
-        clearance time of the phase(s) that is being terminated prior to the
+        The duration of the advanced green indication should not exceed the total amount of vehicle clearance time of the phase(s) that is being terminated prior to the
         start of this phase.
 
         Note: The Advanced Warning Green terminates at the end of the green.
@@ -897,8 +896,7 @@ phaseAltMinTimeTransition OBJECT-TYPE
         green time that is used during transitions, in seconds from 1 to 255
         seconds. This object can be applied during transitions or signal
         priority. A value of 0 indicates that this object is not used during
-        transitions. The alternate minimum green cannot be less than
-        phaseMinimumGreen for this phase.
+        transitions. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.34
     <Object Type> P"
     DEFVAL { 0 }
@@ -909,7 +907,7 @@ phasePedStartOffset OBJECT-TYPE
     SYNTAX Integer32 (-255..255)
     UNITS "decisecond"
     MAX-ACCESS read-write
-    STATUS deprecated
+    STATUS current
     DESCRIPTION "<Definition> The amount of time, in tenths of a second from
         0 to 25.5 seconds, that the phase's parallel pedestrian Walk
         indication starts relative to the start of the phase's GREEN indication. 
@@ -917,9 +915,7 @@ phasePedStartOffset OBJECT-TYPE
         BEFORE the phase's vehicle GREEN indication. A positive value indicates that the
         phase's Walk indication starts AFTER the phase's vehicle GREEN indication.
         
-        A value of 70 indicates that the pedestrian Walk indication starts 7 seconds AFTER 
-        the phase's GREEN indication.. A value of -70 indicates that the pedestrian Walk 
-    indication starts 7 seconds BEFORE the phase's GREEN indication.
+        A value of 70 indicates that the pedestrian Walk indication starts 7 seconds AFTER the phase's GREEN indication.. A value of -70 indicates that the pedestrian Walk indication starts 7 seconds BEFORE the phase's GREEN indication.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.35
     <Object Type> P"
     DEFVAL { 0 }
@@ -4447,6 +4443,7 @@ specialFunctionOutputControlSource OBJECT-TYPE
 --5.4.15    Remote Manual Control Timer
 unitMCETimeout OBJECT-TYPE
     SYNTAX Integer32 (0..255)
+    UNITS "second"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object performs two functions. First, it
@@ -4579,10 +4576,10 @@ unitUserDefinedBackupTimeContentOID OBJECT-TYPE
     SYNTAX OBJECT IDENTIFIER
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object contains a reference to the function, which, if any SET operation is  performed on it, leads to a reset of the timer associated with the unitbackupTime object. This object shall reference the function by its associated identifier including its instance (i.e., the full OID of the scalar or columnar object).
+    DESCRIPTION "<Definition> This object contains a reference to the function, which, if any SET operation is  performed on it, leads to a reset of the timer associated with the unitBackupTime object. This object shall reference the function by its associated identifier including its instance (i.e., the full OID of the scalar or columnar object).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.21.1.2
     <Object Type> P"
-    DEFVAL { "0.0" }
+    DEFVAL { zeroDotZero }
     ::= { unitUserDefinedBackupTimeContentEntry 2 }
 
 --5.4.21.3  Backup Time - User Defined Content Description
@@ -5347,6 +5344,7 @@ coordCorrectionMode OBJECT-TYPE
             manner.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.2
     <Object Type> P"
+    DEFVAL { 3 }
     ::= { coord 2 }
 
 --5.5.3 Coord Maximum Mode Parameter
@@ -5372,6 +5370,7 @@ coordMaximumMode OBJECT-TYPE
             coordination is running a pattern.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.3
     <Object Type> P"
+    DEFVAL { 4 }
     ::= { coord 3 }
 
 --5.5.4 Coord Force Mode Parameter
@@ -5394,6 +5393,7 @@ unitCoordForceMode OBJECT-TYPE
     This object was named coordForceMode in 1202 v03.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.4
     <Object Type> P"
+    DEFVAL { 3 }
     ::= { coord 4 }
 
 --5.5.5 Maximum Patterns Parameter
@@ -5450,8 +5450,8 @@ PatternEntry ::= SEQUENCE {
     patternOffsetTime           Integer32,
     patternSplitNumber          Integer32,
     patternSequenceNumber       Integer32,
-    patternCoordSyncPoint       Integer32,
-    patternMaximumMode          Integer32,
+    patternCoordSyncPoint       INTEGER,
+    patternMaximumMode          INTEGER,
     patternSpatEnabledLanes     OCTET STRING, --deprecated (v04 check)
     patternPhaseSet             Integer32,
     patternOverlapSet           Integer32,
@@ -5485,11 +5485,13 @@ The minimum requirements of a phase with a not-actuated ped include Minimum Gree
  
 --5.5.7.3   Pattern Offset Time Parameter
 patternOffsetTime OBJECT-TYPE
-    SYNTAX Integer32 (0..999)
+    SYNTAX Integer32 (0..998)
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> The patternOffsetTime defines by how many seconds (NEMA TS 2 range: 0-254) the local time zero shall lag the system time zero (synchronization pulse) for this pattern. An offset value equal to or greater than the patternCycleTime shall result in Free being the operational mode. While this condition  exists, the Local Free bit of unitAlarmStatus1 and the LocalOverride bit of shortAlarmStatus shall be set to one (1).
+    DESCRIPTION "<Definition> The patternOffsetTime defines by how many seconds (NEMA TS 2 range: 0-254) the local time zero shall lag the system time zero (synchronization pulse) for this pattern. 
+    
+    An offset value equal to or greater than the patternCycleTime shall result in Free being the operational mode. While this condition exists, the Local Free bit of unitAlarmStatus1 and the LocalOverride bit of shortAlarmStatus shall be set to one (1).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.3
     <Object Type> P"
     REFERENCE "NEMA TS 2 Clause 3.6.2.2"
@@ -5544,7 +5546,7 @@ firstCoordPhsYelEnd: the coordination point is the end of the yellow indication 
 lastCoordPhsYelEnd: the coordination point is the end of the yellow indication of the last coordinated phase.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.6
     <Object Type> P"
-    DEFVAL { firstCoordPhsGrnBegin }
+    DEFVAL { 2 }
     ::= { patternEntry 6 }
 
 --5.5.7.7   Pattern Maximum Mode
@@ -5568,6 +5570,7 @@ maximum3: the internal Maximum 3 Timing shall be effective while coordination is
 This object was named patternOptions in 1202 v03. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.7
     <Object Type> P"
+    DEFVAL { 2 }
     ::= { patternEntry 7 }
 
 --5.5.7.8   Pattern Enabled Lanes
@@ -5583,10 +5586,10 @@ patternSpatEnabledLanes OBJECT-TYPE
 --5.5.7.9   Pattern Phase Set Number Parameter
 patternPhaseSet OBJECT-TYPE
     SYNTAX Integer32 (1..255)
-    UNITS "phase"
+    UNITS "set"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to identify the phase set to be used with this pattern. This value shall not exceed the maxPhases object value.
+    DESCRIPTION "<Definition> This object is used to identify the phase set to be used with this pattern. This value shall not exceed the maxPhaseSets object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.9
     <Object Type> P"
     DEFVAL { 1 }
@@ -5595,10 +5598,10 @@ patternPhaseSet OBJECT-TYPE
 --5.5.7.10  Pattern Overlap Set Number Parameter
 patternOverlapSet OBJECT-TYPE
     SYNTAX Integer32 (1..255)
-    UNITS "overlap"
+    UNITS "set"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to identify the overlap set to be used with this pattern. This value shall not exceed the maxOverlaps object value.
+    DESCRIPTION "<Definition> This object is used to identify the overlap set to be used with this pattern. This value shall not exceed the maxOverlapSets object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.10
     <Object Type> P"
     DEFVAL { 1 }
@@ -5607,10 +5610,10 @@ patternOverlapSet OBJECT-TYPE
 --5.5.7.11  Pattern Vehicle Detector Set Number Parameter
 patternVehicleDetectorSet OBJECT-TYPE
     SYNTAX Integer32 (1..255)
-    UNITS "detector"
+    UNITS "set"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to identify the vehicle detector set to be used with this pattern. This value shall not exceed the maxVehicleDetectors object value.
+    DESCRIPTION "<Definition> This object is used to identify the vehicle detector set to be used with this pattern. This value shall not exceed the maxVehicleDetectorSets object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.11
     <Object Type> P"
     DEFVAL { 1 }
@@ -5689,7 +5692,7 @@ splitTime OBJECT-TYPE
 
     If the cycleTime entry of the associated patternTable entry is zero (i.e. the device is in Free Mode), then the value of this object shall be applied, if non-zero, as a maximum time for the associated phase.
 
-    If the critical path through the phase diagram is less than the cycleTime entry of the associated patternTable entry, all extra time is allotted to the coordination phase in each ring.
+    If the critical path through the phase diagram is less than the cycleTime entry of the associated patternTable entry, all extra time is allotted to the coordinated phase in each ring.
 
     If the critical path through the phase diagram is greater than the cycleTime entry of the associated patternTable entry (and the cycleTime is not zero) the device shall operate in the Free Mode.
 
@@ -5722,6 +5725,7 @@ phaseOmitted: this phase is omitted.
 nonActuated: this phase operates with a fixed split time.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.9.1.4
     <Object Type> P"
+     DEFVAL { 2 }
     ::= { splitEntry 4 }
 
 --5.5.9.5   Split Coordinated Phase
@@ -5762,19 +5766,17 @@ splitCoordForceMode OBJECT-TYPE
                      fixed (4) }
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object defines the Force Mode for the phase when the split
-    is in use. The possible modes are:
+    DESCRIPTION "<Definition> This object defines the Force Mode for the phase when the split   is in use. The possible modes are:
         other: the CU implements a mechanism not defined in this standard.
-        unitCoordForceMode: The CU uses the current setting of the unitCoordForceMode object for 
-        this phase. 
+        unitCoordForceMode: The CU uses the current setting of the unitCoordForceMode object for this phase. 
         floating: The phase will be forced to limit its time to the splitTime value.
-        fixed: The phase will be forced off at a fixed position in the cycle, allowing it's on-time 
-        to exceed the splitTime value
+        fixed: The phase will be forced off at a fixed position in the cycle, allowing its on-time to exceed the splitTime value
 
     The value of this object for this phase is ignored when splitCoordPhase is equal to '1'.
 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.9.1.7
     <Object Type> P"
+     DEFVAL { 2 }
     ::= { splitEntry 7}
 
 --5.5.10    Coordination Pattern Status 
@@ -5873,7 +5875,7 @@ systemPatternControl OBJECT-TYPE
         BACKUP Mode. A write to this object shall reset the Backup timer to
         ZERO (see unitBackupTime).
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.14
-    <Object Type> P"
+    <Object Type> C"
     ::= { coord 14 }
  
 --5.5.15    System Sync Control
@@ -5913,8 +5915,8 @@ unitCoordSyncPoint OBJECT-TYPE
                      lastPhaseYellowEnd (7) }
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to indicate the default coordination point for all timing patterns based on the first coordinated phase that turns on since 
-    the start of the timing pattern cycle or the last coordinated phase to turn on before the end of the timing pattern cycle. The valid coordination sync points are:
+    DESCRIPTION "<Definition> This object is used to indicate the default coordination point for all timing patterns based on the first coordinated phase that turns on since the start of the timing pattern cycle or the last coordinated phase to turn on before the end of the timing pattern cycle. 
+    The valid coordination sync points are:
         other: the coordination sync point is not described in this standard
         firstPhaseGreenBegin: the coordination point is the beginning of the
             Green indication of the first coordinated phase.
@@ -6371,7 +6373,7 @@ preemptTrackPhase OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Each octet within the octet string contains a phaseNumber(binary value) that shall be active during the Preempt Track Clearance         intervals. The values of phaseNumber used here shall not exceed maxPhases or violate the Consistency Checks defined in Section 4.3.2.
+    DESCRIPTION "<Definition> Each octet within the octet string contains a phaseNumber(binary value) that shall be active during the Preempt Track Clearance intervals. The values of phaseNumber used here shall not exceed maxPhases or violate the Consistency Checks defined in Section 4.3.2.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.12
     <Object Type> P2"
     DEFVAL { "" }
@@ -7817,10 +7819,10 @@ overlapWalk OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Overlap Walk Parameter in seconds (0-255 sec).
+    DESCRIPTION "<Definition> Overlap Walk Parameter in seconds (1-255 sec).
         This value is the length of the walk interval for a pedestrian
         overlap. Upon completion of the Walk interval, the overlap enters the
-        pedestrian clearance interval.
+        pedestrian clearance interval. A value of 0 indicates that the phaseWalk parameter of the currently running parent phase is used for this overlap.  
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.9.2.1.8
     <Object Type> P"
     ::= { overlapEntry 8 }
@@ -7832,8 +7834,8 @@ overlapPedClearance OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Overlap Pedestrian Clearance Parameter in
-        seconds (0-255 sec). This value is the length of the pedestrian
-        clearance interval.
+        seconds (1-255 sec). This value is the length of the pedestrian
+        clearance interval. A value of 0 indicates that the phasePedestrianClear parameter of the currently running parent phase is used for this overlap
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.9.2.1.9
     <Object Type> P"
     ::= { overlapEntry 9 }
