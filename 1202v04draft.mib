@@ -6,7 +6,7 @@
 --              SAE data elements.
 -- Source:      NTCIP 1202 v?????????????
 -- MIB Revision History:
--- Date:        November 13, 2024
+-- Date:        November 14, 2024
 --
 -- Copyright 2023 by the American Association of State Highway and
 -- Transportation Officials (AASHTO), the Institute of Transportation
@@ -231,8 +231,8 @@ PhaseEntry ::= SEQUENCE {
     phaseDontWalkRevert             Integer32,
     phasePedAlternateClearance      Integer32,
     phasePedAlternateWalk           Integer32,
-    phasePedAdvanceWalkTime         Integer32, --deprecated
-    phasePedDelayTime               Integer32, --deprecated
+    phasePedAdvanceWalkTime         Integer32, --
+    phasePedDelayTime               Integer32, 
     phaseAdvWarnGrnStartTime        Integer32,
     phaseAdvWarnRedStartTime        Integer32,
     phaseAltMinTimeTransition       Integer32,
@@ -587,7 +587,7 @@ phaseStartup OBJECT-TYPE
             redClear: this phase initializes at the beginning of the Red
                 Clearance interval.
         
-        The value of this phase is the same for all phase sets. There is no object in the         phaseSettable corresponding to phaseStartup.
+        The value of this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseStartup.
 
         <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.20
         <Object Type> P2
@@ -684,7 +684,7 @@ phaseRing OBJECT-TYPE
         exceed the maxRings object value. If the ring number is zero, the
         phase is disabled (phaseOptions Bit 0 = 0 has the same effect).
 
-    The value of this phase is the same for all phase sets. There is no object in the         phaseSettable corresponding to phaseRing.
+    The value of this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseRing.
 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.22
     <Object Type> P2"
@@ -699,7 +699,7 @@ phaseConcurrency OBJECT-TYPE
         that may run concurrently with the associated phase. Phases that are
         contained in the same ring may NOT run concurrently.
 
-        The value of this phase is the same for all phase sets. There is no object in the     phaseSettable corresponding to phaseConcurrency.
+        The value of this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseConcurrency.
     
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.23
     <Object Type> P2"
@@ -790,7 +790,7 @@ phasePedAlternateClearance OBJECT-TYPE
         the flashing period of the dont walk output. 
 
         This parameter may be used for a parallel pedestrian indication in
-        conjunction with a vehicle phase or with a ped-only phase.
+        conjunction with a vehicle phase or with a ped-only phase to support extend pedestrian clearance times. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.28
     <Object Type> P"
     ::= { phaseEntry 28 }
@@ -806,7 +806,7 @@ phasePedAlternateWalk OBJECT-TYPE
         indication shall be displayed.
 
         This parameter may be used for a parallel pedestrian indication in
-        conjunction with a vehicle phase or with a ped-only phase.
+        conjunction with a vehicle phase or with a ped-only phase to support extended walk times.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.29
     <Object Type> P"
     ::= { phaseEntry 29 }
@@ -818,14 +818,11 @@ phasePedAdvanceWalkTime OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS deprecated
     DESCRIPTION "<Definition> The amount of time, in tenths of a second from
-        0 to 25.5 seconds, that the vehicle phase's parallel pedestrian Walk
-        indication starts before the start of the green indication of the
-        vehicle phase. A value of 12.7 seconds indicates the pedestrian Walk
-        indication starts 12.7 seconds before the GREEN indication of the
-        vehicle phase. The actual offset used between the start of the
-        pedestrian Walk indication and the start of the green indication of
-        the vehicle phase is the sum of this object value plus the value in
-        the phasePedDelayTime. 
+        0 to 25.5 seconds, that the phase's pedestrian Walk
+        indication starts before the start of the phase's vehicle GREEN indication.
+        A value of 127 seconds indicates the pedestrian Walk indication starts 12.7 seconds before the vehicle GREEN indication of the phase. 
+        
+        This parameter is used as the result of a pedestrian detector input as configured in pedestrianDetectorOptions OR ?????????
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.30
     <Object Type> P"
     DEFVAL { 0 }
@@ -838,14 +835,11 @@ phasePedDelayTime OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS deprecated
     DESCRIPTION "<Definition> The amount of time, in tenths of a second from
-        0 to 25.5 seconds, that the vehicle phase's parallel pedestrian Walk
-        indication starts after the start of the green indication of the
-        vehicle phase. A value of 12.7 indicates the pedestrian Walk
-        indication starts 12.7 seconds after the GREEN indication of the
-        vehicle phase. The actual offset used between the start of the
-        pedestrian Walk indication and the start of the green indication of
-        the vehicle phase is the sum of this object value plus the value in
-        the phasePedAdvanceWalkTime.
+        0 to 25.5 seconds, that the phase's pedestrian Walk
+        indication starts after the start of the phase's vehicle GREEN indication. 
+        A value of 127 indicates the pedestrian Walk indication starts 12.7 seconds after the vehicle GREEN indication of the phase. 
+        
+        This parameter is used as result of a pedestrian detector input OR ?????????
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.31
     <Object Type> P"
     DEFVAL { 0 }
@@ -902,12 +896,12 @@ phaseAltMinTimeTransition OBJECT-TYPE
     DEFVAL { 0 }
     ::= { phaseEntry 34 }
 
---5.2.2.35  Phase Pedestrian Delay Walk Time Parameter
+--5.2.2.35  Phase Pedestrian Delay Walk Time Parameter DELETE
 phasePedStartOffset OBJECT-TYPE
     SYNTAX Integer32 (-255..255)
     UNITS "decisecond"
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deleted
     DESCRIPTION "<Definition> The amount of time, in tenths of a second from
         0 to 25.5 seconds, that the phase's parallel pedestrian Walk
         indication starts relative to the start of the phase's GREEN indication. 
@@ -915,11 +909,38 @@ phasePedStartOffset OBJECT-TYPE
         BEFORE the phase's vehicle GREEN indication. A positive value indicates that the
         phase's Walk indication starts AFTER the phase's vehicle GREEN indication.
         
-        A value of 70 indicates that the pedestrian Walk indication starts 7 seconds AFTER the phase's GREEN indication.. A value of -70 indicates that the pedestrian Walk indication starts 7 seconds BEFORE the phase's GREEN indication.
+        A value of 70 indicates that the pedestrian Walk indication starts 7 seconds AFTER the phase's GREEN indication. A value of -70 indicates that the pedestrian Walk indication starts 7 seconds BEFORE the phase's GREEN indication.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.35
     <Object Type> P"
     DEFVAL { 0 }
     ::= { phaseEntry 35 }
+
+--5.2.2.35  Phase Alternate Walk Green Time During Transitions
+phaseWalkDuringTransition OBJECT-TYPE
+    SYNTAX Integer32 (0..255)
+    UNITS "second"
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "<Definition> This object indicates the alternate walk time that is used during transitions, in seconds from 1 to 255
+        seconds. This object can be applied during transitions or signal priority. A value of 0 indicates that this object is not used during
+        transitions. 
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.35
+    <Object Type> P"
+    DEFVAL { 0 }
+    ::= { phaseEntry 35 }
+
+--5.2.2.36  Phase Alternate Walk Green Time During Transitions
+phasePedClearDuringTransition OBJECT-TYPE
+    SYNTAX Integer32 (0..255)
+    UNITS "second"
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "<Definition> This object indicates the alternate minimum pedestrian clearance time walk time that is used during transitions, in seconds from 1 to 255
+        seconds. This object can be applied during transitions or signal priority. A value of 0 indicates that this object is not used during transitions. 
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.36
+    <Object Type> P"
+    DEFVAL { 0 }
+    ::= { phaseEntry 36 }
 
 --5.2.3 Maximum Phase Groups
     maxPhaseGroups OBJECT-TYPE
@@ -3018,15 +3039,17 @@ pedestrianDetectorOptions OBJECT-TYPE
         Bit 7: Reserved.
         Bit 6: Reserved.
         Bit 5: Reserved.
-        Bit 4: Reserved.
-        Bit 3: Reserved.
+        Bit 4: Advanced Walk: If enabled, the detector will place calls for the phase's pedestrian walk indication to start before the phase's vehicle GREEN indication. 
+        Bit 3: Delayed Walk: If enabled, the detector will place calls for the phase's pedestrian walk indication to start after the phase's vehicle GREEN indication. 
         Bit 2: Non-locking: If enabled, detector will place a non-locked calls
                 instead  of a locked calls.
-        Bit 1: Alternate timing: If enabled, detector will place calls for
+        Bit 1: Alternate timing: If enabled, the detector will place calls for
                 alternate ped timing instead of normal ped timing.
-        Bit 0: Presence: If enabled, detector indicates presence of
+        Bit 0: Presence: If enabled, the detector indicates presence of
                 pedestrians in the crosswalk instead of placing calls for
                 service.
+        
+        A SET of both bits 3 & 4 shall result in bit 3=0 and bit 4=1. A SET of a 'reserved' bit to a value other than zero (0) shall return a badValue(3) error.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.7.1.9
     <Object Type> P"
     DEFVAL { 0 }
@@ -4141,7 +4164,7 @@ shortAlarmStatus OBJECT-TYPE
         follows:
 
         Bit 0: Preempt - When any of the CU Preempt inputs become active.
-        Bit 1: Flash Active - When the CU is in Flash. The unitFlashStatus object shall                 indicate the reason the CU is in flash. 
+        Bit 1: Flash Active - When the CU is in Flash. The unitFlashStatus object shall indicate the reason the CU is in flash. 
         Bit 2: Offset Transitioning - Whenever the CU is performing an offset
                 transition (correction in process).
         Bit 3: Local Override - When any of the CU inputs and/or programming
@@ -5450,9 +5473,10 @@ PatternEntry ::= SEQUENCE {
     patternOffsetTime           Integer32,
     patternSplitNumber          Integer32,
     patternSequenceNumber       Integer32,
-    patternCoordSyncPoint       INTEGER,
-    patternMaximumMode          INTEGER,
-    patternSpatEnabledLanes     OCTET STRING, --deprecated (v04 check)
+    patternReferencePoint       INTEGER,
+    patternMaximumMode          INTEGER, 
+    patternSpatEnabledLanes     OCTET STRING, --deprecated
+    patternReferferencePoint    Integer32,
     patternPhaseSet             Integer32,
     patternOverlapSet           Integer32,
     patternVehicleDetectorSet   Integer32
@@ -5522,31 +5546,21 @@ patternSequenceNumber OBJECT-TYPE
     ::= { patternEntry 5 }
 
 --5.5.7.6   Pattern Coordination Sync Point
-patternCoordSyncPoint OBJECT-TYPE
-    SYNTAX INTEGER { other (1),
-    unitCoordSyncPoint (2),
-    firstCoordPhsGrnBegin (3),
-    lastCoordPhsGrnBegin (4),
-    firstCoordPhsGrnEnd (5),
-    lastCoordPhsGrnEnd (6),
-    firstCoordPhsYelEnd (7),
-    lastCoordPhsYelEnd (8) }
+patternReferencePoint OBJECT-TYPE
+    SYNTAX INTEGER { green (1),
+                    yellow (2),
+                    red (3),
+                    end (4) }
     MAX-ACCESS read-write
-    STATUS deprecated
-    DESCRIPTION "<Definition> This object is used to indicate the location of the system reference point for this pattern based on the first coordinated phase that 
-    turns on since the start of the timing pattern cycle or the last coordinated phase to turn on before the end of the timing pattern cycle.
-    The valid coordination sync points are:
-other: the coordination sync point is not described in this standard
-unitCoordSyncPoint: the coordination point is defined by unitCoordSyncPoint.
-firstCoordPhsGrnBegin: the coordination point is the beginning of the Green indication of the first coordinated phase.
-lastCoordPhsGrnBegin: the coordination point is the beginning of the Green indication of the last coordinated phase.
-firstCoordPhsGrnEnd: the coordination point is end of the green indication of the first coordinated phase.
-lastCoordPhsGrnEnd: the coordination point is the end of the green indication of the last coordinated phase.
-firstCoordPhsYelEnd: the coordination point is the end of the yellow indication of the first coordinated phase.
-lastCoordPhsYelEnd: the coordination point is the end of the yellow indication of the last coordinated phase.
+    STATUS current
+    DESCRIPTION "<Definition> This object is used to indicate the location of the reference point for when the pattern cycle starts and ends. This object identifies an interval within the phase identified by the patternReferencePhase. The valid values are:
+    green: The start of the vehicle GREEN interval. If phasePedAdvanceWalkTime is used, then this is the start of the walk interval.
+    yellow: The start of the yellow change interval.
+    red: The start of the red clearance interval.
+    end: The end of the red cleance interval.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.6
     <Object Type> P"
-    DEFVAL { 2 }
+    DEFVAL { 1 }
     ::= { patternEntry 6 }
 
 --5.5.7.7   Pattern Maximum Mode
@@ -5583,7 +5597,22 @@ patternSpatEnabledLanes OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.8"
     ::= { patternEntry 8 }
 
---5.5.7.9   Pattern Phase Set Number Parameter
+--5.5.7.9   Pattern Reference Phase
+patternReferencePhase OBJECT-TYPE
+    SYNTAX Integer32 (1..255)
+    UNITS "sequence"
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "<Definition> This object is used to identify the phase that contains the reference point for when the pattern cycle starts and ends. This value shall not exceed the maxPhases object value. This value is typically a coordinated phase. The reference point is identified by patternReferencePoint.
+
+    If the selected phase is not in the sequence identified in patternSequenceNumber, the device shall operate in Free Mode with localFreeStatus equal to badPlan(7)
+
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.9
+    <Object Type> P"
+    DEFVAL { 2 }
+    ::= { patternEntry 9 }
+
+--5.5.7.10   Pattern Phase Set Number Parameter
 patternPhaseSet OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "set"
@@ -5593,9 +5622,9 @@ patternPhaseSet OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.9
     <Object Type> P"
     DEFVAL { 1 }
-    ::= { patternEntry 9 }
+    ::= { patternEntry 10 }
 
---5.5.7.10  Pattern Overlap Set Number Parameter
+--5.5.7.11  Pattern Overlap Set Number Parameter
 patternOverlapSet OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "set"
@@ -5605,9 +5634,9 @@ patternOverlapSet OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.10
     <Object Type> P"
     DEFVAL { 1 }
-    ::= { patternEntry 10 }
+    ::= { patternEntry 11 }
 
---5.5.7.11  Pattern Vehicle Detector Set Number Parameter
+--5.5.7.12  Pattern Vehicle Detector Set Number Parameter
 patternVehicleDetectorSet OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "set"
@@ -5617,7 +5646,7 @@ patternVehicleDetectorSet OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.11
     <Object Type> P"
     DEFVAL { 1 }
-    ::= { patternEntry 11 }
+    ::= { patternEntry 12 }
 
 --5.5.8 Maximum Splits
 maxSplits OBJECT-TYPE
@@ -5981,9 +6010,7 @@ timebaseAscPatternSync OBJECT-TYPE
     UNITS "minute"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Pattern Sync Reference in minutes past
-        midnight. This is the time that the master cycle begins. When the value is 65535, the controller unit shall use the
-        Action time as the Sync Reference for that pattern. This value is defined in ISO 26048-1.
+    DESCRIPTION "<Definition> Pattern Sync Reference in minutes past midnight. This is the time that the master cycle begins. When the value is 65535, the controller unit shall use the Action time as the Sync Reference for that pattern. This value is defined in ISO 26048-1.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.5.1
     <Object Type> P"
     REFERENCE "NEMA TS 2 Clause 3.8.2"
