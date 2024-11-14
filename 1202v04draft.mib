@@ -816,13 +816,13 @@ phasePedAdvanceWalkTime OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
     MAX-ACCESS read-write
-    STATUS deprecated
+    STATUS current
     DESCRIPTION "<Definition> The amount of time, in tenths of a second from
         0 to 25.5 seconds, that the phase's pedestrian Walk
         indication starts before the start of the phase's vehicle GREEN indication.
         A value of 127 seconds indicates the pedestrian Walk indication starts 12.7 seconds before the vehicle GREEN indication of the phase. 
         
-        This parameter is used as the result of a pedestrian detector input as configured in pedestrianDetectorOptions OR ?????????
+        This parameter is used as the result of a pedestrian detector input as configured in pedestrianDetectorOptions or if pedestrian recall is enabled.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.30
     <Object Type> P"
     DEFVAL { 0 }
@@ -839,7 +839,7 @@ phasePedDelayTime OBJECT-TYPE
         indication starts after the start of the phase's vehicle GREEN indication. 
         A value of 127 indicates the pedestrian Walk indication starts 12.7 seconds after the vehicle GREEN indication of the phase. 
         
-        This parameter is used as result of a pedestrian detector input OR ?????????
+        This parameter is used as result of a pedestrian detector input.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.31
     <Object Type> P"
     DEFVAL { 0 }
@@ -4149,14 +4149,14 @@ shortAlarmStatus OBJECT-TYPE
 
 --PROPOSED REPLACEMENT
 --5.4.28    Unit Alarm Status 
-shortAlarmStatus OBJECT-TYPE
+shortAlarmStatusv04 OBJECT-TYPE
     SYNTAX BITS { preemptActive(0),
                 flashActive(1),
                 offsetTransitioning(2),
                 localOveride(3),
                 coordinationAlarm(4),
                 detectorFault(5),
-                physicalAlarm(6),
+                externalAlarm(6),
                 stopTime(7) }
     MAX-ACCESS read-only
     STATUS current
@@ -4175,8 +4175,8 @@ shortAlarmStatus OBJECT-TYPE
                 due to cycle overrun caused by servicing a pedestrian call
                 shall not cause a Coordination Alarm.
         Bit 5: Detector Fault - When any detectorAlarm fault occurs.
-        Bit 6: Physcial Alarm / Non-Critical Alarm - When an physical alarm       input is active.
-        Bit 7: Stop Time / Critical Alarm - When the Stop Time input is active.
+        Bit 6: External Alarm - When an user configured alarm input is active.
+        Bit 7: Stop Time - When the Stop Time input is active.
         
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.29
     <Object Type> S"
@@ -4296,8 +4296,7 @@ alarmGroupTable OBJECT-TYPE
     SYNTAX SEQUENCE OF AlarmGroupEntry 
     MAX-ACCESS not-accessible
     STATUS current
-    DESCRIPTION "<Definition> This table contains alarm input status in groups
-        of eight inputs. The number of rows in this table is equal to the
+    DESCRIPTION "<Definition> This table contains external alarm input status in groups of eight inputs. The number of rows in this table is equal to the
         maxAlarmGroups object.
     <TableType> static
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.12"
@@ -5277,14 +5276,14 @@ unitAlarmStatus4 OBJECT-TYPE
 
 --5.4.28    Unit Alarm Status 
 unitAlarmStatus OBJECT-TYPE
-    SYNTAX BITS {    cycleFault(0),
+    SYNTAX BITS {  cycleFault(0),
                 coordFault(1),
                 coordFail(2),
                 cycleFail(3),
                 localFree(4),
                 coordActive(5),
-                responseFault(6),
-                cmuLinkError(7)
+                IOLinkError(6),
+                smuLinkError(7)
                 rsuLinkError(8),
                 cvCertificateError(9),
                 preemmptMaxPresence(10)   }
@@ -5292,17 +5291,17 @@ unitAlarmStatus OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> Device Alarm Mask 4 ( 0 = False, 1 = True) as
         follows:
-        Bit 0: Cycle Fault - When the Controller Unit is operating in the coordinated mode and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
+        Bit 0: Cycle Fault - When the CU is operating in the coordinated mode and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
         Bit 1: Coord Fault - When a Cycle Fault is in effect and the serviceable call has been serviced within two cycles after the Cycle Fault.
-        Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs             again within two cycles of the coordination retry.
-       Bit 3: Cycle Fail - When a local Controller Unit is operating in the non-                coordinated mode, whether the result of a Cycle Fault or Free being the current         normal mode, and cycling diagnostics indicate that a serviceable call exists that         has not been serviced for two cycles.
-        Bit 4: Local Free - When any of the CU inputs and/or programming cause it not to         run coordination. The localFreeStatus object shall indicate why the CU is not running coordination.
-        Bit 5: Coordination Active - When coordination is active and not preempted or            overridden.
-        Bit 6: Response Fault - When any NEMA TS2 Port 1 response frame fault occurs.
-        Bit 7: CMU Link Status = Whenever the CU is unable to communicate to the CMU             because the the communication link is failed (e.g., timeouts, errors) or because         the CMU has been removed.
-        Bit 8: RSU Link Status = Whenever the CU is configured to communicate with a RSU         but the communications link is failed (e.g., timeouts, errors).
-        Bit 9: CV Certificate = Whenever the CU detects a fault related to invalid               connected vehicle certificates.
-        Bit 10: Preempt Maximum Presence - Preempt maximum presence time exceeded
+        Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs again within two cycles of the coordination retry.
+       Bit 3: Cycle Fail - When a local CU is operating in the non-coordinated mode, whether the result of a Cycle Fault or Free being the current normal mode, and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
+        Bit 4: Local Free - When any of the CU inputs and/or programming cause it not to run coordination. The localFreeStatus object shall indicate why the CU is not running coordination.
+        Bit 5: Coordination Active - When coordination is active and not preempted or overridden.
+        Bit 6: IO Link Error - When the CU has a communication error with an IO device in the cabinet. 
+        Bit 7: SMU Link Error - Whenever the CU is unable to communicate to the signal monitoring unit because the the communication link is failed (e.g., timeouts, errors) or because the signal monitoring unit has been removed.
+        Bit 8: RSU Link Error - Whenever the CU is configured to communicate with a RSU but the communications link is failed (e.g., timeouts, errors).
+        Bit 9: CV Certificate Error - Whenever the CU detects an error related to invalid connected vehicle certificates.
+        Bit 10: Preempt Maximum Presence - Preempt maximum presence time exceeded.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.28
     <Object Type> S"
     ::= { unit 28 }
@@ -5547,17 +5546,19 @@ patternSequenceNumber OBJECT-TYPE
 
 --5.5.7.6   Pattern Coordination Sync Point
 patternReferencePoint OBJECT-TYPE
-    SYNTAX INTEGER { green (1),
-                    yellow (2),
-                    red (3),
-                    end (4) }
+    SYNTAX INTEGER { greenBegin (1),
+                    yellowBegin (2),
+                    redBegin (3),
+                    redEnd (4) }
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object is used to indicate the location of the reference point for when the pattern cycle starts and ends. This object identifies an interval within the phase identified by the patternReferencePhase. The valid values are:
+
     green: The start of the vehicle GREEN interval. If phasePedAdvanceWalkTime is used, then this is the start of the walk interval.
     yellow: The start of the yellow change interval.
     red: The start of the red clearance interval.
-    end: The end of the red cleance interval.
+    end: The end of the red clearance interval.
+
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.6
     <Object Type> P"
     DEFVAL { 1 }
@@ -5600,13 +5601,14 @@ patternSpatEnabledLanes OBJECT-TYPE
 --5.5.7.9   Pattern Reference Phase
 patternReferencePhase OBJECT-TYPE
     SYNTAX Integer32 (1..255)
-    UNITS "sequence"
+    UNITS "phase"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object is used to identify the phase that contains the reference point for when the pattern cycle starts and ends. This value shall not exceed the maxPhases object value. This value is typically a coordinated phase. The reference point is identified by patternReferencePoint.
 
     If the selected phase is not in the sequence identified in patternSequenceNumber, the device shall operate in Free Mode with localFreeStatus equal to badPlan(7)
 
+--ADD TEXT FOR noon coordphase = bad plan
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.9
     <Object Type> P"
     DEFVAL { 2 }
@@ -6010,7 +6012,7 @@ timebaseAscPatternSync OBJECT-TYPE
     UNITS "minute"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Pattern Sync Reference in minutes past midnight. This is the time that the master cycle begins. When the value is 65535, the controller unit shall use the Action time as the Sync Reference for that pattern. This value is defined in ISO 26048-1.
+    DESCRIPTION "<Definition> Pattern Sync Reference in minutes past midnight. This is the time that the master cycle begins and local cycle offset is relative. When the value is 65535, the controller unit shall use the Action time as the Sync Reference for that pattern. This value is defined in ISO 26048-1.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.5.1
     <Object Type> P"
     REFERENCE "NEMA TS 2 Clause 3.8.2"
@@ -6272,7 +6274,7 @@ preemptControl OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> Preempt Miscellaneous Control Parameter Mask (Bit=0: False/Disabled, Bit=1: True/Enabled) as follows:
 Bit 7: Reserved
-Bit 6: Reserved  
+Bit 6: All Red Entry - the CU shall enter to all red at the start of the preempt. 
 Bit 5: All Red Flash - the CU shall enter to all red flash instead of normal operations when the preemptMaximumPresence is exceeded
 Bit 4: Preempt Enable - enables or disables this preemption input. Disabling preempts should be done with extreme caution.
 Bit 3: Flash Dwell - the CU shall cause the phases listed in the preemptDwellPhase object to flash Yellow during the Dwell interval. All active phases not listed in preemptDwellPhase shall flash Red.
@@ -6495,7 +6497,7 @@ preemptCyclingPhase OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Each octet within the octet string contains a phaseNumber (binary value) that is allowed to cycle during the Preempt Dwell interval. The values of phaseNumber used here shall not exceed maxPhases or violate the Consistency Checks defined in Section 4.3.2.
+    DESCRIPTION "<Definition> Each octet within the octet string contains a phaseNumber (binary value) that is allowed to cycle during the Preempt Dwell interval after preemptDwellTime has lapsed. The values of phaseNumber used here shall not exceed maxPhases or violate the Consistency Checks defined in Section 4.3.2.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.2.1.19
     <Object Type> P2"
     DEFVAL { "" }
