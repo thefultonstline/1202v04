@@ -6,7 +6,7 @@
 --              SAE data elements.
 -- Source:      NTCIP 1202 v?????????????
 -- MIB Revision History:
--- Date:        November 14, 2024
+-- Date:        Decemember 2, 2024
 --
 -- Copyright 2023 by the American Association of State Highway and
 -- Transportation Officials (AASHTO), the Institute of Transportation
@@ -4183,7 +4183,8 @@ shortAlarmStatusv4 OBJECT-TYPE
                 coordinationAlarm(4),
                 detectorFault(5),
                 externalAlarm(6),
-                stopTime(7) }
+                stopTime(7),
+                priorityCall(8) }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Short Alarm Mask ( 0 = False, 1 = True) as
@@ -4203,6 +4204,7 @@ shortAlarmStatusv4 OBJECT-TYPE
         Bit 5: Detector Fault - When any vehicle or pedestrian detector fault occurs.
         Bit 6: External Alarm - When an user configured alarm input is active. The alarmGroupTable indicates which alarm input is active. 
         Bit 7: Stop Time - When the Stop Time input is active.
+        Bit 8: Priority Call - The CU is currently responding to a Priority Call. 
         
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.29
     <Object Type> S"
@@ -5312,7 +5314,9 @@ unitAlarmStatus OBJECT-TYPE
                 smuLinkError(7)
                 rsuLinkError(8),
                 cvCertificateError(9),
-                preemmptMaxPresence(10)   }
+                preemmptMaxPresence(10),
+                trafficAdaptive(11),
+                trafficResponsive(12)   }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Device Alarm Mask 4 ( 0 = False, 1 = True) as
@@ -5320,7 +5324,7 @@ unitAlarmStatus OBJECT-TYPE
         Bit 0: Cycle Fault - When the CU is operating in the coordinated mode and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
         Bit 1: Coord Fault - When a Cycle Fault is in effect and the serviceable call has been serviced within two cycles after the Cycle Fault.
         Bit 2: Coord Fail - When a Coord Fault is in effect and a Cycle Fault occurs again within two cycles of the coordination retry.
-       Bit 3: Cycle Fail - When a local CU is operating in the non-coordinated mode, whether the result of a Cycle Fault or Free being the current normal mode, and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
+        Bit 3: Cycle Fail - When a local CU is operating in the non-coordinated mode, whether the result of a Cycle Fault or Free being the current normal mode, and cycling diagnostics indicate that a serviceable call exists that has not been serviced for two cycles.
         Bit 4: Local Free - When any of the CU inputs and/or programming cause it not to run coordination. The localFreeStatus object indicates why the CU is not running coordination.
         Bit 5: Coordination Active - When coordination is active and not preempted or overridden.
         Bit 6: IO Link Error - When the CU has a communication error with an IO device in the cabinet. 
@@ -5328,6 +5332,8 @@ unitAlarmStatus OBJECT-TYPE
         Bit 8: RSU Link Error - Whenever the CU is configured to communicate with a RSU but the communications link is failed (e.g., timeouts, errors).
         Bit 9: CV Certificate Error - Whenever the CU detects an error related to invalid connected vehicle certificates.
         Bit 10: Preempt Maximum Presence - Preempt maximum presence time exceeded.
+        Bit 11: Traffic Adaptive - Whenever the CU is currently controlled by an External Local Control Application running a Traffic Adaptive mode.
+        Bit 12: Traffic Responsive - Whenever the CU is currently controlled by an External Local Control Application running a Traffic Responsive mode.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.28
     <Object Type> S"
     ::= { unit 28 }
@@ -5572,11 +5578,11 @@ patternSplitNumber OBJECT-TYPE
 
 --5.5.7.5   Pattern Sequence Number Parameter
 patternSequenceNumber OBJECT-TYPE
-    SYNTAX Integer32 (1..255)
+    SYNTAX Integer32 (0..255)
     UNITS "sequence"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to locate information in the sequenceTable to use with this pattern. This value shall not exceed the maxSequences object value.
+    DESCRIPTION "<Definition> This object is used to locate information in the sequenceTable to use with this pattern. This value shall not exceed the maxSequences object value. A value of 0 indicates no sequence is specified and Automatic Flash without coordination is to run when this pattern is called.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.5
     <Object Type> P"
     DEFVAL { 1 }
@@ -5667,7 +5673,7 @@ patternPhaseSet OBJECT-TYPE
     UNITS "set"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object is used to identify the phase set to be used with this pattern. This value shall not exceed the maxPhaseSets object value.
+    DESCRIPTION "<Definition> This object is used to identify the phase set to be used with this pattern. This value shall not exceed the maxPhaseSets object value. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.10
     <Object Type> P"
     DEFVAL { 1 }
@@ -5905,15 +5911,15 @@ splitCoordForceMode OBJECT-TYPE
 
 --5.5.10    Coordination Pattern Status 
 coordPatternStatus OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (1..255)
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object defines the running coordination pattern/mode in the device. The possible values are:
-Value   Description
-0   Not used
-1-253   Pattern - indicates the currently running pattern
-254 Free - indicates Free operation without coordination.
-255 Flash - indicates Automatic Flash without coordination.
+    Value   Description
+
+    1-253   Pattern - indicates the currently running pattern
+    254 Manual Free - indicates Manual Free operation without coordination. 
+    255 Manual Flash - indicates Manual Flash without coordination.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.10
     <Object Type> S"
     ::= { coord 10 }
@@ -5971,7 +5977,7 @@ coordSyncStatus OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> The Coord Sync Status represents the time since
+    DESCRIPTION "<Definition> The Coord Sync Status represents the current time into the master cycle since
         the system reference point for the running pattern (0 to 1898 sec).
         This value normally counts up from zero to the next system reference
         point (patternCycleTime). This value may exceed the patternCycleTime
@@ -6752,7 +6758,7 @@ preemptStatus OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-only 
     STATUS current 
-    DESCRIPTION "<Definition> This object defines the preempt number that is currently being serviced in the device. 
+    DESCRIPTION "<Definition> This object defines the preempt number that is currently being serviced in the device. A value of 0 indicate no preempt is being served. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.6.4" 
     ::= { preempt 4 }
 
@@ -14352,5 +14358,7 @@ mapPlanMetadataGeoid OBJECT-TYPE
     DESCRIPTION "<Object Identifier> 1.3.6.1.4.1.1206.4.2.17.2.18.1.9"
     REFERENCE "SAE J2735 DF_DataParameters"
     ::= { mapPlanEntry 9 }
+
+
 
 END
