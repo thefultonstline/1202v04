@@ -6,7 +6,7 @@
 --              SAE data elements.
 -- Source:      NTCIP 1202 v?????????????
 -- MIB Revision History:
--- Date:        Decemember 2, 2024
+-- Date:       December 13, 2024
 --
 -- Copyright 2023 by the American Association of State Highway and
 -- Transportation Officials (AASHTO), the Institute of Transportation
@@ -166,7 +166,6 @@ phase OBJECT-IDENTITY
 --5.2.1 Maximum Phases
 maxPhases OBJECT-TYPE
     SYNTAX Integer32 (2..255)
-
     UNITS "phase"
     MAX-ACCESS read-only
     STATUS current
@@ -239,7 +238,6 @@ PhaseEntry ::= SEQUENCE {
     phaseWalkDuringTransition       Integer32,
     phasePedClearDuringTransition   Integer32    }
 
-
 --5.2.2.1   Phase Number
 phaseNumber OBJECT-TYPE
     SYNTAX Integer32 (1..255)
@@ -259,7 +257,7 @@ phaseWalk OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Phase Walk Parameter in seconds. This shall
-        control the amount of time the Walk indication shall be displayed.
+        control the amount of time the WALK indication shall be displayed.
         This parameter shall be used regardless whether the pedestrian
         indication associated with this phase is for a ped-only phase or for
         a pedestrian indication that runs parallel to a vehicle phase.
@@ -390,7 +388,7 @@ phaseRedClear OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.5.b"
     ::= { phaseEntry 9 }
 
---5.2.2.10  Phase Red Revert
+--5.2.2.10  Phase Red Revert Parameter
 phaseRedRevert OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -491,7 +489,7 @@ phaseTimeToReduce OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
     ::= { phaseEntry 15 }
  
---5.2.2.16  Phase Reduce By
+--5.2.2.16  Phase Reduce By Parameter
 phaseReduceBy OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -522,7 +520,7 @@ phaseMinimumGap OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.5.3.1 and 3.5.3.2.1.b.(2)"
     ::= { phaseEntry 17 }
 
---5.2.2.18  Phase Dynamic Max Limit
+--5.2.2.18  Phase Dynamic Max Limit Parameter
 phaseDynamicMaxLimit OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "second"
@@ -546,7 +544,7 @@ phaseDynamicMaxLimit OBJECT-TYPE
     <Object Type> P"
     ::= { phaseEntry 18 }
 
---5.2.2.19  Phase Dynamic Max Step
+--5.2.2.19  Phase Dynamic Max Step Parameter
 phaseDynamicMaxStep OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -560,7 +558,7 @@ phaseDynamicMaxStep OBJECT-TYPE
     <Object Type> P"
     ::= { phaseEntry 19 }
 
---5.2.2.20  Phase Startup
+--5.2.2.20  Phase Startup Parameter
 phaseStartup OBJECT-TYPE
     SYNTAX INTEGER { other (1),
                      phaseNotOn (2),
@@ -606,21 +604,20 @@ phaseOptions OBJECT-TYPE
         from all associated AddedInitial detectors and use the largest count
         value for the calculations. If clear (0) the CU shall sum all
         associated AddedInitial detector counts and use this sum for the
-        calculations. The ability to modify the setting of this bit is
-        optional.
+        calculations. Support is optional.
     Bit 14: Conditional Service Enable - in multi-ring configurations when set
         to 1 causes a gapped/maxed phase to conditionally service a preceding
         actuated vehicle phase when sufficient time remains before max time out
         of the phase(s) not prepared to terminate. Support is optional.
         REFERENCE  NEMA TS 2 Clause 3.5.3.9
-    Bit 13: Actuated Rest In Walk - when set to 1 causes an actuated phase to
+    Bit 13: Actuated Rest-in-Walk - when set to 1 causes an actuated phase to
         rest in Walk when there is no serviceable conflicting call at the end
         of Walk Timing or if Max Vehicle Recall is enabled.
     Bit 12: Guaranteed Passage - when set to 1 enables an actuated phase
         operating in volume density mode (using gap reduction) to retain the
         right of way for the unexpired portion of the Passage time following
         the decision to terminate the green due to a reduced gap. Support is
-        optional.
+        optional. The value for this phase is the same for all phase sets.
     Bit 11: Simultaneous Gap Disable - in multi-ring configurations when set
         to 1 disables a gapped out phase from reverting to the extensible
         portion. Support is optional.
@@ -660,21 +657,21 @@ phaseOptions OBJECT-TYPE
         REFERENCE NEMA TS 2 Clause 3.5.5.5.8
     Bit 2: Automatic Flash Exit Phase - The CU shall move immediately to the
         beginning of the phase(s) programmed as Exit Phase(s) when Automatic
-        Flash terminates. Support is optional.
+        Flash terminates. The value for this phase is the same for all phase sets. Support is optional.
         REFERENCE NEMA TS 2 Clause 3.9.1.2.1
     Bit 1: Automatic Flash Entry Phase - When Automatic Flash is called, the
         CU shall service the Entry Phase(s), clear to an All Red, then
-        initiate flashing operation. Support is optional.
+        initiate flashing operation. The value for this phase is the same for all phase sets. Support is optional.
         REFERENCE NEMA TS 2 Clause 3.9.1.2.1
     Bit 0: Enabled Phase - provide a means to define whether this phase is
         used in the current configuration. A disabled phase shall not provide
         any outputs nor respond to any phase inputs. The object phaseRing = 0
-        has the same effect.
+        has the same effect. The value for this phase is the same for all phase sets.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.22
     <Object Type> P2"
     ::= { phaseEntry 21 }
 
---5.2.2.22  Phase Ring Parameter
+--5.2.2.22  Phase Ring
 phaseRing OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "ring"
@@ -685,7 +682,7 @@ phaseRing OBJECT-TYPE
         exceed the maxRings object value. If the ring number is zero, the
         phase is disabled (phaseOptions Bit 0 = 0 has the same effect).
 
-    The value of this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseRing.
+    The value for this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseRing.
 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.22
     <Object Type> P2"
@@ -700,13 +697,13 @@ phaseConcurrency OBJECT-TYPE
         that may run concurrently with the associated phase. Phases that are
         contained in the same ring may NOT run concurrently.
 
-        The value of this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseConcurrency.
+        The value for this phase is the same for all phase sets. There is no object in the phaseSettable corresponding to phaseConcurrency.
     
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.23
     <Object Type> P2"
     ::= { phaseEntry 23 }
 
---5.2.2.24  Phase Maximum Green 3 Parameter
+--5.2.2.24  Phase Maximum Green 3 Parameter Parameter
 phaseMaximum3 OBJECT-TYPE
     SYNTAX Integer32 (0..999)
     UNITS "second"
@@ -724,7 +721,7 @@ phaseMaximum3 OBJECT-TYPE
     ::= { phaseEntry 24 }
 
 
---5.2.2.25  Phase Ped Clearance During Vehicle Clearance
+--5.2.2.25  Phase Ped Clearance During Vehicle Clearance Parameter
 phasePedClearDuringVehicleClear OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -735,16 +732,12 @@ phasePedClearDuringVehicleClear OBJECT-TYPE
         phase. This parameter is expressed in 0.1 second increments ranging
         from 0.0 to 25.5 seconds.
 
-        This object corresponds to the object
-        phaseSetPedClearDuringVehicleClear.1.n in the phaseSetTable.
-
-        This object was named phaseYellowandRedChangeTimeBeforeEndPedClear in
-        1202v03.
+        This object was named phaseYellowandRedChangeTimeBeforeEndPedClear in 1202v03.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.25
     <Object Type> P"
     ::= { phaseEntry 25 }
 
---5.2.2.26  Pedestrian Service Limit
+--5.2.2.26  Phase Pedestrian Service Limit Parameter
 phasePedServiceLimit OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
@@ -757,14 +750,14 @@ phasePedServiceLimit OBJECT-TYPE
         only up to once. If set to '2', the pedestrian movement can be shown
         up to twice during a cycle, etc. A value of 0 means there is no limit. 
 
-
         This object was named phasePedWalkService in 1202v03.
+
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.26
     <Object Type> P"
     DEFVAL { 0 }
     ::= { phaseEntry 26 }
 
---5.2.2.27  Pedestrian Phase Dont Walk Revert Parameter
+--5.2.2.27  Phase Dont Walk Revert Parameter
 phaseDontWalkRevert OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "decisecond"
@@ -801,7 +794,7 @@ phasePedAlternateWalk OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> An alternate (replacement) time, in seconds, for
-        a pedestrian Walk. This shall control the amount of time the Walk
+        a pedestrian Walk. This shall control the amount of time the WALK
         indication shall be displayed.
 
         This parameter may be used for a parallel pedestrian indication in
@@ -817,7 +810,7 @@ phasePedAdvanceWalkTime OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> The amount of time, in tenths of a second from
-        0 to 25.5 seconds, that the phase's pedestrian Walk
+        0 to 25.5 seconds, that the phase's pedestrian WALK
         indication starts before the start of the phase's vehicle GREEN indication.
         
         This parameter is used as the result of a pedestrian detector input as configured in pedestrianDetectorOptions or if pedestrian recall is enabled.
@@ -833,11 +826,11 @@ phasePedDelayTime OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS deprecated
     DESCRIPTION "<Definition> The amount of time, in tenths of a second from
-        0 to 25.5 seconds, that the phase's pedestrian Walk
+        0 to 25.5 seconds, that the phase's pedestrian WALK
         indication starts after the start of the phase's vehicle GREEN indication. 
         
-        
-        This parameter is used as result of a pedestrian detector input.
+    This parameter is used as result of a pedestrian detector input.
+
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.31
     <Object Type> P"
     DEFVAL { 0 }
@@ -855,8 +848,7 @@ phaseAdvWarnGrnStartTime OBJECT-TYPE
         signal is placed upstream of the phase's approach and indicates that
         the phase's Green indication is about to start or has started.
 
-        The duration of the advance green indication should not exceed the total amount of vehicle clearance time of the phase(s) that is being terminated prior to the
-        start of this phase.
+        The duration of the advance green indication should not exceed the total amount of vehicle clearance time of the phase(s) that is being terminated prior to the start of this phase.
 
         Note: The Advance Warning Green terminates at the end of the green.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.32
@@ -914,8 +906,7 @@ phasePedClearDuringTransition OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object indicates the alternate minimum pedestrian clearance time walk time that is used during transitions, in seconds from 1 to 255
-        seconds. This object can be applied during transitions or signal priority. A value of 0 indicates that this object is not used during transitions. 
+    DESCRIPTION "<Definition> This object indicates the alternate minimum pedestrian clearance time walk time that is used during transitions, in seconds from 1 to 255 seconds. This object can be applied during transitions or signal priority. A value of 0 indicates that this object is not used during transitions. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.2.1.36
     <Object Type> P"
     DEFVAL { 0 }
@@ -927,11 +918,8 @@ phasePedClearDuringTransition OBJECT-TYPE
     UNITS   "groups"
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> The Maximum Number of Phase Groups (8 Phases per
-        group) this Controller Unit supports. This value is equal to
-        TRUNCATE [(maxPhases + 7) / 8].
-        This object indicates the maximum rows which shall appear in the
-        phaseStatusGroupTable and phaseControlGroupTable.
+    DESCRIPTION "<Definition> The Maximum Number of Phase Groups (8 Phases per group) this Controller Unit supports. This value is equal to TRUNCATE [(maxPhases + 7) / 8].
+    This object indicates the maximum rows which shall appear in the phaseStatusGroupTable and phaseControlGroupTable.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.3
     <Object Type> S"
     ::= { phase 3 }
@@ -1111,8 +1099,8 @@ phaseStatusGroupVehCalls OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Phase Vehicle Call Status Mask, when a bit = 1,
-        the Phase vehicle currently has a call for service. When a bit = 0,
-        the Phase vehicle currently does NOT have a call for service.
+        the Phase vehicle currently has a call for service, whether it is placed remotely or through an external input. 
+        When a bit = 0, the Phase vehicle currently does NOT have a call for service.
             Bit 7: Phase # = (phaseStatusGroupNumber * 8)
             Bit 6: Phase # = (phaseStatusGroupNumber * 8) - 1
             Bit 5: Phase # = (phaseStatusGroupNumber * 8) - 2
@@ -1131,7 +1119,7 @@ phaseStatusGroupPedCalls OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Phase Pedestrian Call Status Mask, when a
-        bit = 1, the  Phase pedestrian currently has a call for service.
+        bit = 1, the  Phase pedestrian currently has a call for service, whether it is placed remotely or through an external input.
         When a bit = 0, the Phase pedestrian currently does NOT have a
         call for service.
             Bit 7: Phase # = (phaseStatusGroupNumber * 8)
@@ -1386,7 +1374,6 @@ phaseControlGroupPedCall OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.5.1.7
     <Object Type> C"
     ::= { phaseControlGroupEntry 7 }
-
 
 --5.2.6 Maximum Phase Sets
 maxPhaseSets OBJECT-TYPE
@@ -1807,7 +1794,7 @@ phaseSetOptions OBJECT-TYPE
         actuated vehicle phase when sufficient time remains before max time out
         of the phase(s) not prepared to terminate. Support is optional.
         REFERENCE  NEMA TS 2 Clause 3.5.3.9
-    Bit 13: Actuated Rest In Walk - when set to 1 causes an actuated phase to
+    Bit 13: Actuated Rest-in-Walk - when set to 1 causes an actuated phase to
         Rest-in-Walk when there is no serviceable conflicting call at the end
         of Walk Timing or if Max Vehicle Recall is enabled.
     Bit 12: Reserved -- Not Used (Guaranteed Passage only in the object phaseOptions)
@@ -2183,10 +2170,10 @@ vehicleDetectorOptions OBJECT-TYPE
     Bit 2: Yellow Lock Call - if Enabled, the detector will lock a call to
         the assigned phase if an actuation occurs while the phase is not
         timing Green.
-    Bit 1: Occupancy Detector - if Enabled, the detector collects data for the
+    Bit 1: Reserved. This bit was previously used to enable volume detectionOccupancy Detector - if Enabled, the detector collects data for the
         associated detector occupancy object(s). This capability may not be
         supported on all detector inputs to a device.
-    Bit 0: Volume Detector - if Enabled, the detector collects data for the
+    Bit 0: Reserved. This bit was previously used to enable volume detection. Volume Detector - if Enabled, the detector collects data for the
         associated detector volume object(s). This capability may not be
         supported on all detector inputs to a device.
 
@@ -2205,9 +2192,7 @@ vehicleDetectorCallPhase OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object contains assigned phase number for
-        the detector input associated with this row. The associated detector
-        call capability is enabled when this object is set to a non-zero
-        value. The value shall not exceed the value of maxPhases.
+        the detector input associated with this row. A value of 0 indicates this detector does not call a phase The value shall not exceed the value of maxPhases.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.4
     <Object Type> P"
     REFERENCE "NEMA TS 2 Clause 3.5.5.5.4 and 3.5.5.5.5" 
@@ -2222,7 +2207,7 @@ vehicleDetectorSwitchPhase OBJECT-TYPE
     DESCRIPTION "<Definition> Detector Switch Phase Parameter (i.e., Phase
         Number). The phase to which a vehicle detector actuation shall be
         switched when the assigned phase is Yellow or Red and the Switch Phase
-        is Green.
+        is Green. The value shall not exceed the value of maxPhases.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.5
     <Object Type> P"
     REFERENCE "NEMA TS 2 Clause 3.5.5.5.4.c"
@@ -2236,9 +2221,7 @@ vehicleDetectorDelay OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> Detector Delay Parameter in tenth seconds
         (0-255.0 sec). The period a detector actuation (input recognition)
-        shall be delayed when the phase is not Green. If a management station
-        attempts to set a value between 2551 and 65535, inclusive, the
-        parameter is undefined.
+        shall be delayed when the phase is not Green. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.6
     <Object Type> P"
     REFERENCE "NEMA TS 2 Clause 3.5.5.5.4.a"
@@ -2277,12 +2260,12 @@ vehicleDetectorQueueLimit OBJECT-TYPE
 
 --5.3.2.8   Vehicle Detector No Activity Parameter
 vehicleDetectorNoActivity OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..999)
     UNITS "minute"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Detector No Activity diagnostic Parameter in
-        minutes (0-255 min.). If an active detector does not exhibit an
+        minutes (1-999 min.). If an active detector does not exhibit an
         actuation in the specified period, it is considered a fault by the
         diagnostics and the detector is classified as Failed. A value of 0 for
         this object shall disable this diagnostic for this detector.
@@ -2325,16 +2308,16 @@ vehicleDetectorErraticCounts OBJECT-TYPE
 
 --5.3.2.11  Vehicle Detector Fail Time Parameter
 vehicleDetectorFailTime OBJECT-TYPE
-    SYNTAX Integer32 (0..999)
+    SYNTAX Integer32 (0..255)
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Detector Fail Time in seconds (0..999 sec). If a
+    DESCRIPTION "<Definition> Detector Fail Time in seconds (0..255 sec). If a
         detector diagnostic indicates that the associated detector input is
         failed, then a call shall be placed on the associated phase during all
         non-green intervals. When each green interval begins the call shall be
         maintained for the length of time specified by this object and then
-        removed. If the value of this object equals the maximum value (999)
+        removed. If the value of this object equals the maximum value (255)
         then a constant call shall be placed on the associated phase (max
         recall). If the value of this object equals zero then no call shall be
         placed on the associated phase for any interval (no recall). Compliant
@@ -2351,7 +2334,7 @@ vehicleDetectorAlarms OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object shall return indications of detector
-        alarms. Detector Alarms are indicated as follows:
+        alarms as identified by the CU. Detector Alarms are indicated as follows:
 
         Bit 7: Other Fault - The detector has failed due to some other cause.
         Bit 6: Reserved.
@@ -2372,8 +2355,7 @@ vehicleDetectorAlarms OBJECT-TYPE
         Once set a bit shall maintain its state as long as the condition
         exists. The bit shall clear when the condition no longer exists.
 
-        There is no object in the vehicleDetectorSetTable corresponding to
-        vehicleDetectorAlarms.
+        The value of this object is the same for all vehicle detector sets.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.13
     <Object Type> S"
     ::= { vehicleDetectorEntry  13 }
@@ -2384,9 +2366,9 @@ vehicleDetectorReportedAlarms OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object shall return detector device
-        reported alarms (via some communications mechanism). Inductive Loop
+        reported alarms communicated to the CU through an external device. 
+        
         Detector Alarms are indicated as follows:
-
         Bit 7: Reserved.
         Bit 6: Reserved.
         Bit 5: Reserved.
@@ -2545,9 +2527,7 @@ vehicleDetectorTravelMode OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> This parameter allows the user to identify
         detectors for specific types of travel modes.
-
-        other:   refers to a detector for a travel type not defined in this
-                    standard
+        other:   refers to a detector for a travel type not defined in this standard
         vehicle: refers to a detector identified for vehicles.
         transit: refers to a detector identified for transit vehicles.
         bicycle: refers to a detector identified for bicycles.
@@ -2687,16 +2667,27 @@ volumeOccupancyPeriod OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object defines the number of seconds
-        (0-255 sec) that comprise the Volume/Occupancy/Speed collection
+    DESCRIPTION "This object indicates the number of seconds
+        (0-3600 seconds) that comprise the Volume/Occupancy/Speed collection
         period. When the collection period expires the device shall increment
         the volumeOccupancySequence, update the volumeOccupancyTable entries
         and reset the volume occupancy timer. If the value is 0, the value in
-        volumeOccupancyPeriodV3 is used if supported. If both the
-        volumeOccupancyPeriod and volumeOccupancyPeriodV3 are 0, then no
-        sampling is to be performed. If both the volumeOccupancyPeriod and
-        volumeOccupancyPeriodV3 are non-zero then the volumeOccupancyPeriod
-        takes precedence.
+        volumeOccupancyPeriod is used if indicated (has a valid non-zero
+        value). 
+
+        A value of 0 indicates no sampling is performed. 
+
+        A value of 65535 indicates that the sample period equal to current
+        cycle length recorded at local zero. If the sample period is
+        configured to use the cycle length but the ASC is running in Free
+        mode, then no data collection is performed.
+
+        Value       Indication
+        0           Value of volumeOccupancyPeriod is used if indicated
+        1-3600      Volume/Occupancy/Speed period in seconds
+        3601-65534  Reserved
+        65535       Sample period is same as cycle period recorded at local
+                        zero.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.5.2
     <Object Type> P"
     ::= { volumeOccupancyReport 2 }
@@ -2745,14 +2736,12 @@ VolumeOccupancyEntry ::= SEQUENCE {
  
 --5.3.5.4.1 Volume Data
 detectorVolume OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..65535)
     UNITS "vehicle"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Detector Volume data collected over the
-        volumeOccupancyPeriod. This value shall range from 0 to 254 indicating
-        the volume of traffic crossing the associated detectorNumber during
-        the collection period. The value 255 shall indicate volume overflow.
+        volumeOccupancyPeriod. This value shall range from 0 to 65534 indicating the volume of traffic crossing the associated detectorNumber during the collection period. The value 65535 shall indicate volume overflow.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.5.4.1.1
     <Object Type> S"
     ::= { volumeOccupancyEntry 1 }
@@ -2949,7 +2938,7 @@ pedestrianDetectorNoActivity OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Pedestrian Detector No Activity diagnostic
-        Parameter in minutes (0-255 min.). If an active detector does not
+        Parameter in minutes (1-999 min.). If an active detector does not
         exhibit an actuation in the specified period, it is considered a fault
         by the diagnostics and the detector is classified as Failed. A value
         of 0 for this object shall disable this diagnostic for this detector.
@@ -3002,8 +2991,7 @@ pedestrianDetectorAlarms OBJECT-TYPE
         Bit 6: Reserved.
         Bit 5: Reserved.
         Bit 4: Configuration Fault - Detector is assigned but is not supported.
-        Bit 3: Communications Fault - Communications to the device (if present)
-                have failed.
+        Bit 3: Communications Fault - Communications to the device (if present) have failed.
         Bit 2: Erratic Output Fault - This detector has been flagged as
                 non-operational due to erratic outputs (excessive counts) by
                 the CU detector diagnostic.
@@ -3065,8 +3053,8 @@ pedestrianDetectorOptions OBJECT-TYPE
         Bit 7: Reserved.
         Bit 6: Reserved.
         Bit 5: Reserved.
-        Bit 4: Advanced Walk: If enabled, the detector will place calls for the phase's pedestrian walk indication to start before the phase's vehicle GREEN indication. 
-        Bit 3: Delayed Walk: If enabled, the detector will place calls for the phase's pedestrian walk indication to start after the phase's vehicle GREEN indication. 
+        Bit 4: Advanced Walk: If enabled, the detector will place calls for the phase's pedestrian WALK indication to start before the phase's vehicle GREEN indication. 
+        Bit 3: Delayed Walk: If enabled, the detector will place calls for the phase's pedestrian WALK indication to start after the phase's vehicle GREEN indication. 
         Bit 2: Non-locking: If enabled, detector will place a non-locked calls
                 instead  of a locked calls.
         Bit 1: Alternate timing: If enabled, the detector will place calls for
@@ -3214,7 +3202,7 @@ pedestrianDetectorPeriod OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object defines the number of seconds
-        (0-3600 seconds) that comprise the pedestrian detector data
+        (1-3600 seconds) that comprise the pedestrian detector data
         collection period. When the collection period expires the device shall
         increment the pedestrianDetectorSequence, update the
         pedestrianSampleTable entries, and reset the pedestrian volume timer. A
@@ -3334,7 +3322,7 @@ pedestrianDetectorActuations OBJECT-TYPE
 --5.3.10.4.3    Pedestrian Sample Services
 pedestrianDetectorServices OBJECT-TYPE
     SYNTAX Integer32 (0..255)
-    UNITS "volume"
+    UNITS "service"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> The number of pedestrian services (number of
@@ -3737,7 +3725,7 @@ vehicleDetectorSetNoActivity OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Detector No Activity diagnostic Parameter in
-        minutes (0-255 min.). If an active detector does not exhibit an
+        minutes (1-999 min.). If an active detector does not exhibit an
         actuation in the specified period, it is considered a fault by the
         diagnostics and the detector is classified as Failed. A value of 0 for
         this object shall disable this diagnostic for this detector.
@@ -3912,7 +3900,6 @@ vehicleDetectorSetTravelMode OBJECT-TYPE
     ::= { vehicleDetectorSetEntry 15 }
 
 
-
 --5.4   Unit Parameters
 unit OBJECT IDENTIFIER 
     ::= { asc 3 }
@@ -4016,7 +4003,7 @@ unitControlStatus OBJECT-TYPE
     systemStandby (3),
     backupMode(4),
     manual (5),
-    timebase (6),
+    localTimebase (6),
     interconnect (7),
     interconnectBackup (8),
     remoteManualControl (9),
@@ -4031,8 +4018,8 @@ unitControlStatus OBJECT-TYPE
         systemStandby: control by local based on central command to
                 use local control.
         backupMode: Backup Mode (see Terms).
-        manual: control by entry other than zero in coordOperationalMode.
-        timebase: control by the local Time Base.
+        manual: when coordOperatinalMode is not equal to 0. 
+        localTimebase: control by the local Time Base.
         interconnect: control by the local Interconnect inputs.
         interconnectBackup: control by local timebase control due to invalid Interconnect
                 inputs or loss of sync.
@@ -4050,25 +4037,27 @@ unitFlashStatus OBJECT-TYPE
     notFlash(2),
     automatic(3),
     localManual(4),
-    faultMonitor(5),
+    controllerFaultFlash(5),
     smu(6),
     startup(7),
-    preempt (8) }
+    preempt (8),
+    remoteManual(9) }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> The Flash modes:
 
         other: the CU is in flash for some other reason.
         notFlash: the CU is not in Flash 
-        automatic: the CU is currently in an Automatic Flash state.
+        automatic: the CU is currently in an Automatic Flash state due to the CU programmed settings. 
         localManual: the Controller Unit Local Flash input is active, MMU
                 Flash input is not active, and Flash is not commanded by
                 the central system.
-        faultMonitor: the CU is currently in a Fault Monitor State.
+        controllerFaultFlash: the CU initiated the Flash State due to a detected fault. 
         smu: the Controller Unit Signal Monitoring Unit Flash input is active and the CU is not
                 in Start-Up Flash. This was refered to as an MMU in 1202 v03.  
         startup: the CU is currently timing the Start-Up Flash period.
         preempt: the CU is currently timing the preempt Flash.
+        remoteManual: coordOperationalMode or systemPatternControl is equal to 255.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.6
     <Object Type> S"
     ::= { unit 6 }
@@ -4214,16 +4203,12 @@ shortAlarmStatusv4 OBJECT-TYPE
 unitControl OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
-    STATUS current
+    STATUS deprecated 
     DESCRIPTION "<Definition> This object is used to allow a remote entity to
         activate unit functions in the device ( 0 = False / Disabled, 1 = True
         / Enabled) as follows:
 
-        Bit 7: Dimming Enable - when set to 1, causes channel dimming to
-                operate as configured. For dimming to occur, (this control OR
-                a dimming input) AND a 'timebaseAscAuxillaryFunction' must be
-                True.
-                REFERENCE NEMA TS 2 Clause 3.9.2
+        Bit 7: Reserved - This bit was used for Dimming Enable in 1202 v03. 
         Bit 6: Interconnect - when set to 1, shall cause the interconnect
                 inputs to operate at a higher priority than the timebase
                 control (TBC On Line).
@@ -4263,7 +4248,7 @@ unitControl OBJECT-TYPE
 
 --PROPOSED REPLACEMENT
 --Unit Control
-unitControl OBJECT-TYPE
+unitControlv4 OBJECT-TYPE
     SYNTAX BITS { disableRemoteCommand(0),
                 globalMinRecall(1),
                 nonactuated1(2),
@@ -4472,11 +4457,10 @@ specialFunctionOutputStatus OBJECT-TYPE
 
 --5.4.14.4  Special Function Output Control Source
 specialFunctionOutputControlSource OBJECT-TYPE
-    SYNTAX INTEGER { other(1),
-                    off(2)
-                    remote(3),
-                    timebase(4),
-                    frontPanel(5) }
+    SYNTAX BITS {   other(1),
+                    remote(2),
+                    timebase(3),
+                    frontPanel(4) }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object indicates why the special function is active:
@@ -4492,7 +4476,7 @@ specialFunctionOutputControlSource OBJECT-TYPE
 
 --5.4.15    Remote Manual Control Timer
 unitMCETimeout OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..999)
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
@@ -5315,8 +5299,7 @@ unitAlarmStatus OBJECT-TYPE
                 rsuLinkError(8),
                 cvCertificateError(9),
                 preemmptMaxPresence(10),
-                trafficAdaptive(11),
-                trafficResponsive(12)   }
+                eclaActive(11)   }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Device Alarm Mask 4 ( 0 = False, 1 = True) as
@@ -5332,8 +5315,7 @@ unitAlarmStatus OBJECT-TYPE
         Bit 8: RSU Link Error - Whenever the CU is configured to communicate with a RSU but the communications link is failed (e.g., timeouts, errors).
         Bit 9: CV Certificate Error - Whenever the CU detects an error related to invalid connected vehicle certificates.
         Bit 10: Preempt Maximum Presence - Preempt maximum presence time exceeded.
-        Bit 11: Traffic Adaptive - Whenever the CU is currently controlled by an External Local Control Application running a Traffic Adaptive mode.
-        Bit 12: Traffic Responsive - Whenever the CU is currently controlled by an External Local Control Application running a Traffic Responsive mode.
+        Bit 11: ECLA Active- The CU is currently being controlled by an External Local Control Application.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.28
     <Object Type> S"
     ::= { unit 28 }
@@ -5638,14 +5620,14 @@ This object was named patternOptions in 1202 v03.
 
 --5.5.7.8   Pattern Enabled Lanes
 patternSpatEnabledLanes OBJECT-TYPE
-    SYNTAX Integer32 (0..254)
+    SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This value is equal to the enabledLaneIndex
         (row) in the spatEnabledLanesConcurrencyTable that contains the
-        enabledLaneConcurrency lanes to be active when this Action is active.
+        enabledLaneConcurrency lanes to be active when this pattern is active.
         A value of zero indicates that no lanes are to be be enabled as part
-        of this action.
+        of this pattern. This value shall not exceed maxPatterns.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.8"
     DEFVAL { 0 }
     ::= { patternEntry 8 }
@@ -5705,20 +5687,22 @@ patternVehicleDetectorSet OBJECT-TYPE
 
 --5.5.7.13  Pattern Special Functions Parameter
 patternSpecialFunction OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..4294967295)
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> The Special Functions that shall be active when this pattern is active.
-        Bit 7: Special Function 8
-        Bit 6: Special Function 7
-        Bit 5: Special Function 6
-        Bit 4: Special Function 5
+    DESCRIPTION "<Definition> The Special Functions that shall be active when this pattern is active. Each bit represents a special function from 1 to 32. 
+        Bit 31: Special Function 32
+        Bit 30: Special Function 31
+        Bit 29: Special Function 30
+        .... .... .... ....
         Bit 3: Special Function 4
         Bit 2: Special Function 3
         Bit 1: Special Function 2
         Bit 0: Special Function 1
 
         Bit = 0 - False/Disabled, Bit = 1 - True/Enabled
+
+        If the ASC supports less than 32 special functions, a SET of a bit for an unsupported special function shall return a badValue(3) error.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.13
     <Object Type> P"
      DEFVAL { 0 }
@@ -5825,7 +5809,7 @@ splitTime OBJECT-TYPE
 
     If the sum of all splitTime values for this split group is greater than the patternCycleTime entry of the associated patternTable entry (and the patternCycleTime is not zero) the device shall operate in the Free Mode. While this condition exists, the splitOverrun bit of patternStatus of the associated patternTable entry is 1. 
 
-    While the Free Mode condition exists, the Local Free bit of unitAlarmStatus shall be 1, the Local Override bit of shortAlarmStatusv4 shall be 1, and the value of localFreeStatus is badPlan(7).
+    While the Free Mode condition exists, the Local Free bit of unitAlarmStatus shall be 1, the Local Override bit of shortAlarmStatusv4 shall be 1, and the value of localFreeStatus is badPlan(7) and the pa.
 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.9.1.3 
     <Object Type> P"
@@ -5916,7 +5900,6 @@ coordPatternStatus OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> This object defines the running coordination pattern/mode in the device. The possible values are:
     Value   Description
-
     1-253   Pattern - indicates the currently running pattern
     254 Manual Free - indicates Manual Free operation without coordination. 
     255 Manual Flash - indicates Manual Flash without coordination.
@@ -5997,8 +5980,8 @@ systemPatternControl OBJECT-TYPE
         Value   DESCRIPTION
         0       Standby - the system relinquishes control of the device.
         1-253   Pattern - these values indicate the system commanded pattern
-        254     Free - this value indicates a call for Free
-        255     Flash - this value indicates a call for Automatic Flash
+        254     Free - this value indicates a call for Manual Free
+        255     Flash - this value indicates a call for Manual Flash
 
         If an unsupported / invalid pattern is called, Free shall be the
         operational mode. The device shall reset this object to ZERO when in
@@ -6078,7 +6061,7 @@ coordCurrentOffset OBJECT-TYPE
     ::= { coord 17 }
 
 --5.5.18    System Pattern Control
-ascCommandSource OBJECT-TYPE
+coordPatternSource OBJECT-TYPE
     SYNTAX INTEGER     { other(1),
                         remote(2),
                         timebased(3),
@@ -6221,21 +6204,22 @@ timebaseAscAuxiliaryFunction OBJECT-TYPE
 
 --5.6.3.4   Time Base Action Special Function Parameter
 timebaseAscSpecialFunction OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..4294967295)
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> The Special Functions that shall be active when
-        this Action is active. 
-        Bit 7: Special Function 8
-        Bit 6: Special Function 7
-        Bit 5: Special Function 6
-        Bit 4: Special Function 5
+    DESCRIPTION "<Definition> The Special Functions that shall be active when this Action is active. Each bit represents a special function from 1 to 32. 
+        Bit 31: Special Function 32
+        Bit 30: Special Function 31
+        Bit 29: Special Function 30
+        .... .... .... .... .....
         Bit 3: Special Function 4
         Bit 2: Special Function 3
         Bit 1: Special Function 2
         Bit 0: Special Function 1
-        
+
         Bit = 0 - False/Disabled, Bit = 1 - True/Enabled
+
+        If the ASC supports less than 32 special functions, a SET of a bit for an unsupported special function shall return a badValue(3) error.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.5.3.1.4"
     ::= { timebaseAscActionEntry 4 }
 
@@ -6548,15 +6532,15 @@ preemptExitPhase OBJECT-TYPE
 --5.7.2.16  Preempt State
 preemptState OBJECT-TYPE
     SYNTAX INTEGER { other (1),
-notActive (2),
-notActiveWithCall (3),
-entryStarted (4),
-trackService (5),
-dwell (6),
-linkActive (7),
-exitStarted (8),
-maxPresence (9),
-advancedPreempt (10) }
+    notActive (2),
+    notActiveWithCall (3),
+    entryStarted (4),
+    trackService (5),
+    dwell (6),
+    linkActive (7),
+    exitStarted (8),
+    maxPresence (9),
+    advancedPreempt (10) }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Preempt State provides status on which state the associated preempt is in. The states are as follows:
@@ -6729,8 +6713,8 @@ preemptControlEntry OBJECT-TYPE
     ::= { preemptControlTable 1 }
 
 PreemptControlEntry ::= SEQUENCE { 
-    preemptControlNumber INTEGER,
-    preemptControlState  INTEGER }
+    preemptControlNumber Integer32,
+    preemptControlState  Integer32 }
 
 --5.7.3.1   Preempt Control Number
 preemptControlNumber OBJECT-TYPE
@@ -7273,16 +7257,26 @@ ringStatusEntry OBJECT-TYPE
     ::= { ringStatusTable 1 }
 
 RingStatusEntry ::= SEQUENCE { 
-    ringStatus INTEGER }
+    ringStatus          INTEGER,
+    ringCurrentPhase    Integer32,
+    ringCurrentOnTime   Integer32 }
 
 --5.8.6.1   Ring Status
 ringStatus OBJECT-TYPE
-    SYNTAX Integer32 (0..255)
+    SYNTAX Integer32 (0..65535)
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> The Ring Status for this ring.
-Bit 7: Reserved (always zero)
-Bit 6: Reserved (always zero)
+    DESCRIPTION "<Definition> The phase status for the phase indicated in the ringActivePhase object.
+Bit 15: Reserved
+Bit 14: Reserved
+Bit 13: Reserved
+Bit 12: Reserved
+Bit 11: Flashing Walk - When bit = 1, the active phase in the ring is currently displaying a DON'T WALK indication. 
+Bit 10: Flashing Don't Walk - When bit = 1, the active phase in the ring is timing a pedestrian clearance interval and displaying a Flashing DON'T WALK indication.
+Bit 9: Rest-in-Walk - When bit = 1, the active phase in the ring is currently resting in Walk when there is no serviceable conflicting call or because Max Vehicle Recall is enabled. 
+Bit 8: Delayed Ped Waiting - When bit =  1 the active phase in the ring has a delayed pedestrian interval and is currently displaying a vehicle GREEN indication before displaying WALK indication.
+Bit 7: Walk - When bit = 1, the active phase in the ring is displaying a WALK indication.
+Bit 6: Advanced Walk - When bit = 1, the active phase in the ring is timing a Leading Pedestrian Interval. 
 Bit 5: Force Off - When bit = 1, the active phase in the ring was terminated by Force Off
 Bit 4: Max Out - When bit = 1, the active phase in the ring was terminated by Max Out
 Bit 3: Gap Out - When bit = 1, the active phase in the ring was terminated by Gap Out
@@ -7307,7 +7301,7 @@ NEMA TS 2 Clause 3.5.4.2 provides further definition of Coded Status Bits.
     <Object Type> S"
     ::= { ringStatusEntry 1 }
 
-ringCurrentPhase OBJECT-TYPE
+ringActivePhase OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "phase"
     MAX-ACCESS read-only
@@ -7317,12 +7311,12 @@ ringCurrentPhase OBJECT-TYPE
     <Object Type> S"
     ::= { ringStatusEntry 2 }
 
-ringCurrentOnTime OBJECT-TYPE
+ringActiveOnTime OBJECT-TYPE
     SYNTAX Integer32 (0..65535)
     UNITS "decisecond"
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> This value is the time, in tenth seconds, that the phase in ringCurrentPhase has been on since it began it's vehicle GREEN (or WALK for leading pedestrian intervals) indication. This value shall reset to zero when the phase in ringCurrentPhase completes its red clearance interval. A value of 65535 indicates that the phase has been on for a longer period of time.
+    DESCRIPTION "<Definition> This value is the time, in tenth seconds, that the phase in ringCurrentPhase has been on since it began it's vehicle GREEN (or WALK for leading pedestrian intervals) indication. This value shall reset to 0 when the phase in ringCurrentPhase completes its red clearance interval. A value of 65535 indicates that the phase has been on for a longer period of time.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.7.6.1.3
     <Object Type> S"
     ::= { ringStatusEntry 3 }
@@ -7335,7 +7329,7 @@ channel OBJECT IDENTIFIER
 
 --5.9.1 Maximum Channels
 maxChannels OBJECT-TYPE
-    SYNTAX Integer32 (1..255)
+    SYNTAX Integer32 (2..255)
     UNITS   "channel"
     MAX-ACCESS read-only
     STATUS current
@@ -10449,13 +10443,14 @@ rsuPortEntry OBJECT-TYPE
     ::= { rsuPortTable 1 }
 
 RsuPortEntry ::= SEQUENCE {
-    rsuPortIndex         INTEGER,
-    rsuPortPointer       INTEGER,
+    rsuPortIndex         Integer32,
+    rsuPortPointer       Integer32, --deprecated
     rsuPortName          SnmpAdminString,
     rsuPortPollingPeriod Integer32,
     rsuPortWatchdogTime  Integer32,
     rsuPortWatchdogTimer Integer32,
-    rsuPortNumber        INTEGER }
+    rsuPortNumber        Integer32,
+    rsuPortAddress       IpAddress }
 
 --5.16.3.1  RSU Port Index
 rsuPortIndex OBJECT-TYPE 
@@ -10471,7 +10466,7 @@ rsuPortIndex OBJECT-TYPE
 rsuPortPointer OBJECT-TYPE 
     SYNTAX Integer32 (1..255)
     MAX-ACCESS read-write 
-    STATUS current 
+    STATUS deprecated 
     DESCRIPTION "<Definition> This value is equal to the logicalNameTranslationIndex for the logical name translation table entry where logicalNameTranslationName holds the logical name and logicalNameTranslationNetworkAddress holds the IP address of the RSU port. This value shall not exceed the logicalNameTranslationTableMaxEntries object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.15.3.1.2
     <Object Type> P"
@@ -10525,11 +10520,25 @@ rsuPortNumber OBJECT-TYPE
     SYNTAX Integer32 (0..65535)
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> This object defines the port number for transmissions. An object value of 0 indicates the port is disabled.
+    DESCRIPTION "<Definition> This object defines the port number on the RSU for the ASC to send data to. An object value of 0 indicates the port is disabled.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.15.3.1.7
     <Object Type> P"
     DEFVAL { 0 }
     ::= { rsuPortEntry 7 }
+
+
+--5.16.3.8  RSU Port Address
+rsuPortAddress OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "<Definition> This object defines the IP address of the RSU for this port.
+    
+    NTCIP 1103 was previously used to identify the IP address in NTCIP 1202 v03. 
+
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.15.3.1.8
+    <Object Type> P"
+    ::= { rsuPortEntry 8 }
 
 --5.17  ASC SPaT
 ascSpat OBJECT IDENTIFIER
@@ -10605,9 +10614,10 @@ enabledLaneConcurrency OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Each octet contains a revocable lane identifier that may be ACTIVE concurrently. The value could be a single octet. This object indicates a set of revocable lanes that may be simultaneously enabled. 
+    DESCRIPTION "<Definition> Each octet contains a revocable lane identifier that may be ACTIVE concurrently. The value could be a single octet. This object indicates a set of revocable lanes that may be simultaneously enabled. Revocable lanes are identified in the MAP message for the intersection.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.3.1.2
     <Object Type> P"
+    REFERENCE "SAE J2735 DF_EnabledLaneList"
     ::= { spatEnabledLanesConcurrencyEntry 2 }
 
 --5.17.4    SPaT Message Options
@@ -10616,10 +10626,14 @@ spatOptions OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Optional SPAT functions ( 0 = False/Disabled, 1 = True/Enabled)
-    Bit 3 - 7: Reserved
-  Bit 2: MAP Validity. Indicates if the MAP data message broadcasted by the RSU is valid (1) or invalid (0). When this bit is one, the MAP Message broadcasted by the CV Roadside Process is considered valid. When this bit is 0, then the MAP message broadcasted by the RSU is considered invalid and should not be used except for test purposes.
-  Bit 1: SPAT Validity. Indicates if the SPaT data for this CU is valid (1) or invalid (0). When this bit is one, the SPaT data provided by the controller is considered valid. When this bit is 0, then the SPaT data provided by the controller is considered invalid and should not be used except for test purposes.  
-  Bit 0: Enabled SPAT. Provides a means to enable the CU to provide SPAT data to a management station or a RSU.
+    Bit 7: Reserved.
+    Bit 6: Reserved.
+    Bit 5: Reserved.
+    Bit 4: Reserved.
+    Bit 3: Reserved.
+    Bit 2: MAP Validity. Indicates if the MAP data message broadcasted by the RSU is valid (1) or invalid (0). When this bit is one, the MAP Message broadcasted by the CV Roadside Process is considered valid. When this bit is 0, then the MAP message broadcasted by the RSU is considered invalid and should not be used except for test purposes.
+    Bit 1: SPAT Validity. Indicates if the SPaT data for this CU is valid (1) or invalid (0). When this bit is one, the SPaT data provided by the controller is considered valid. When this bit is 0, then the SPaT data provided by the controller is considered invalid and should not be used except for test purposes.  
+    Bit 0: Enabled SPAT. Provides a means to enable the CU to provide SPAT data to a management station or a RSU.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.4
     <Object Type> P"
     ::= { ascSpat 4 }
@@ -10654,10 +10668,14 @@ spatPortOptions OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Optional SPAT functions for this SPAT port(0 = False/Disabled, 1 = True/Enabled)
-    Bit 3 - 7: Reserved
-Bit 2: MAP Validity. Indicates if the MAP data message broadcasted by the RSU on this RSU port is valid (1) or invalid (0). When this bit is one, the MAP Message broadcasted by the CV Roadside Process is considered valid. When this bit is 0, then the MAP message broadcasted by the RSU is considered invalid and should not be used except for test purposes.
-Bit 1: SPAT Validity. Indicates if the SPaT data on this RSU port is valid (1) or invalid (0). When this bit is one, the SPaT data provided by the controller is considered valid. When this bit is 0, then the SPaT data provided by the controller is considered invalid and should not be used except for test purposes. 
-Bit 0: Enabled SPAT. Provides a means to enable the CU to exchange SPAT data on this RSU port.  
+    Bit 7: Reserved
+    Bit 6: Reserved
+    Bit 5: Reserved
+    Bit 4: Reserved
+    Bit 3: Reserved
+    Bit 2: MAP Validity. Indicates if the MAP data message broadcasted by the RSU on this RSU port is valid (1) or invalid (0). When this bit is one, the MAP Message broadcasted by the CV Roadside Process is considered valid. When this bit is 0, then the MAP message broadcasted by the RSU is considered invalid and should not be used except for test purposes.
+    Bit 1: SPAT Validity. Indicates if the SPaT data on this RSU port is valid (1) or invalid (0). When this bit is one, the SPaT data provided by the controller is considered valid. When this bit is 0, then the SPaT data provided by the controller is considered invalid and should not be used except for test purposes. 
+    Bit 0: Enabled SPAT. Provides a means to enable the CU to exchange SPAT data on this RSU port.  
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.5.1.1
     <Object Type> P"
     ::= { spatPortEntry 1 }
@@ -10673,9 +10691,9 @@ spatPortStatus OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> The status for exchanging SPAT data for this RSU port.
     other: A status not defined by this standard.
-disabled: The capability to provide SPAT data is disabled.
-normal: The CU is providing SPAT data.
-mapError: The CU has stopped providing SPAT data because of an inconsistency in the spatPortMapActivationCode.
+    disabled: The capability to provide SPAT data is disabled.
+    normal: The CU is providing SPAT data.
+    mapError: The CU has stopped providing SPAT data because of an inconsistency in the spatPortMapActivationCode.
     enabledLanesError: The CU has stopped providing SPAT data because of an consistency error with the SPAT enabled lanes concurrency table (spatEnabledLanesConcurrencyTable). Note: Bit 13 in the spatStatus2 is also enabled.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.5.1.2
     <Object Type> S"
@@ -10710,7 +10728,7 @@ ascCurrentTickMsOffset OBJECT-TYPE
     SYNTAX Integer32 (0..99)
     UNITS "millisecond"
     MAX-ACCESS read-only
-    STATUS current
+    STATUS deprecated
     DESCRIPTION "<Definition> This object reflects the elapsed milliseconds within the current ASC traffic processing tick at the moment this object was encoded and transmitted. The main purpose of this object is to provide millisecond accuracy when calculating the future time points defined in the signalStatusTable2. It is important to note that this object is intended to be used with a remote NTCIP manager polling or issuing GET requests on the ascCurrentTick2 object. If ascCurrentTick2 is pushed, SET, or otherwise event driven then the ascCurrentTickMsOffset will not be useful as the ascCurrentTick2 object will be transmitted exactly on tick boundaries (ie always when ascCurrentTickMsOffset is 0). If an NTCIP manager is polling the ASC for the tick count it is recommended that the manager request both ascCurrentTick2 and ascCurrentMsTickOffset in a combined atomic varbind PDU to guarantee consistency between both objects.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.7
     <Object Type> S"
@@ -10772,7 +10790,7 @@ SignalGroupEntry ::= SEQUENCE {
     signalGroupRedType                 INTEGER,
     signalGroupPermissiveControlSource Integer32,
     signalGroupPermissiveControlType   Integer32,
-    signalGroupLane                    Integer32 }
+    signalGroupEnabledLanes            Integer32 }
 
 --5.17.10.1 Signal Group Entry Number
 signalGroupEntryNumber OBJECT-TYPE
@@ -10814,13 +10832,13 @@ signalGroupControlSource OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object defines which Phase or Overlap controls the signal group. The value shall not exceed maxPhases or maxOverlaps as determined by the signalGroupControlType object:
-Value 00 = No Control  (Not In Use)
-Value 01 = Phase 01 or Overlap A
-Value 02 = Phase 02 or Overlap B
-||
-Value 15 = Phase 15 or Overlap O
-Value 16 = Phase 16 or Overlap P
-etc.
+    Value 00 = No Control  (Not In Use)
+    Value 01 = Phase 01 or Overlap A
+    Value 02 = Phase 02 or Overlap B
+    ||
+    Value 15 = Phase 15 or Overlap O
+    Value 16 = Phase 16 or Overlap P
+    etc.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.10.1.4
     <Object Type> P"
     DEFVAL { 0 }
@@ -10858,7 +10876,7 @@ signalGroupGreenType OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> This object defines the type of Green to be indicated for the signal group in a SPaT message:
 other: The signal group green type is not defined by this standard. Per NTCIP 8004 v02, an attempt to write a value of 'other' shall return a badValue error. A user- or manufacturer-specific object is permitted to extend the possible states.
-preMovement: Prepare to proceed. Not common in the US.
+preMovement: Prepare to proceed. Not common in the United States.
 permissiveMovementAllowed: The signal group is a permissive green and may have to yield to conflicting traffic.
 protectedMovementAllowed: The signal group is a protected green and has the right-of-way.
 protectedPermissive: Indicates that the movement for the signal group can be protected during some portions of the cycle and permissive during other portions of the cycle. The signalGroupPermissiveControlSource and signalGroupPermissiveControlType objects determine if the movement is protected or permissive.
@@ -10889,13 +10907,13 @@ signalGroupPermissiveControlSource OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> If signalGroupGreenType is protectedPermissive(5) for the row, this object in combination with signalGroupPermissiveControlType identifies which phase or overlap controls the permissive portion of the protected-permissive movement. If signalGroupGreenType is any value other than protectedPermissive(5), then this object is ignored. The value shall not exceed maxPhases or maxOverlaps as determined by the signalGroupPermissiveControlType object:
-Value 00 = No Control  (Not In Use)
-Value 01 = Phase 01 or Overlap A
-Value 02 = Phase 02 or Overlap B
-||
-Value 15 = Phase 15 or Overlap O
-Value 16 = Phase 16 or Overlap P
-etc.
+    Value 00 = No Control  (Not In Use)
+    Value 01 = Phase 01 or Overlap A
+    Value 02 = Phase 02 or Overlap B
+    ||
+    Value 15 = Phase 15 or Overlap O
+    Value 16 = Phase 16 or Overlap P
+    etc.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.10.1.8
     <Object Type> P"
     DEFVAL { 0 }
@@ -10913,24 +10931,26 @@ signalGroupPermissiveControlType OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> If signalGroupGreenType is protectedPermissive(5) for the row, this object in combination with signalGroupPermissiveControlSource identifies which phase or overlap controls the permissive portion of the protected-permissive movement. If signalGroupGreenType is any value other than protectedPermissive(5), then this object is ignored.
-other: The signal group is not controlled by a type defined by this standard. Per NTCIP 8004 v02, an attempt to write a value of 'other' shall return a badValue error. A user- or manufacturer-specific object is permitted to extend the possible states.
-none: The signal group is not dependent on another phase nor overlap.
-phaseVehicle: The signal group is dependent on a vehicle phase, bicycle phase, or transit phase.
-phasePedestrian: The signal group is dependent on a pedestrian phase.
-Overlap: The signal group is dependent on an overlap for vehicles, bicycles, or transit.
-pedOverlap: The signal group is dependent on a pedestrian overlap.
-queueJump: The signal group is dependent on a queue jump, typically transit priority.
+    other: The signal group is not controlled by a type defined by this standard. Per NTCIP 8004 v02, an attempt to write a value of 'other' shall return a badValue error. A user- or manufacturer-specific object is permitted to extend the possible states.
+    none: The signal group is not dependent on another phase nor overlap.
+    phaseVehicle: The signal group is dependent on a vehicle phase, bicycle phase, or transit phase.
+    phasePedestrian: The signal group is dependent on a pedestrian phase.
+    Overlap: The signal group is dependent on an overlap for vehicles, bicycles, or transit.
+    pedOverlap: The signal group is dependent on a pedestrian overlap.
+    queueJump: The signal group is dependent on a queue jump, typically transit priority.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.10.1.9
     <Object Type> P"
-    DEFVAL { none }
+    DEFVAL { 2 }
     ::= { signalGroupEntry 9 }
 
 --5.17.10.10    Signal Group Enabled Lane
-signalGroupLane OBJECT-TYPE
-    SYNTAX Integer32 (0..254)
+signalGroupEnabledLanes OBJECT-TYPE
+    SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> The value is equal to the enabledLaneIndex in the spatEnabledLanesConcurrencyTable. Each octet within the octet string for enabledLaneConcurrency in that row contains the (revocable) lane number that must be enabled for this signal group to be enabled. If all specified lanes are enabled, then this signal group is enabled and in use. Otherwise, the signal group is disabled and not used. A value of 0 indicates that this signal group is not dependent on a revocable lane. This value shall not exceed the maxEnabledLanesConcurrency object value.
+
+    This object was named signalGroupLane in NTCIP 1202 v03
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.10.1.10
     <Object Type> P"
     DEFVAL { 0 }
@@ -10994,13 +11014,13 @@ agencySignalStateColor OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> This object indicates the color of the phase or overlap that the signal group is associated with to determine a signal state to broadcast in a SPaT message. 
 
-other: The phase or overlap is not defined by the standard.  Per NTCIP 8004 v02, an attempt to write a value of 'other' shall return a badValue error. A user- or manufacturer-specific object is permitted to extend the possible states.
-red: The phase or overlap is red. If the agencySignalStateControlType object is pedestrian(3), this value indicates a Steady Don't Walk.
-yellow: The phase or overlap is yellow.
-green: The phase or overlap is green. If the agencySignalStateControlType object is pedestrian(3), this value indicates a Walk.
-dark: The phase or overlap is dark.
-flashingRed: The phase or overlap is Flashing Red. If the agencySignalStateControlType object is pedestrian(3), this value indicates a Flashing Don't Walk.
-flashingYellow: The phase or overlap is Flashing Yellow.
+    other: The phase or overlap is not defined by the standard.  Per NTCIP 8004 v02, an attempt to write a value of 'other' shall return a badValue error. A  manufacturer-specific object is permitted to extend the possible states.
+    red: The phase or overlap is red. If the agencySignalStateControlType object is pedestrian(3), this value indicates a Steady Don't Walk.
+    yellow: The phase or overlap is yellow.
+    green: The phase or overlap is green. If the agencySignalStateControlType object is pedestrian(3), this value indicates a Walk.
+    dark: The phase or overlap is dark.
+    flashingRed: The phase or overlap is Flashing Red. If the agencySignalStateControlType object is pedestrian(3), this value indicates a Flashing Don't Walk.
+    flashingYellow: The phase or overlap is Flashing Yellow.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.12.1.2
     <Object Type> P"
     ::= { agencySignalStateEntry 2 }
@@ -11008,8 +11028,8 @@ flashingYellow: The phase or overlap is Flashing Yellow.
 --5.17.12.3 Agency Signal State Control Type
 agencySignalStateControlType OBJECT-TYPE
     SYNTAX INTEGER { other (1),
-                 vehicle (2),
-                 pedestrian (3) }
+                    vehicle (2),
+                    pedestrian (3) }
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object defines the type of control for the signal group (Vehicle Phase, Pedestrian Phase, Overlap or Pedestrian Overlap) to be used to determine the movement phase state to broadcast in a SPaT message:
@@ -11030,8 +11050,8 @@ Bit 15: Reserved
 Bit 14: Reserved
 Bit 13: Reserved
 Bit 12: Reserved
-Bit 10: Reserved
 Bit 11: Reserved
+Bit 10: Reserved
 Bit 9: The signalGroupPermissiveControlSource / signalGroupPermissiveControlType indication is Flashing Red.
 Bit 8: The signalGroupPermissiveControlSource / signalGroupPermissiveControlType indication is Flashing Yellow. 
 Bit 7: The signalGroupPermissiveControlSource / signalGroupPermissiveControlType indication is Green.
@@ -11069,26 +11089,26 @@ agencySignalStateValue OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object indicates the movement phase state to be broadcasted in a SPaT message. 
-other: The movement phase state is not defined by the standard.
-unavailable: The state of the movement is unknown or an error occurred.
-dark: The signal head is dark (unlit)
-stopThenProceed: Indicates the vehicle must stop at the stop line. It may proceed if it is safe.
-stopAndRemain: Indicates the vehicle must stop at the stop line. It may not proceed.
-preMovement: Prepare to proceed.
-permissiveMovementAllowed: Indicates a permissive green.
-protectedMovementAllowed: Indicates a protected green (a steady green arrow).
-permissiveClearance: Prepare to stop. Vehicle may proceed if unable to stop. Conflicting traffic may be present.
-protectedClearance: Prepare to stop. Vehicle may proceed if unable to stop. 
-cautionConflictingTraffic: Proceed with caution. Conflicting traffic may be present. 
+    other: The movement phase state is not defined by the standard.
+    unavailable: The state of the movement is unknown or an error occurred.
+    dark: The signal head is dark (unlit)
+    stopThenProceed: Indicates the vehicle must stop at the stop line. It may proceed if it is safe.
+    stopAndRemain: Indicates the vehicle must stop at the stop line. It may not proceed.
+    preMovement: Prepare to proceed.
+    permissiveMovementAllowed: Indicates a permissive green.
+    protectedMovementAllowed: Indicates a protected green (a steady green arrow).
+    permissiveClearance: Prepare to stop. Vehicle may proceed if unable to stop. Conflicting traffic may be present.
+    protectedClearance: Prepare to stop. Vehicle may proceed if unable to stop. 
+    cautionConflictingTraffic: Proceed with caution. Conflicting traffic may be present. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.12.1.5
     <Object Type> P"
     REFERENCE "SAE J2735 DE_MovementPhaseState"
-    DEFVAL { unavailable }
+    DEFVAL { 2 }
     ::= { agencySignalStateEntry 5 }
 
 --5.17.13   Maximum Enabled Lanes Concurrency Entries
 maxEnabledLanesConcurrency OBJECT-TYPE
-    SYNTAX Integer32 (1..254) 
+    SYNTAX Integer32 (1..255) 
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> This object indicates the maximum rows which shall appear in the spatEnabledLanesConcurrencyTable object.
@@ -11103,9 +11123,9 @@ spatEnabledLanesCommand2 OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> This object establishes the Enabled lanes for the device to be broadcast in a SPAT message. The value is equal to the enabledLaneIndex in the spatEnabledLanesConcurrencyTable. Each octet within the octet string for enabledLaneConcurrency in that row contains the (revocable) lane number(s) that are enabled. The new set of Enabled lanes will be broadcast at the top of the next cycle.
 
-A value of 0 indicates that there are no enabled lanes. A value of 255 indicates that the device shall cancel this command and shall revert back to the Enabled lanes defined in the timebaseAscActionTable timebaseAscActionLane. Otherwise, the Enabled lanes defined is this command shall override the Enabled lanes defined in timebaseAscActionLane.
+    A value of 0 indicates that there are no enabled lanes. A value of 255 indicates that the device shall cancel this command and shall revert back to the Enabled lanes defined in the timebaseAscActionTable timebaseAscActionLane. Otherwise, the Enabled lanes defined is this command shall override the Enabled lanes defined in timebaseAscActionLane.
 
-If an unsupported / invalid set of Enabled lanes is called, then the spatPortStatus object shall be SET to enabledLanesError(5) for all valid entries in the spatPortTable.
+    If an unsupported / invalid set of Enabled lanes is called, then the spatPortStatus object shall be SET to enabledLanesError(5) for all valid entries in the spatPortTable.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.16.14
     <Object Type> P"
     REFERENCE "SAE J2735 DF_EnabledLaneList"
@@ -11290,7 +11310,7 @@ cvDetectionEnable OBJECT-TYPE
     SYNTAX INTEGER { enabled (1),
                      disabled (2) }
     MAX-ACCESS read-write
-    STATUS deprecated
+    STATUS current
     DESCRIPTION "<Definition> This object is used to enable/disable detection zones in a connected vehicle environment. If enabled, the CU allows detectors defined in vehicleDetectorTable and pedestrianDetectorTable to use inputs from the connected vehicle environment. Inputs may be in the form of actuations, safety messages and/or detection reports in the detectionReportTable.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.1"
     DEFVAL  { disabled }
@@ -11325,11 +11345,11 @@ ascCvDetectorEntry OBJECT-TYPE
     ::= { ascCvDetectorTable 1 }
 
 AscCvDetectorEntry ::= SEQUENCE {
-    ascCvDetectorNumber       INTEGER,
-    ascCvDetectorOptions      INTEGER, --deprecated
-    ascCvDetectorIntersection INTEGER, --deprecated
+    ascCvDetectorNumber       Integer32,
+    ascCvDetectorOptions      Integer32, 
+    ascCvDetectorIntersection Integer32, 
     ascCvDetectorInput        OCTET STRING, --deprecated
-    ascCvDetectorAssignment   OCTET STRING, --deprecated
+    ascCvDetectorAssignment   OCTET STRING, 
     ascCvDetectorSamplePeriod INTEGER, --deprecated
     ascCvDetectorUserClass    INTEGER, --deprecated   
     ascCvDetectorHeading      INTEGER, --deprecated
@@ -11352,19 +11372,19 @@ ascCvDetectorNumber OBJECT-TYPE
 ascCvDetectorOptions OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
-    STATUS deprecated
+    STATUS current
     DESCRIPTION "<Definition> Connected Detection Zone Options Parameter as follows (0=Disabled, 1=Enabled):
-Bit 7: Reserved
-Bit 6: Enable processed data    - enables the exchange of detectionReports across the ASC - RSU interface.
-Bit 5: Enable actuation.    - enables the ascCvDetectionActuations object for this detection zone.
-Bits 3 & 4: Indicates which detector table the detector number in ascCvDetectorAssignment is assigned to.
-Bit 3 = 0, Bit 4 = 0    - unknown or not applicable
-Bit 3 = 1, Bit 4 = 0    - vehicleDetectorTable
-Bit 3 = 0, Bit 4 = 1    - pedestrianDetectorTable
-Bit 4 = 1, Bit 4 = 1    - Reserved
-Bit 2: Input Type           - A value of 0 indicates the detection zone boundaries are defined by mapLaneIndex (that is, the detection zone boundaries are equal to the boundaries of the lane indexed). A value of 1 indicates the detection zone boundaries are defined by detectionZoneNodePointIndex.
-Bit 1: A bit value of 1 enables the processing of Personal Safety messages (PSMs) detected within the detection zone.
-Bit 0: A bit value of 1 enables the processing of Basic Safety Messages (BSMs) detected within the detection zone.
+    Bit 7: Reserved
+    Bit 6: Enable processed data    - enables the exchange of detectionReports across the ASC - RSU interface.
+    Bit 5: Enable actuation.    - enables the ascCvDetectionActuations object for this detection zone.
+    Bits 3 & 4: Indicates which detector table the detector number in ascCvDetectorAssignment is assigned to.
+    Bit 3 = 0, Bit 4 = 0    - unknown or not applicable
+    Bit 3 = 1, Bit 4 = 0    - vehicleDetectorTable
+    Bit 3 = 0, Bit 4 = 1    - pedestrianDetectorTable
+    Bit 4 = 1, Bit 4 = 1    - Reserved
+    Bit 2: Input Type           - A value of 0 indicates the detection zone boundaries are defined by mapLaneIndex (that is, the detection zone boundaries are equal to the boundaries of the lane indexed). A value of 1 indicates the detection zone boundaries are defined by detectionZoneNodePointIndex.
+    Bit 1: A bit value of 1 enables the processing of Personal Safety messages (PSMs) detected within the detection zone.
+    Bit 0: A bit value of 1 enables the processing of Basic Safety Messages (BSMs) detected within the detection zone.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.3.1.2"
     ::= { ascCvDetectorEntry 2 }
 
@@ -11372,7 +11392,7 @@ Bit 0: A bit value of 1 enables the processing of Basic Safety Messages (BSMs) d
 ascCvDetectorIntersection OBJECT-TYPE
     SYNTAX Integer32 (0..65535)
     MAX-ACCESS read-write
-    STATUS deprecated
+    STATUS current
     DESCRIPTION "<Definition> An object referencing the intersection that this connected vehicle detection zone is associated with. This reference is used to establish which controller unit the actuations are intended for and the reference point for the geometric boundaries of the detection zone (ascCvDetectorInput). 0 indicates no intersection has been associated with this CV detection zone.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.3.1.3"
     DEFVAL { 0 }
@@ -11394,7 +11414,7 @@ The maximum size of this octet string is equal to the greater of maxLanes or max
 ascCvDetectorAssignment OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
-    STATUS deprecated
+    STATUS current
     DESCRIPTION "<Definition> Each octet in this octet string represents a detector number in the appropriate detector table (as defined in Bits 3 and 4 in ascCvDetectorOptions) of the reference intersection (ascCvDetectorIntersection) that this connected vehicle detector is assigned to. Any Basic Safety Messages or Personal Safety Messages that satisfy all the criteria defined in the row will result in an actuation for this detector or can be used as an input for this detector. A null value indicates this detection zone is not assigned to any detector number.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.3.1.5"
     DEFVAL { "" }
@@ -11638,8 +11658,8 @@ cvDetectionGroupEntry OBJECT-TYPE
     ::= { cvDetectionGroupTable 1 }
 
 CvDetectionGroupEntry  ::= SEQUENCE {
-    cvDetectionGroupNumber     INTEGER,
-    cvDetectionGroupActuations INTEGER }
+    cvDetectionGroupNumber     Integer32,
+    cvDetectionGroupActuations Integer32 }
 
 --5.18.2.8.1    CV Detection Group Number
 cvDetectionGroupNumber OBJECT-TYPE
@@ -11655,18 +11675,17 @@ cvDetectionGroupNumber OBJECT-TYPE
 --5.18.2.8.2    CV Detection Group Actuations
 cvDetectionGroupActuations OBJECT-TYPE
     SYNTAX Integer32 (0..255)
-    UNITS "group"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> CV Detection Actuation Mask, where when a bit = 1, the CV Detection is currently actuated. When a bit = 0, the CV Detection is NOT currently actuated.
-Bit 7: CV Detection # = (cvDetectionGroupNumber * 8)
-Bit 6: CV Detection # = (cvDetectionGroupNumber * 8) - 1
-Bit 5: CV Detection # = (cvDetectionGroupNumber * 8) - 2
-Bit 4: CV Detection # = (cvDetectionGroupNumber * 8) - 3
-Bit 3: CV Detection # = (cvDetectionGroupNumber * 8) - 4
-Bit 2: CV Detection # = (cvDetectionGroupNumber * 8) - 5
-Bit 1: CV Detection # = (cvDetectionGroupNumber * 8) - 6
-Bit 0: CV Detection # = (cvDetectionGroupNumber * 8) - 7
+    Bit 7: CV Detection # = (cvDetectionGroupNumber * 8)
+    Bit 6: CV Detection # = (cvDetectionGroupNumber * 8) - 1
+    Bit 5: CV Detection # = (cvDetectionGroupNumber * 8) - 2
+    Bit 4: CV Detection # = (cvDetectionGroupNumber * 8) - 3
+    Bit 3: CV Detection # = (cvDetectionGroupNumber * 8) - 4
+    Bit 2: CV Detection # = (cvDetectionGroupNumber * 8) - 5
+    Bit 1: CV Detection # = (cvDetectionGroupNumber * 8) - 6
+    Bit 0: CV Detection # = (cvDetectionGroupNumber * 8) - 7
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.8.1.2
     <Object Type> S"
     ::= { cvDetectionGroupEntry 2 }
@@ -11677,13 +11696,13 @@ detectionReportCollection OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS deprecated
     DESCRIPTION "<Definition> This object determines what pieces of data will be exchanged and stored for the detectionReportTable. A value set to 1 indicates that piece of data shall be stored.
-Bit 6 & 7 = Reserved
-Bit 5 = platoon     - detectionReportPlatoon
-Bit 4 = gap         - detectionReportGap
-Bit 3 = queue length    - detectionReportQueue
-Bit 2 = travel time - detectionReportTravelTime
-Bit 1 = average speed   - detectionReportSpeed
-Bit 0 = volume      - detectionReportVolume
+    Bit 6 & 7 = Reserved
+    Bit 5 = platoon     - detectionReportPlatoon
+    Bit 4 = gap         - detectionReportGap
+    Bit 3 = queue length    - detectionReportQueue
+    Bit 2 = travel time - detectionReportTravelTime
+    Bit 1 = average speed   - detectionReportSpeed
+    Bit 0 = volume      - detectionReportVolume
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.9"
     ::= { ascCvDetector 9 }
 
@@ -11729,13 +11748,13 @@ detectionReportEntry OBJECT-TYPE
     ::= { detectionReportTable 1 }
 
 DetectionReportEntry ::= SEQUENCE {
-    detectionReportTime       INTEGER,
-    detectionReportVolume     INTEGER,
-    detectionReportSpeed      INTEGER,
-    detectionReportTravelTime INTEGER,
-    detectionReportQueue      INTEGER,
-    detectionReportGap        INTEGER,
-    detectionReportPlatoon    INTEGER }
+    detectionReportTime       Integer32,
+    detectionReportVolume     Integer32,
+    detectionReportSpeed      Integer32,
+    detectionReportTravelTime Integer32,
+    detectionReportQueue      Integer32,
+    detectionReportGap        Integer32,
+    detectionReportPlatoon    Integer32 }
 
 --5.18.2.12.1   Connected Detection Zone Report Time
 detectionReportTime OBJECT-TYPE
@@ -11832,7 +11851,7 @@ ascAssuredGreenPeriod OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> This object defines an Assured Green Period for a through vehicle movement at an intersection.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.13
-    <Object Type> S"
+    <Object Type> P"
     ::= { ascCvDetector 13 }
 
 --5.18.2.14 Assured Green Period
@@ -11840,7 +11859,7 @@ ascRedLightViolationDetectors OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Each octet within the octet string contains a vehicleDetectorNumber(binary value) that shall be used to identify if a connected         vehicle is within the RLVW detection zone (RDZ). The values of vehicleDetectorNumber used here shall not exceed maxVehicleDetectorZones. 
+    DESCRIPTION "<Definition> Each octet within the octet string contains a vehicleDetectorNumber(binary value) that shall be used to identify if a connected vehicle is within the RLVW detection zone (RDZ). The values of vehicleDetectorNumber used here shall not exceed maxVehicleDetectors. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.17.2.14
     <Object Type> P"
     DEFVAL { "" }
@@ -12029,6 +12048,77 @@ where:
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.18.4
     <Object Type> C"
 ::= { ecla 4 }
+
+
+ascSmu OBJECT IDENTIFIER
+    ::= { asc 19 }
+
+ascSmuTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF AscSmuTableEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION "<Definition> A table containing channel information from the signal monitoring unit in the cabinet. The number of rows in this table is equal to three times the value of the maxChannels.
+    <TableType> static
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.19.1"
+    ::= { ascSmu 1 }
+
+
+ascSmuTableEntry OBJECT-TYPE
+    SYNTAX AscSmuTableEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION "<Definition> A row of information for each channel output provided by the signal monitoring unit in the cabinet.
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.19.1.1"
+    INDEX { channelNumber, ascSmuChannelOutput }
+    ::= { ascSmuTable 1 }
+
+AscSmuTableEntry ::= SEQUENCE {
+    ascSmuChannelOutput Integer32,
+    ascSmuType          INTEGER,
+    ascSmuVoltage       Integer32,
+    ascSmuCurrent       Integer32 }
+
+--Signal Monitoring Unit Output Index
+ascSmuChannelOutput OBJECT-TYPE
+    SYNTAX Integer32 (1..3)
+    UNITS "output"
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION "<Definition> The different types of outputs dynami
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.19.1.1.1
+    <Object Type> S"
+    ::= { ascSmuTableEntry 1 }
+
+
+-- Signal Monitoring Unit Channel Voltage
+ascSmuVoltage OBJECT-TYPE
+    SYNTAX Integer32 (0..255)
+    UNITS "VAC RMS or VDC"
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "<Definition> This object shall describe the voltage measured for the
+    channel and output type in this row as reported by the signal monitoring unit and measured in
+    0 to 254 VAC RMS or from 0 to 50 VDC RMS for DC cabinets. A value of 255 indicates
+   that the value is unknown or no measurement was made.
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.19.1.1.3
+    <Object Type> S"
+    ::= { ascSmuTableEntry 3 }
+
+
+-- Signal Monitoring Unit Channel Current
+ascSmuCurrent OBJECT-TYPE
+    SYNTAX Integer32 (0..65535)
+    UNITS "milliamperes"
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "<Definition> This object shall describe the current measured for the
+    channel and output type in this row as reported by the signal monitoring unit and measured in
+   milliamperes from 0 to 65000 mA. A value of 65535 indicates
+   that the value is unknown or no measurement was made.
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.19.1.1.4
+    <Object Type> S"
+    ::= { ascSmuTableEntry 4 }
+
 
 
 --*********************************************************************
@@ -12739,27 +12829,31 @@ spatStatus2 OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> For NTCIP 1202 user clarification, if a mode is enabled or active, the associated bit shall be set to (1). Bit 0 is equal to Bit 0 of the BIT STRING of DE_IntersectionStatusObject, Bit 1 is equal to Bit 1, etc.
-Bit 0: Manual Control. Enabled when unitControlStatus is remoteManualControl (9) or localManualControl (10).
-Bit 1: Stop Time. Enabled when Bit 4: Stop Time in unitAlarmStatus2 is TRUE.
-Bit 2: Failure Flash. Enabled when unitFlashStatus is localManual (4), faultMonitor (5), or mmu (6). This bit may also be enabled if the preemptState is other (1) and indeterminate.
-Bit 3: Preempt. Enabled when the preemptState for any preempt is any value other than notActive (2) or notActiveWithCall (3). This bit may also be enabled if the preemptState is other (1) and determinate.
-Bit 4: Signal Priority. Enabled when the priorityStrategyRequestStatusInCO for any priority request is a value of requestQueued (2), or activeProcessing (4).
-Bit 5: Fixed Time. Enabled if the CU is operating in fixedTime mode. This bit and Bit 6 cannot both be simultaneously active.
-Bit 6: Traffic Dependent. Enabled if the CU is operating in an actuated mode. This bit and Bit 5 cannot both be simultaneously active.
-Bit 7: Standby. Enabled if the unitFlashStatus is automatic (3), startup (7), or preempt (8).
-Bit 8: Failure Mode. Controller failure or failure in operation.
-Bit 9: Reserved. SET to 0.
-Bit 10: Reserved. SET to 1.
-Bit 11: Reserved. SET to 1.
-Bit 12: Invalid MAP. Enabled if spatOptions Bit 2 is FALSE, or the spatPortOptions Bit 2 is FALSE.
-Bit 13: Invalid SPaT. Enabled if any spatPortStatus object is any value other than normal (3), if spatOptions Bit 1 is FALSE, or the spatPortOptions Bit 1 is FALSE.
-Bits 14-15: Reserved
+
+    Bit 15: Reserved.
+    Bit 14: Reserved.
+    Bit 13: Invalid SPaT. Enabled if any spatPortStatus object is any value other than normal (3), if spatOptions Bit 1 is FALSE, or the spatPortOptions Bit 1 is FALSE.
+    Bit 12: Invalid MAP. Enabled if spatOptions Bit 2 is FALSE, or the spatPortOptions Bit 2 is FALSE.
+    Bit 11: Reserved. SET to 1.
+    Bit 10: Reserved. SET to 1.
+    Bit 9: Reserved. SET to 0.
+    Bit 8: Failure Mode. Controller failure or failure in operation.
+    Bit 7: Standby. Enabled if the unitFlashStatus is automatic (3), startup (7), or preempt (8).
+    Bit 6: Traffic Dependent. Enabled if the CU is operating in an actuated mode. This bit and Bit 5 cannot both be simultaneously active.
+    Bit 5: Fixed Time. Enabled if the CU is operating in fixedTime mode. This is true when every phase in the active sequence is running with a maximum vehicle recall or is responding to a call to nonactuated input. This bit and Bit 6 cannot both be simultaneously active.
+    Bit 4: Signal Priority. Enabled when Bit 9: Priority Call of shortAlarmStatusv4 is True. 
+    Bit 3: Preempt. Enabled when Bit 0: Preempt Active of shortAlarmStatusv4 is TRUE and the active preempt's preemptState is any value other than notActive (2) or notActiveWithCall (3). This bit may also be enabled if the active preempt's preemptState is other (1) and determinate.
+    Bit 2: Failure Flash. Enabled when unitFlashStatus is localManual (4), faultMonitor (5), or smu (6). 
+    This bit may also be enabled if Bit 0: Preempt Active of shortAlarmStatusv4 is TRUE and the active preempt's preemptState is other (1) and indeterminate.
+    Bit 1: Stop Time. Enabled when Bit 7: Stop Time in shortAlarmStatusv4 is TRUE.
+    Bit 0: Manual Control. Enabled when unitControlStatus is remoteManualControl (9) or localManualControl (10).
 
 The default bit value for Bits 10 and 11 is enabled (1). The default bit value for all other Bits is disabled (0).
 See Annex F.3.3.4 for additional guidance.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.10
     <Object Type> S"
     REFERENCE "SAE J2735 DE_IntersectionStatusObject"
+    DEFVAL { 3072 }
     ::= { spat 10 }
 
 --7.2.11    Maximum Movement Events
@@ -12793,14 +12887,14 @@ signalStatusEntry2 OBJECT-TYPE
     ::= { signalStatusTable2 1 }
 
 SignalStatusEntry2::= SEQUENCE {
-    movementEventNumber        INTEGER,
+    movementEventNumber        Integer32,
     signalState2               INTEGER,
-    signalStateMinEndTick2     INTEGER,
-    signalStateMaxEndTick2     INTEGER,
-    signalStateLikelyEndTick2  INTEGER,
-    signalStateTickConfidence2 INTEGER,
-    signalStateNextTick2       INTEGER,
-    signalStateStartTick       INTEGER }
+    signalStateMinEndTick2     Integer32,
+    signalStateMaxEndTick2     Integer32,
+    signalStateLikelyEndTick2  Integer32,
+    signalStateTickConfidence2 Integer32,
+    signalStateNextTick2       Integer32,
+    signalStateStartTick       Integer32 }
 
 --7.2.12.1  Movement Event Number
 movementEventNumber OBJECT-TYPE
@@ -12841,7 +12935,7 @@ See Annex F.3.3.5 for additional guidance.
 --7.2.12.3  SPaT Signal State Minimum End Time V2
 signalStateMinEndTick2 OBJECT-TYPE
     SYNTAX Integer32 (0..36111)
-    UNITS "tick"
+    UNITS "ticks"
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> The tick count representing the earliest future time point when the signalState is expected to change, excluding unexpected events such as a preempt request. This object is used with the ascCurrentTick2 object. The value of this object will remain constant if the predicted future time point of the event does not change. Values from 0 to 35999 cover one hour. Values from 36000 to 36009 are used when a leap second occurs. Values from 36010 to 36110 are reserved for future use. A value of 36111 indicates the time point of the event is undefined or unknown.
@@ -12968,12 +13062,12 @@ advisorySpeedEntry2 OBJECT-TYPE
     ::= { advisorySpeedTable2 1 }
 
 AdvisorySpeedEntry2 ::= SEQUENCE {
-    advisorySpeedIndex2                 INTEGER,
-    advisorySpeedSignalGroupEntryNumber INTEGER,
+    advisorySpeedIndex2                 Integer32,
+    advisorySpeedSignalGroupEntryNumber Integer32,
     advisorySpeedType2                  INTEGER,
-    advisorySpeedAdvice2                INTEGER,
-    advisorySpeedZoneLength2            INTEGER,
-    advisorySpeedClass2                 INTEGER  }
+    advisorySpeedAdvice2                Integer32,
+    advisorySpeedZoneLength2            Integer32,
+    advisorySpeedClass2                 Integer32  }
 
 --7.2.14.1  SPaT Speed Advisory Index 2
 advisorySpeedIndex2 OBJECT-TYPE
@@ -13014,7 +13108,7 @@ advisorySpeedType2 OBJECT-TYPE
 --7.2.14.4  SPaT Movement Advisory Speed Advice 2
 advisorySpeedAdvice2 OBJECT-TYPE
     SYNTAX Integer32 (0..500)
-    UNITS "one-tenth of a meter per second"
+    UNITS "decimeter per second"
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> The advisory speed provided by the ASC for this movement, in units of 0.1 meters per second. A value of 500 indicates that speed is unavailable.
@@ -13032,8 +13126,7 @@ advisorySpeedZoneLength2 OBJECT-TYPE
     STATUS current
     DESCRIPTION "<Definition> The distance, in meters, indicates the region
         upstream from the stopbar for which the advisory speed is recommended.
-        A value of 0 indicates unknown and a value of 10000 indicates
-        distances equal to or greater than 10000.
+        A value of 0 indicates unknown. A value of 10000 indicates distances equal to or greater than 10000 meters.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.14.1.5
     <Object Type> P"
     REFERENCE "SAE J2735 DE_ZoneLength"
@@ -13085,10 +13178,10 @@ movementManeuverEntry2 OBJECT-TYPE
     ::= { movementManeuverTable2 1 }
 
 MovementManeuverEntry2::= SEQUENCE {
-    movementManeuverIndex2                 INTEGER,
-    movementManeuverSignalGroupEntryNumber INTEGER,
-    movementManeuverQueue2                 INTEGER,
-    movementManeuverStatus2                INTEGER,
+    movementManeuverIndex2                 Integer32,
+    movementManeuverSignalGroupEntryNumber Integer32,
+    movementManeuverQueue2                 Integer32,
+    movementManeuverStatus2                Integer32,
     movementManeuverQueueDetector2         OCTET STRING,
     movementManeuverPedPresence2           OCTET STRING,
     movementManeuverBicyclePresence2       OCTET STRING }
@@ -13119,7 +13212,8 @@ movementManeuverQueue2 OBJECT-TYPE
     SYNTAX Integer32 (0..10000)
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "<Definition> The distance in meters from the stop line at the intersection for this movement to the back edge of the last vehicle in the queue as measured along the center line of the lane. A value of 0 indicates no queue or the queue distance is unknown, and 10000 represents all distance greater or equal to 10000 meters.
+    UNITS "meter"
+    DESCRIPTION "<Definition> The distance in meters from the stop line at the intersection for this movement to the back edge of the last vehicle in the queue as measured along the center line of the lane. A value of 0 indicates no queue or the queue distance is unknown. A value of 10000 represents all distance greater or equal to 10000 meters.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.16.1.3
     <Object Type> P"
     REFERENCE "SAE J2735 DF_ConnectionManeuverAssist and DE_ZoneLength"
@@ -13132,15 +13226,14 @@ movementManeuverStatus2 OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> For NTCIP 1202 user clarification, this object defines the options for traveler connections through an intersection.
-Bit 7:  Reserved
-Bit 6:  Reserved
-Bit 5:  Reserved
-Bit 4:  Reserved
-Bit 3:  Reserved
-Bit 2:  Reserved
-Bit 1:  Status bit set to TRUE (1) if ANY pedestrians or bicyclists are detected in a conflicting movement. Set to FALSE (0) if there is a high certainty no pedestrians or bicyclists are present. The detectors providing this information is defined by movementManeuverPedPresence2 and movementManeuverBicyclePresence2
-Bit 0:  Reserved
-A SET of a 'reserved' bit to a value other than zero (0) shall return a badValue(3) error.
+    Bit 7:  Reserved
+    Bit 6:  Reserved
+    Bit 5:  Reserved
+    Bit 4:  Reserved
+    Bit 3:  Reserved
+    Bit 2:  Reserved
+    Bit 1:  Status bit set to TRUE (1) if ANY pedestrians or bicyclists are detected in a conflicting movement. Set to FALSE (0) if there is a high certainty no pedestrians or bicyclists are present. The detectors providing this information is defined by movementManeuverPedPresence2 and movementManeuverBicyclePresence2
+    Bit 0:  Reserved
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.16.1.4
     <Object Type> P"
     REFERENCE "SAE J2735 DE_PedestrianBicycleDetect"
@@ -13152,6 +13245,7 @@ movementManeuverQueueDetector2 OBJECT-TYPE
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> Each octet in this octet string represents a vehicle detector number (vehicleDetectorNumber) in the vehicleDetectorTable that provides the data to determine movementManeuverQueue2. A value of 00 indicates that no additional vehicle detectors follow in the octet string.
+    Each octet cannot exceed the value of maxVehicleDetectors. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.16.1.5
     <Object Type> P"
     ::= { movementManeuverEntry2 5 }
@@ -13171,7 +13265,8 @@ movementManeuverBicyclePresence2 OBJECT-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Each octet in this octet string represents a vehicle detector number (vehicleDetectorNumber) in the vehicleDetectorTable that when active/ON indicates that a bicyclist is detected that conflicts with this movementManeuverSignalGroupEntryNumber. If a bicyclist is detected by any of the  vehicleDetectorNumber in the octet string, Bit 1 in movementManeuverStatus2 shall be SET to TRUE (1). For example, an octet string of 02 06 indicates that if vehicle detector 2 or vehicle detector 6 is active/ON, then the presence of a bicyclist has been detected that conflicts with this movementManeuverSignalGroupEntryNumber.
+    DESCRIPTION "<Definition> Each octet in this octet string represents a vehicle detector number (vehicleDetectorNumber) in the vehicleDetectorTable that when active/ON indicates that a bicyclist is detected that conflicts with this movementManeuverSignalGroupEntryNumber. If a bicyclist is detected by any of the vehicleDetectorNumber in the octet string, Bit 1 in movementManeuverStatus2 shall be SET to TRUE (1). For example, an octet string of 02 06 indicates that if vehicle detector 2 or vehicle detector 6 is active/ON, then the presence of a bicyclist has been detected that conflicts with this movementManeuverSignalGroupEntryNumber.
+    Each octet cannot exceed the value of maxVehicleDetectors. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.16.1.7"
     ::= { movementManeuverEntry2 7 }
 
@@ -13184,6 +13279,7 @@ spatRoadAuthorityID OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.17
     <Object Type> P"
     REFERENCE "SAE J2735 DE_RelativeRoadAuthorityID"
+    DEFVAL { zeroDotZero }
     ::= { spat 17 }
 
 --7.2.18    SPaT Signal Status Block V2
@@ -14358,7 +14454,5 @@ mapPlanMetadataGeoid OBJECT-TYPE
     DESCRIPTION "<Object Identifier> 1.3.6.1.4.1.1206.4.2.17.2.18.1.9"
     REFERENCE "SAE J2735 DF_DataParameters"
     ::= { mapPlanEntry 9 }
-
-
 
 END
