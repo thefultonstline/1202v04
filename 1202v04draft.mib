@@ -6,7 +6,7 @@
 --              SAE data elements.
 -- Source:      NTCIP 1202 v4.05???
 -- MIB Revision History:
--- Date:       December 18, 2024
+-- Date:       December 13, 2024
 --
 -- Copyright 2023 by the American Association of State Highway and
 -- Transportation Officials (AASHTO), the Institute of Transportation
@@ -97,9 +97,9 @@ IMPORTS
 
     DisplayString, ifIndex                  FROM RFC1213-MIB-Modified
     SnmpAdminString
-                                                 FROM SNMP-FRAMEWORK-MIB
-                                                   -- RFC 3411
-    zerodotzero                             FROM SNMPv2-SMI
+                                            FROM SNMP-FRAMEWORK-MIB
+                                            -- RFC 3411
+    zeroDotZero                             FROM SNMPv2-SMI
     ITSOerString                            FROM ISO26048-1-FieldDevice-TC
     devices                                 FROM NTCIP8004-Transportation
 
@@ -127,7 +127,7 @@ IMPORTS
 -- Administrative Objects
 -- ****************************************************************************
 asc MODULE-IDENTITY
-  LAST-UPDATED "202408050500Z"
+  LAST-UPDATED "202412130500Z"
 
   ORGANIZATION "NTCIP ASC WG"
   CONTACT-INFO
@@ -144,7 +144,7 @@ asc MODULE-IDENTITY
     under the asc node, which is used to manage Actuated Signal
     Controllers (ASC) Objects.
   <Object Identifier> 1.3.6.1.4.1.1206.4.2.1"
-  REVISION "202408050500Z"
+  REVISION "202412130500Z"
   DESCRIPTION "NTCIP 1202 v04 - Change to SMIv2"
   REVISION "202309190500Z"
   DESCRIPTION "NTCIP 1202 v0335 - Last update"
@@ -1972,12 +1972,11 @@ phaseSetPedDelayTime OBJECT-TYPE
         0 to 25.5 seconds, that the phase's pedestrian Walk
         indication starts after the start of the phase's vehicle GREEN indication. 
         
-        
         This parameter is used as result of a pedestrian detector input.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.1.7.1.28
     <Object Type> P"
     DEFVAL { 0 }
-    ::= { phaseEntry 28 }
+    ::= { phaseSetEntry 28 }
 
 --5.2.7.32  Phase Set Advance Green Indication Start Time Parameter
 phaseSetAdvWarnGrnStartTime OBJECT-TYPE
@@ -2121,6 +2120,7 @@ VehicleDetectorEntry ::= SEQUENCE {
     vehicleDetectorPairedDetector        Integer32,
     vehicleDetectorPairedDetectorSpacing Integer32,
     vehicleDetectorAvgVehicleLength      Integer32,
+    vehicleDetectorLength                Integer32,
     vehicleDetectorTravelMode            INTEGER }
 
 --5.3.2.1   Vehicle Detector Number
@@ -3573,7 +3573,7 @@ VehicleDetectorSetEntry ::= SEQUENCE {
     vehicleDetectorSetMaxPresence           Integer32,
     vehicleDetectorSetErraticCounts         Integer32,
     vehicleDetectorSetFailTime              Integer32,
-    vehicleDetectorSetOptons2               Integer32,
+    vehicleDetectorSetOptions2              Integer32,
     vehicleDetectorSetAvgVehicleLength      Integer32,
     vehicleDetectorSetTravelMode            INTEGER }
 
@@ -3871,10 +3871,10 @@ vehicleDetectorSetTravelMode OBJECT-TYPE
         vehicle: refers to a detector identified for vehicles.
         transit: refers to a detector identified for transit vehicles.
         bicycle: refers to a detector identified for bicycles.
-    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.15.1.14
+    <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.15.1.15
     <Object Type> P"
     DEFVAL { 2 }
-    ::= { vehicleDetectorSetEntry 14 }
+    ::= { vehicleDetectorSetEntry 15 }
 
 --5.3.1 Maximum Pedestrian Detector Sets
 maxPedestrianDetectorSets OBJECT-TYPE
@@ -3892,7 +3892,7 @@ maxPedestrianDetectorSets OBJECT-TYPE
 
 --5.3.7 Pedestrian Detector Set Parameter Table
 pedestrianDetectorSetTable OBJECT-TYPE
-    SYNTAX SEQUENCE OF PedestrianDetectorEntry
+    SYNTAX SEQUENCE OF PedestrianDetectorSetEntry
     MAX-ACCESS not-accessible
     STATUS current
     DESCRIPTION "<Definition> A table containing Controller Unit pedestrian
@@ -3910,17 +3910,17 @@ pedestrianDetectorSetTable OBJECT-TYPE
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.17"
     ::= { detector 17 }
 
-pedestrianDetectorEntry OBJECT-TYPE
-    SYNTAX PedestrianDetectorEntry
+pedestrianDetectorSetEntry OBJECT-TYPE
+    SYNTAX PedestrianDetectorSetEntry
     MAX-ACCESS not-accessible
     STATUS current
     DESCRIPTION "<Definition> Parameters for a specific Controller Unit
         pedestrian detector.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.17.1"
-    INDEX   { pedestrianDetectorSetIndex pedestrianDetectorNumber }
-    ::= { pedestrianDetectorTable 1 }
+    INDEX   { pedestrianDetectorSetIndex, pedestrianDetectorNumber }
+    ::= { pedestrianDetectorSetTable 1 }
 
-PedestrianDetectorEntry ::= SEQUENCE {
+PedestrianDetectorSetEntry ::= SEQUENCE {
     pedestrianDetectorSetIndex          Integer32,
     pedestrianDetectorSetCallPhase      Integer32,
     pedestrianDetectorSetNoActivity     Integer32,
@@ -3928,20 +3928,20 @@ PedestrianDetectorEntry ::= SEQUENCE {
     pedestrianDetectorSetErraticCounts  Integer32,
     pedestrianDetectorSetOptions        Integer32 }
  
---5.3.7.1   Pedestrian Detector Number
+--5.3.7.1   Pedestrian Detector Set Number
 pedestrianDetectorSetIndex OBJECT-TYPE
     SYNTAX Integer32 (1..255)
     UNITS "set"
     MAX-ACCESS not-accessible
     STATUS current
-    DESCRIPTION "<Definition> The pedestrianDetector number for objects in
-        this row. The value shall not exceed the maxPedestrianDetectors object
+    DESCRIPTION "<Definition> The pedestrianDetector set indes for objects in
+        this row. The value shall not exceed the maxPedestrianDetectorSets object
         value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.17.1.1"
     ::= { pedestrianDetectorSetEntry 1 }
 
---5.3.7.2   Pedestrian Detector Call Phase Parameter
-pedestrianDetectorCallPhase OBJECT-TYPE
+--5.3.7.2   Pedestrian Detector Set Call Phase Parameter
+pedestrianDetectorSetCallPhase OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "phase"
     MAX-ACCESS read-write
@@ -3949,18 +3949,19 @@ pedestrianDetectorCallPhase OBJECT-TYPE
     DESCRIPTION "<Definition> This object contains assigned phase number for
         the pedestrian detector input associated with this row. The associated
         detector call capability is enabled when this object is set to a
-        non-zero value. The value shall not exceed the value of maxPhases. A value of 0 indicates no call phase.
+        non-zero value. The value shall not exceed the value of maxPhases.
+        A value of 0 indicates no call phase.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.17.1.2
     <Object Type> P"
     ::= { pedestrianDetectorSetEntry 2 }
 
---5.3.7.3   Pedestrian Detector No Activity Parameter
-pedestrianDetectorNoActivity OBJECT-TYPE
+--5.3.7.3   Pedestrian Detector Set No Activity Parameter
+pedestrianDetectorSetNoActivity OBJECT-TYPE
     SYNTAX Integer32 (0..65535)
     UNITS "minute"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Pedestrian Detector No Activity diagnostic
+    DESCRIPTION "<Definition> Pedestrian Detector Set No Activity diagnostic
         Parameter in minutes (1-65535 min.). If an active detector does not
         exhibit an actuation in the specified period, it is considered a fault
         by the diagnostics and the detector is classified as Failed. A value
@@ -3970,13 +3971,13 @@ pedestrianDetectorNoActivity OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.9.3.1.4.1"
     ::= { pedestrianDetectorSetEntry 3 }
 
---5.3.7.4   Pedestrian Detector Maximum Presence Parameter
-pedestrianDetectorMaxPresence OBJECT-TYPE
+--5.3.7.4   Pedestrian Detector Set Maximum Presence Parameter
+pedestrianDetectorSetMaxPresence OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "minute"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Pedestrian Detector Maximum Presence diagnostic
+    DESCRIPTION "<Definition> Pedestrian Detector Set Maximum Presence diagnostic
         Parameter in minutes (0-255 min.). If an active detector exhibits
         continuous detection for too long a period, it is considered a fault
         by the diagnostics and the detector is classified as Failed. A value
@@ -3986,13 +3987,13 @@ pedestrianDetectorMaxPresence OBJECT-TYPE
     REFERENCE "NEMA TS 2 Clause 3.9.3.1.4.2"
     ::= { pedestrianDetectorSetEntry 4 }
 
---5.3.7.5   Pedestrian Detector Erratic Counts Parameter
-pedestrianDetectorErraticCounts OBJECT-TYPE
+--5.3.7.5   Pedestrian Detector Set Erratic Counts Parameter
+pedestrianDetectorSetErraticCounts OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     UNITS "count"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Pedestrian Detector Erratic Counts diagnostic
+    DESCRIPTION "<Definition> Pedestrian Detector Set Erratic Counts diagnostic
         Parameter in counts/minute (0-255 cpm). If an active detector exhibits
         excessive actuations, it is considered a fault by the diagnostics and
         the detector is classified as Failed. A value of 0 for this object
@@ -4017,39 +4018,49 @@ pedestrianDetectorErraticCounts OBJECT-TYPE
 -- Note: There is no object corresponding to pedestrianBushButtonTime in
 --    pedestrianDetectorSetTable
 
---5.3.7.9   Pedestrian Detector Options
-pedestrianDetectorOptions OBJECT-TYPE
+--5.3.7.9   Pedestrian Detector Set Options
+pedestrianDetectorSetOptions OBJECT-TYPE
     SYNTAX Integer32 (0..255)
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION " <Definition> Pedestrian Detector Options Parameter as
+    DESCRIPTION " <Definition> Pedestrian Detector Set Options Parameter as
         follows (0=Disabled, 1=Enabled):
 
         Bit 7: Reserved.
         Bit 6: Reserved.
         Bit 5: Reserved.
-        Bit 4: Advanced Walk: If enabled, the detector will place calls for the phase's pedestrian WALK indication to start before the phase's vehicle GREEN indication. 
-        Bit 3: Delayed Walk: If enabled, the detector will place calls for the phase's pedestrian WALK indication to start after the phase's vehicle GREEN indication. 
-        Bit 2: Non-locking: If enabled, detector will place a non-locked calls instead  of a locked calls.
-        Bit 1: Alternate timing: If enabled, the detector will place calls for alternate ped timing instead of normal ped timing.
+        Bit 4: Advanced Walk: If enabled, the detector will place calls for the
+                phase's pedestrian WALK indication to start before the phase's
+                vehicle GREEN indication. 
+        Bit 3: Delayed Walk: If enabled, the detector will place calls for the
+                phase's pedestrian WALK indication to start after the phase's
+                vehicle GREEN indication. 
+        Bit 2: Non-locking: If enabled, detector will place a non-locked calls
+                instead  of a locked calls.
+        Bit 1: Alternate timing: If enabled, the detector will place calls for
+                alternate ped timing instead of normal ped timing.
         Bit 0: Presence: If enabled, the detector indicates presence of
                 pedestrians in the crosswalk instead of placing calls for
                 service.
         
-        A SET of both bits 3 & 4 shall result in bit 3=0 and bit 4=1. A SET of a 'reserved' bit to a value other than zero (0) shall return a badValue(3) error.
+        A SET of both bits 3 & 4 shall result in bit 3=0 and bit 4=1. A SET of
+        a 'reserved' bit to a value other than zero (0) shall return a
+        badValue(3) error.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.17.1.6
     <Object Type> P"
     DEFVAL { 0 }
     ::= { pedestrianDetectorSetEntry 6 }
 
---5.3.3.8  Detector Disgnostics Reset
+--5.3.3.8  Detector Diagnostics Reset
 unitDetectorDiagnosticReset OBJECT-TYPE
     SYNTAX Integer32 (0..1)
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> This object when set to TRUE (one) shall cause
-        the CU to clear detector faults and reset diagnostic counters for ALL vehicle and pedestrian detectors. 
-        All diagnostic counters with thresholds configured in the following objects are reset to zero:
+        the CU to clear detector faults and reset diagnostic counters for ALL
+        vehicle and pedestrian detectors. 
+        All diagnostic counters with thresholds configured in the following
+        objects are reset to zero:
             vehicleDetectorNoActivity or vehicleDetectorSetNoActivity
             vehicleDetectorMaxPresence or vehicleDetectorSetMaxPresence
             vehicleDetectorErraticCounts or vehicleDetectorSetErraticCounts
@@ -4057,12 +4068,14 @@ unitDetectorDiagnosticReset OBJECT-TYPE
             pedestrianDetectorMaxPresence or pedestrianDetectorSetMaxPresence
             pedestrianDetectorErraticCounts or pedestrianDetectorSetErraticCounts
 
-        The value of these objects do not change when the diagnostic counters are reset. 
+        The value of these objects do not change when the diagnostic counters
+        are reset. 
 
-        This object shall automatically return to FALSE (zero) after the CU has issued the reset
-        command.
+        This object shall automatically return to FALSE (zero) after the CU has
+        issued the reset command.
         
-        This object does not command the CU to reset detectors (see vehicleDetectorReset and pedestrianDetectorReset)
+        This object does not command the CU to reset detectors (see
+        vehicleDetectorReset and pedestrianDetectorReset)
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.2.2.1.18
     <Object Type> C"
     ::= { detector 18 }
@@ -4606,10 +4619,13 @@ ascElevationOffset OBJECT-TYPE
     UNITS "meter" 
     MAX-ACCESS read-write 
     STATUS deprecated
-    DESCRIPTION "<Definition>The offset in height, in meters, from the antenna of a GNSS or similar geopositioning device to the base of CU cabinet. It is assumed that the antenna is at a height higher than the base of the CU structure.
+    DESCRIPTION "<Definition>The offset in height, in meters, from the antenna
+        of a GNSS or similar geopositioning device to the base of CU cabinet.
+        It is assumed that the antenna is at a height higher than the base of
+        the CU structure.
 
-    Values of 0 to 30 provides a range from 0 meters to 30 meters. The value of 31 represents unknown.
-    
+        Values of 0 to 30 provides a range from 0 meters to 30 meters. The
+        value of 31 represents unknown.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.17
     <Object Type> P" 
     DEFVAL { 31 }
@@ -4617,19 +4633,22 @@ ascElevationOffset OBJECT-TYPE
 
 --5.4.18    Startup Flash Mode
 unitStartUpFlashMode OBJECT-TYPE
-    SYNTAX INTEGER { other(1)
-                automaticFlash (2),
-                cabinetFlash (3),
-                allRedControllerFlash (4) }
+    SYNTAX INTEGER { other(1),
+                     automaticFlash (2),
+                     cabinetFlash (3),
+                     allRedControllerFlash (4) }
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> Defines the startup flash state for the unit. The possible states are:
+    DESCRIPTION "<Definition> Defines the startup flash state for the unit. The
+        possible states are:
     
     other: The startup flash state is a state not defined by this standard.
-    Automatic Flash: The startup flash state for each signal indication is defined by the channelFlash object.
-    Cabinet Flash: Upon startup, the intersection shall flash based on the cabinet's internal flash transfer relay configuration. 
-    All Red Controller Flash: Upon startup, the intersection shall flash all-red regardless of the channelFlash object settings.
-
+    Automatic Flash: The startup flash state for each signal indication is
+        defined by the channelFlash object.
+    Cabinet Flash: Upon startup, the intersection shall flash based on the
+        cabinet's internal flash transfer relay configuration. 
+    All Red Controller Flash: Upon startup, the intersection shall flash
+        all-red regardless of the channelFlash object settings.
     <Object Type> P
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.18"
     DEFVAL { 2 }
@@ -4641,9 +4660,18 @@ unitUserDefinedBackupTime OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS deprecated
-    DESCRIPTION "<Definition> The Backup Time in seconds (0-16777216 sec) in 1-second increments. When any of the user-defined system control parameters is SET, the user-defined backup timer is reset. After reset, the CU times the unitUserDefinedBackupTime period. If the  unitUserDefinedBackupTime period expires without a SET operation to any of the user-defined control parameters defined in unitUserDefinedBackupTimeContent, then the CU reverts to Backup Mode.
-A value of zero (0) for this object shall disable this feature.
-If the value of this object is non-zero, then all functionality related to unitBackupTime is diabled.
+    DESCRIPTION "<Definition> The Backup Time in seconds (0-16777216 sec) in
+        1-second increments. When any of the user-defined system control
+        parameters is SET, the user-defined backup timer is reset. After reset,
+        the CU times the unitUserDefinedBackupTime period. If the
+        unitUserDefinedBackupTime period expires without a SET operation to any
+        of the user-defined control parameters defined in
+        unitUserDefinedBackupTimeContent, then the CU reverts to Backup Mode.
+
+        A value of zero (0) for this object shall disable this feature.
+
+        If the value of this object is non-zero, then all functionality related
+        to unitBackupTime is disabled.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.3.19
     <Object Type> P"
     DEFVAL {300}
@@ -5377,17 +5405,17 @@ unitAlarmStatus4 OBJECT-TYPE
 --5.4.28    Unit Alarm Status 
 unitAlarmStatus OBJECT-TYPE
     SYNTAX BITS {  cycleFault(0),
-                coordFault(1),
-                coordFail(2),
-                cycleFail(3),
-                localFree(4),
-                coordActive(5),
-                IOLinkError(6),
-                smuLinkError(7)
-                rsuLinkError(8),
-                cvCertificateError(9),
-                preemmptMaxPresence(10),
-                eclaActive(11)   }
+                   coordFault(1),
+                   coordFail(2),
+                   cycleFail(3),
+                   localFree(4),
+                   coordActive(5),
+                   ioLinkError(6),
+                   smuLinkError(7),
+                   rsuLinkError(8),
+                   cvCertificateError(9),
+                   preemmptMaxPresence(10),
+                   eclaActive(11)   }
     MAX-ACCESS read-only
     STATUS current
     DESCRIPTION "<Definition> Device Alarm Mask ( 0 = False, 1 = True) as
@@ -5447,7 +5475,7 @@ shortAlarmStatusv4 OBJECT-TYPE
 --5.4.30 Unit Control
 unitControlv4 OBJECT-TYPE
     SYNTAX BITS { disableRemoteCommand(0),
-                manualBackup(1)
+                manualBackup(1),
                 globalMinRecall(2),
                 nonactuated1(3),
                 nonactuated2(4),
@@ -5660,12 +5688,12 @@ PatternEntry ::= SEQUENCE {
     patternReferencePoint           INTEGER,
     patternMaximumMode              INTEGER, 
     patternSpatEnabledLanes         Integer32, 
-    patternReferencePoint           Integer32,
+    patternReferencePhase           Integer32,
     patternPhaseSet                 Integer32,
     patternOverlapSet               Integer32,
     patternVehicleDetectorSet       Integer32,
     patternPedestrianDetectorSet    Integer32,
-    patternSpecialFunction          Integer32,
+    patternSpecialFunction          Unsigned32,
     patternStatus                   BITS   } 
 
 --5.5.7.1   Pattern Number Entry
@@ -5674,7 +5702,8 @@ patternNumber OBJECT-TYPE
     UNITS   "pattern"
     MAX-ACCESS not-accessible
     STATUS current
-    DESCRIPTION "<Definition> The pattern number for objects in this row. This value shall not exceed the maxPatterns object value.
+    DESCRIPTION "<Definition> The pattern number for objects in this row. This
+        value shall not exceed the maxPatterns object value.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.1"
     ::= { patternEntry 1 }
 
@@ -5684,18 +5713,29 @@ patternCycleTime OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> The patternCycleTime object specifies the length of the pattern cycle in seconds (NEMA TS 2 range: 30-255). A value of 0 is used for a pattern where the ASC runs in Free mode. Otherwise, the pattern is configured for coordination, 
+    DESCRIPTION "<Definition> The patternCycleTime object specifies the length
+        of the pattern cycle in seconds (NEMA TS 2 range: 30-255). A value of 0
+        is used for a pattern where the ASC runs in Free mode. Otherwise, the
+        pattern is configured for coordination, 
     
-    A pattern cycle time less than adequate to service the minimum requirements of all phases shall result in Free mode. While this condition exists, the Local Free bit of unitAlarmStatus shall be 1, the Local Override bit of shortAlarmStatusv4 shall be 1, the value localFreeStatus shall be badPlan(7), and the Bad Cycle Time bit of patternStatus shall be 1. 
+        A pattern cycle time less than adequate to service the minimum
+        requirements of all phases shall result in Free mode. While this
+        condition exists, the Local Free bit of unitAlarmStatus shall be 1, the
+        Local Override bit of shortAlarmStatusv4 shall be 1, the value
+        localFreeStatus shall be badPlan(7), and the Bad Cycle Time bit of
+        patternStatus shall be 1. 
 
-    The minimum time to serve a phase must satisfy vehicle minimum green, walk (if configured), pedestrian clear (if configured), yellow change, and red clearance time. 
+        The minimum time to serve a phase must satisfy vehicle minimum green,
+        walk (if configured), pedestrian clear (if configured), yellow change,
+        and red clearance time. 
 
-    If the pattern cycle time is zero and the associated split table (if any) contains values greater than zero, then the ASC shall utilize the split time values as maximum values for each phase.
-
+        If the pattern cycle time is zero and the associated split table (if
+        any) contains values greater than zero, then the ASC shall utilize the
+        split time values as maximum values for each phase.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.2
     <Object Type> P"
-    DEFVAL { 0 }
     REFERENCE "NEMA TS 2 Clause 3.6.2.1.1"
+    DEFVAL { 0 }
     ::= { patternEntry 2 }
  
 --5.5.7.3   Pattern Offset Time Parameter
@@ -5704,16 +5744,22 @@ patternOffsetTime OBJECT-TYPE
     UNITS "second"
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "<Definition> The patternOffsetTime defines by how many seconds (NEMA TS 2 range: 0-254) the local time zero shall lag the system time zero (synchronization pulse) for this pattern. 
+    DESCRIPTION "<Definition> The patternOffsetTime defines by how many seconds
+        (NEMA TS 2 range: 0-254) the local time zero shall lag the system time
+        zero (synchronization pulse) for this pattern. 
     
-    An offset value equal to or greater than the patternCycleTime other than 0 shall result in the ASC running in Free mode. While this condition exists, the Local Free bit of unitAlarmStatus shall be 1, the Local Override bit of shortAlarmStatusv4 shall be 1, the value of localFreeStatus shall be badPlan(7), and the Invalid Offset bit of patternStatus for this pattern shall be 1. 
+        An offset value equal to or greater than the patternCycleTime other
+        than 0 shall result in the ASC running in Free mode. While this
+        condition exists, the Local Free bit of unitAlarmStatus shall be 1, the
+        Local Override bit of shortAlarmStatusv4 shall be 1, the value of
+        localFreeStatus shall be badPlan(7), and the Invalid Offset bit of
+        patternStatus for this pattern shall be 1. 
 
-    The value of this object is ignored when patternCycleTime is 0. 
-
+        The value of this object is ignored when patternCycleTime is 0. 
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.1.4.7.1.3
     <Object Type> P"
-    DEFVAL { 0 }
     REFERENCE "NEMA TS 2 Clause 3.6.2.2"
+    DEFVAL { 0 }
     ::= { patternEntry 3 }
 
 --5.5.7.4   Pattern Split Number Parameter
@@ -5742,7 +5788,7 @@ patternSequenceNumber OBJECT-TYPE
 
 --5.5.7.6   Pattern Coordination Sync Point
 patternReferencePoint OBJECT-TYPE
-    SYNTAX INTEGER { other(1)
+    SYNTAX INTEGER { other(1),
                     greenBegin (2),
                     yellowBegin (3),
                     redBegin (4),
@@ -5869,7 +5915,7 @@ patternPedestrianDetectorSet OBJECT-TYPE
 
 --5.5.7.14  Pattern Special Functions Parameter
 patternSpecialFunction OBJECT-TYPE
-    SYNTAX Integer32 (0..4294967295)
+    SYNTAX Unsigned32 (0..4294967295)
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> The Special Functions that shall be active when this pattern is active. Each bit represents a special function # from 1 to 32. 
@@ -6328,7 +6374,7 @@ TimebaseAscActionEntry ::= SEQUENCE {
     timebaseAscActionNumber      Integer32,
     timebaseAscPattern           Integer32,
     timebaseAscAuxiliaryFunction Integer32, --deprecated
-    timebaseAscSpecialFunction   Integer32,
+    timebaseAscSpecialFunction   Unsigned32,
     timebaseAscEnabledLane       Integer32 }
 
 --5.6.3.1   Time Base Action Number
@@ -6389,7 +6435,7 @@ timebaseAscAuxiliaryFunction OBJECT-TYPE
 
 --5.6.3.4   Time Base Action Special Function Parameter
 timebaseAscSpecialFunction OBJECT-TYPE
-    SYNTAX Integer32 (0..4294967295)
+    SYNTAX Unsigned32 (0..4294967295)
     MAX-ACCESS read-write
     STATUS current
     DESCRIPTION "<Definition> The Special Functions that shall be active when this Action is active. Each bit represents a special function from 1 to 32. 
@@ -7437,8 +7483,8 @@ ringStatusEntry OBJECT-TYPE
 
 RingStatusEntry ::= SEQUENCE { 
     ringStatus          INTEGER,
-    ringPhaseOn         Integer32,
-    ringPhaseOnDuration Integer32 }
+    ringOnPhase         Integer32,
+    ringOnPhaseDuration Unsigned32 }
 
 --5.8.6.1   Ring Status
 ringStatus OBJECT-TYPE
@@ -7491,7 +7537,7 @@ ringOnPhase OBJECT-TYPE
     ::= { ringStatusEntry 2 }
 
 ringOnPhaseDuration OBJECT-TYPE
-    SYNTAX Integer32 (0..4294967295)
+    SYNTAX Unsigned32 (0..4294967295)
     UNITS "decisecond"
     MAX-ACCESS read-only
     STATUS current
@@ -9180,13 +9226,12 @@ ascIOinputMapTableEntry OBJECT-TYPE
 
 AscIOinputMapTableEntry ::= SEQUENCE {
    ascIOmapNumber           Integer32,   -- up to ascIOmaxMaps
-        INTEGER,   -- up to ascIOmapMaxInputs
-
+   ascIOinputMapIOindex     INTEGER,     -- up to ascIOmapMaxInputs
    ascIOinputMapDeviceType  Integer32,   -- enum custom, FIO,TS1,BIU,SIU,AUX, reserved
    ascIOinputMapDevicePNN   Integer32,   -- NEMA PNN if DeviceType is custom
    ascIOinputMapDevicePtype Integer32,   -- Custom device type
    ascIOinputMapDeviceAddr  Integer32,   -- only used if needed (BIU, SIU)
-   ascIOinputMapDevicePin   INTEGER,   -- device I/O pin index
+   ascIOinputMapDevicePin   INTEGER,     -- device I/O pin index
    ascIOinputMapFuncType    Integer32,   -- 0=STD, else nemaPrivate vendor code
    ascIOinputMapFuncPtype   Integer32,   -- Custom function type set
    ascIOinputMapFunction    Integer32,   -- function 
@@ -12081,7 +12126,7 @@ eclaDataTimestamp OBJECT-TYPE
 
 --5.19.3 ECLA Input Table
 eclaInputTable OBJECT-TYPE
-    SYNTAX SEQUENCE OF PhaseEntry
+    SYNTAX SEQUENCE OF EclaEntry
     MAX-ACCESS not-accessible
     STATUS current
     DESCRIPTION "<Definition> A table containing Controller Unit phase
@@ -12092,7 +12137,7 @@ eclaInputTable OBJECT-TYPE
     ::= { ecla 3 }
 
 
-eclaTable OBJECT-TYPE
+eclaEntry OBJECT-TYPE
     SYNTAX EclaEntry
     MAX-ACCESS not-accessible
     STATUS current
@@ -13350,7 +13395,7 @@ movementManeuverEntry2 OBJECT-TYPE
     INDEX  { movementManeuverIndex2 }
     ::= { movementManeuverTable2 1 }
 
-MovementManeuverEntry2::= SEQUENCE {
+MovementManeuverEntry2 ::= SEQUENCE {
     movementManeuverIndex2                 Integer32,
     movementManeuverSignalGroupEntryNumber Integer32,
     movementManeuverQueue2                 Integer32,
@@ -13382,10 +13427,14 @@ movementManeuverSignalGroupEntryNumber OBJECT-TYPE
 --7.2.16.3  SPaT Movement Queue V2
 movementManeuverQueue2 OBJECT-TYPE
     SYNTAX Integer32 (0..10000)
+    UNITS "meter"
     MAX-ACCESS read-only
     STATUS current
-    UNITS "meter"
-    DESCRIPTION "<Definition> The distance in meters from the stop line at the intersection for this movement to the back edge of the last vehicle in the queue as measured along the center line of the lane. A value of 0 indicates no queue or the queue distance is unknown. A value of 10000 represents all distance greater or equal to 10000 meters.
+    DESCRIPTION "<Definition> The distance in meters from the stop line at the
+        intersection for this movement to the back edge of the last vehicle in
+        the queue as measured along the center line of the lane. A value of 0
+        indicates no queue or the queue distance is unknown. A value of 10000
+        represents all distance greater or equal to 10000 meters.
     <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.1.16.1.3
     <Object Type> P"
     REFERENCE "SAE J2735 DF_ConnectionManeuverAssist and DE_ZoneLength"
@@ -14430,52 +14479,6 @@ mapUserClassTypes OBJECT-TYPE
     DEFVAL { '00'H }
     ::= { mapUserEntry 2 }
 
---7.3.17    Maximum MAP Plans
-maxMapPlans OBJECT-TYPE
-    SYNTAX Integer32 (0..8)
-    UNITS "map plan"
-    MAX-ACCESS read-only
-    STATUS deprecated
-    DESCRIPTION "<Definition> This object contains the maximum number of MAP plans this RSU supports. This object indicates the maximum rows which shall appear in the mapPlanTable object. Each MAP plan defines the lane indexes that are to be broadcasted in a MAP data message.
-    <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.2.17"
-    ::= { map 19 }
-
---7.3.18    MAP Plan Table
-mapPlanTable OBJECT-TYPE
-    SYNTAX SEQUENCE OF MapPlanEntry 
-    MAX-ACCESS not-accessible
-    STATUS deprecated
-    DESCRIPTION "<Definition> This table contains MAP plans that are stored on this RSU for broadcast. The number of rows in this table is equal to the maxMapPlans object.
-    <TableType> static
-    <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.2.18"
-    ::= { map 20 }
-
-mapPlanEntry OBJECT-TYPE
-    SYNTAX MapPlanEntry
-    MAX-ACCESS not-accessible
-    STATUS deprecated
-    DESCRIPTION "<Definition> The lane indexes that are to be broadcasted by a RSU.
-    <Object Identifier> 1.3.6.1.4.1.1206.4.2.17.2.18.1"
-    INDEX  { mapPlanIndex }
-    ::= { mapPlanTable 1 }
-SYNTAX Integer32 (1..254)
-MAX-ACCESS read-only
-STATUS deprecated
-DESCRIPTION "<Definition> For NTCIP 1202 user clarification, the index of the user type for objects in this row. This value shall not exceed the maxUserTypes object value.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.17.2.16.1.1"
-REFERENCE "SAE J2735 DE_RestrictionClassID"
-::= { mapUserEntry 1 }
-
---7.3.16.2  MAP User Class Types
-mapUserClassTypes OBJECT-TYPE
-SYNTAX OCTET STRING (SIZE (1..16))
-MAX-ACCESS read-write
-STATUS deprecated
-DESCRIPTION "<Definition> For NTCIP 1202 user clarification, each octet within the octet string represents an enumeration defined in SAE J2735 DF_RestrictionAppliesTo. This object is used to indicate movements at an intersection are intended for specific traveler types or classes, as represented by SAE J2735 DF_RestrictionAppliesTo.
-<Object Identifier> 1.3.6.1.4.1.1206.4.2.17.2.16.1.2"
-REFERENCE "SAE J2735 DF_RestrictionUserTypeList"
-DEFVAL { '00'H }
-::= { mapUserEntry 2 }
 
 --7.3.17    Maximum MAP Plans
 maxMapPlans OBJECT-TYPE
